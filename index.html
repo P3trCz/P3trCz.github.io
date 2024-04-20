@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
@@ -9,36 +9,44 @@
     <title>Benefitorium - Přihlášení</title>
 </head>
 <body>
-    <h1>
+    <h1 class="logoName">
         Benefitorium
     </h1>
-    <h2>
+    <h2 class="logoName">
         Infis
     </h2>
-    <div> <!-- Tady toto bude uděláno jako tabulka -->
+    <div id="loginTable" > <!-- Tady toto bude uděláno jako tabulka -->
         <table>
             <tr>
-                <th>Uživatelské jméno:</th>
+                <th>Uživatelské jméno </th>
                 <td>
                     <label>
-                        <input id="username">
+                        <input>
                     </label>
                 </td>
             </tr>
             <tr>
-                <th>Heslo:</th>
+                <th>Heslo </th>
                 <td>
                     <label>
-                        <input id="password">
+                        <input>
                     </label>
                 </td>
             </tr>
         </table>
-        <a href="passwordReset.html">Zapomenuté heslo</a>
+        <input type="checkbox" id="zapamatovat" name="zapamatovat">
+            <label for="zapamatovat">
+                Zapamatovat
+            </label>
+        <a href="passwordReset.html" id="passReset">
+            Zapomenuté heslo
+        </a>
+        <form action="uvodniStranka.html" id="login">
+            <button>
+                Přihlásit se
+            </button>
+        </form>
     </div>
-    <button>
-        <a href="uvodniStranka.html">Přihlásit se</a>
-    </button>
 
 </body>
 </html>
