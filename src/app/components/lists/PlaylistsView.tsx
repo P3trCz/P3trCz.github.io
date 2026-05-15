@@ -34,7 +34,7 @@ export function PlaylistsView() {
   }, [openMenuId]);
 
   const getMovies = (movieIds: string[]) => {
-    return movieIds.map(id => catalog.find(m => m.id === id)).filter(Boolean) as typeof catalog;
+    return movieIds.map(id => catalog.find(m => m.id.toString() === id.toString())).filter(Boolean) as typeof catalog;
   };
 
   const handleRename = (id: string, currentName: string) => {
@@ -104,7 +104,7 @@ export function PlaylistsView() {
             {displayedMovies.length > 0 ? (
               displayedMovies.map(movie => (
                 <MovieCard 
-                  key={movie.id} 
+                  key={`${movie.type}-${movie.id}`} 
                   movie={movie} 
                   onClick={(m) => setSelectedMovie(m)} 
                 />

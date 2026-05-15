@@ -18,4 +18,12 @@ export type Movie = {
   backdrop_url: string;
 };
 
-export const catalog: Movie[] = tmdbData as Movie[];
+const rawData = tmdbData as Movie[];
+const uniqueDataMap = new Map<string, Movie>();
+
+rawData.forEach(m => {
+  // Zajistí, že ID budou unikátní (kombinace typu a ID pro jistotu)
+  uniqueDataMap.set(`${m.type}-${m.id}`, m);
+});
+
+export const catalog: Movie[] = Array.from(uniqueDataMap.values());

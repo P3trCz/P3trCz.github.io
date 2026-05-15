@@ -41,19 +41,11 @@ export function MovieDetail({ movie, onClose }: Props) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm" onClick={onClose}>
       <div 
-        className="w-full max-w-4xl bg-[#111116] rounded-2xl border border-[#27272a] shadow-2xl flex overflow-hidden max-h-[90vh] relative"
+        className="w-full max-w-4xl bg-[#111116] rounded-2xl border border-[#27272a] shadow-2xl flex overflow-hidden max-h-[90vh]"
         onClick={e => e.stopPropagation()}
       >
-        {/* Backdrop for the right section */}
-        {movie.backdrop_url && (
-          <div className="absolute inset-0 z-0 opacity-10 pointer-events-none">
-            <img src={movie.backdrop_url} alt="" className="w-full h-full object-cover" />
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent to-[#111116]"></div>
-          </div>
-        )}
-
         {/* Poster */}
-        <div className="w-2/5 shrink-0 relative z-10">
+        <div className="w-2/5 shrink-0 relative">
           <img 
             src={movie.poster_url} 
             alt={movie.title} 
@@ -63,7 +55,7 @@ export function MovieDetail({ movie, onClose }: Props) {
         </div>
 
         {/* Content */}
-        <div className="w-3/5 p-8 flex flex-col relative z-10 overflow-y-auto">
+        <div className="w-3/5 p-8 flex flex-col relative overflow-y-auto">
           <button 
             onClick={onClose}
             className="absolute top-6 right-6 w-8 h-8 flex items-center justify-center rounded-full bg-[#1c1c24] text-gray-400 hover:text-white transition-colors"

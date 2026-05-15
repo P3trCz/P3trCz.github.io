@@ -26,6 +26,13 @@ export function StatsView() {
     const m = totalMinutes % 60;
     return `${h} h ${m} min`;
   };
+
+  const normalizeService = (service: string) => {
+    if (service === 'Disney+') return 'Disney Plus';
+    if (service === 'Prime') return 'Amazon Prime Video';
+    if (service === 'Apple TV+') return 'Apple TV';
+    return service;
+  };
   
   const processData = () => {
     const serviceTime: Record<string, number> = {};
@@ -33,7 +40,8 @@ export function StatsView() {
     let totalMinutes = 0;
 
     history.forEach(item => {
-      serviceTime[item.service] = (serviceTime[item.service] || 0) + item.durationMinutes;
+      const normalizedSvc = normalizeService(item.service);
+      serviceTime[normalizedSvc] = (serviceTime[normalizedSvc] || 0) + item.durationMinutes;
       totalMinutes += item.durationMinutes;
 
       const movie = catalog.find(m => m.id.toString() === item.movieId);
@@ -129,7 +137,7 @@ export function StatsView() {
               </ResponsiveContainer>
             </div>
 
-            <div className="flex justify-center gap-6 mt-4">
+            <div className="flex flex-wrap justify-center gap-6 mt-4">
               {stats.pieData.map(entry => (
                 <div key={entry.name} className="flex items-center gap-2">
                   <div className="w-3 h-3 rounded-full" style={{ backgroundColor: serviceColors[entry.name] }}></div>

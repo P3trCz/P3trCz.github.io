@@ -10,6 +10,7 @@ export function MovieGrid() {
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
   const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
+  const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
   const [displayedCount, setDisplayedCount] = useState(25);
 
   const currentUser = useAppStore(state => state.currentUser);
@@ -19,7 +20,7 @@ export function MovieGrid() {
   // Reset pagination when filters change
   useEffect(() => {
     setDisplayedCount(25);
-  }, [selectedServices, selectedGenres, userSubscriptions]);
+  }, [selectedServices, selectedGenres, selectedTypes, userSubscriptions]);
 
   // Filmy dostupné na uživatelových službách
   const availableMovies = useMemo(() => {
@@ -27,8 +28,13 @@ export function MovieGrid() {
   }, [userSubscriptions]);
 
   // Filtry nabízejí pouze vlastněné služby a žánry z dostupných filmů
-  const allServices = useMemo(() => userSubscriptions.slice().sort(), [userSubscriptions]);
+  const allServices = useMemo(() => {
+    const validServices = new Set(availableMovies.flatMap(m => m.streaming_services));
+    return userSubscriptions.filter(s => validServices.has(s as ServiceType)).sort();
+  }, [availableMovies, userSubscriptions]);
+  
   const allGenres = useMemo(() => Array.from(new Set(availableMovies.flatMap(m => m.genres))).sort(), [availableMovies]);
+  const allTypes = ['Film', 'Seriál'];
 
   const filteredCatalog = useMemo(() => {
     return catalog.filter(movie => {
@@ -36,30 +42,36 @@ export function MovieGrid() {
       const hasSubscribedService = movie.streaming_services.some(service => userSubscriptions.includes(service));
       if (!hasSubscribedService) return false;
 
-      // 2. Filtr podle služeb (OR logiky - stačí shoda v jedné z vybraných)
+      // 2. Filtr podle služeb (OR logiky)
       if (selectedServices.length > 0) {
         const matchesService = movie.streaming_services.some(service => selectedServices.includes(service));
         if (!matchesService) return false;
       }
 
-      // 3. Filtr podle žánrů (AND logika - musí mít všechny vybrané žánry)
+      // 3. Filtr podle žánrů (AND logika)
       if (selectedGenres.length > 0) {
         const matchesGenres = selectedGenres.every(genre => movie.genres.includes(genre));
         if (!matchesGenres) return false;
       }
 
+      // 4. Filtr podle typu (Film / Seriál)
+      if (selectedTypes.length > 0) {
+        if (!selectedTypes.includes(movie.type)) return false;
+      }
+
       return true;
     });
-  }, [selectedServices, selectedGenres, userSubscriptions]);
+  }, [selectedServices, selectedGenres, selectedTypes, userSubscriptions]);
 
   const displayedCatalog = filteredCatalog.slice(0, displayedCount);
   const hasMore = displayedCount < filteredCatalog.length;
 
-  const hasAnyFilter = selectedServices.length > 0 || selectedGenres.length > 0;
+  const hasAnyFilter = selectedServices.length > 0 || selectedGenres.length > 0 || selectedTypes.length > 0;
 
   const clearFilters = () => {
     setSelectedServices([]);
     setSelectedGenres([]);
+    setSelectedTypes([]);
   };
 
   const handleLoadMore = () => {
@@ -69,9 +81,17 @@ export function MovieGrid() {
   return (
     <div className="p-8 pb-24">
       <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-4 text-sm text-gray-400">
-          <Filter size={16} />
-          <span>Filtrovat:</span>
+        <div className="flex flex-wrap items-center gap-4 text-sm text-gray-400">
+          <div className="flex items-center gap-2">
+            <Filter size={16} />
+            <span>Filtrovat:</span>
+          </div>
+          <Dropdown
+            label="Typ"
+            options={allTypes}
+            selected={selectedTypes}
+            onChange={setSelectedTypes}
+          />
           <Dropdown
             label="Služby"
             options={allServices}
@@ -112,7 +132,7 @@ export function MovieGrid() {
           {displayedCatalog.length > 0 ? (
             displayedCatalog.map(movie => (
               <MovieCard 
-                key={movie.id} 
+                key={`${movie.type}-${movie.id}`} 
                 movie={movie} 
                 onClick={(m) => setSelectedMovie(m)} 
               />
