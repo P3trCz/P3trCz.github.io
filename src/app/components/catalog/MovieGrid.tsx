@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { catalog, Movie, ServiceType } from '../../data/catalog';
 import { MovieCard } from './MovieCard';
 import { MovieDetail } from './MovieDetail';
@@ -10,14 +10,20 @@ export function MovieGrid() {
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
   const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
+  const [displayedCount, setDisplayedCount] = useState(25);
 
   const currentUser = useAppStore(state => state.currentUser);
   const subscriptionsState = useAppStore(state => state.subscriptions);
   const userSubscriptions = currentUser ? (subscriptionsState[currentUser.id] || []) : [];
 
+  // Reset pagination when filters change
+  useEffect(() => {
+    setDisplayedCount(25);
+  }, [selectedServices, selectedGenres, userSubscriptions]);
+
   // Filmy dostupné na uživatelových službách
   const availableMovies = useMemo(() => {
-    return catalog.filter(movie => movie.availableOn.some(s => userSubscriptions.includes(s)));
+    return catalog.filter(movie => movie.streaming_services.some(s => userSubscriptions.includes(s)));
   }, [userSubscriptions]);
 
   // Filtry nabízejí pouze vlastněné služby a žánry z dostupných filmů
@@ -27,12 +33,12 @@ export function MovieGrid() {
   const filteredCatalog = useMemo(() => {
     return catalog.filter(movie => {
       // 1. Základní filtr - film musí být dostupný na některé ze služeb, které uživatel vlastní
-      const hasSubscribedService = movie.availableOn.some(service => userSubscriptions.includes(service));
+      const hasSubscribedService = movie.streaming_services.some(service => userSubscriptions.includes(service));
       if (!hasSubscribedService) return false;
 
       // 2. Filtr podle služeb (OR logiky - stačí shoda v jedné z vybraných)
       if (selectedServices.length > 0) {
-        const matchesService = movie.availableOn.some(service => selectedServices.includes(service));
+        const matchesService = movie.streaming_services.some(service => selectedServices.includes(service));
         if (!matchesService) return false;
       }
 
@@ -46,11 +52,18 @@ export function MovieGrid() {
     });
   }, [selectedServices, selectedGenres, userSubscriptions]);
 
+  const displayedCatalog = filteredCatalog.slice(0, displayedCount);
+  const hasMore = displayedCount < filteredCatalog.length;
+
   const hasAnyFilter = selectedServices.length > 0 || selectedGenres.length > 0;
 
   const clearFilters = () => {
     setSelectedServices([]);
     setSelectedGenres([]);
+  };
+
+  const handleLoadMore = () => {
+    setDisplayedCount(prev => Math.min(prev + 25, filteredCatalog.length));
   };
 
   return (
@@ -88,7 +101,7 @@ export function MovieGrid() {
         {/* Table Header */}
         <div className="grid grid-cols-[3fr_1fr_2fr_1fr_2fr] gap-4 items-center py-4 px-4 border-b border-[#27272a] text-xs font-semibold text-gray-400 tracking-wider">
           <div>TITULY</div>
-          <div>ROK</div>
+          <div>TYP</div>
           <div>ŽÁNR</div>
           <div>HODNOCENÍ</div>
           <div>DOSTUPNOST</div>
@@ -96,8 +109,8 @@ export function MovieGrid() {
 
         {/* Table Body */}
         <div className="flex flex-col">
-          {filteredCatalog.length > 0 ? (
-            filteredCatalog.map(movie => (
+          {displayedCatalog.length > 0 ? (
+            displayedCatalog.map(movie => (
               <MovieCard 
                 key={movie.id} 
                 movie={movie} 
@@ -111,6 +124,17 @@ export function MovieGrid() {
           )}
         </div>
       </div>
+
+      {hasMore && (
+        <div className="mt-8 flex justify-center">
+          <button
+            onClick={handleLoadMore}
+            className="px-6 py-2.5 bg-[#1c1c24] hover:bg-[#dc2626] border border-[#27272a] hover:border-[#dc2626] rounded-xl text-white font-medium transition-colors"
+          >
+            Načíst dalších 25
+          </button>
+        </div>
+      )}
 
       {selectedMovie && (
         <MovieDetail 

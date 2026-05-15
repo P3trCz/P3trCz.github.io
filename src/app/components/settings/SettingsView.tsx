@@ -7,9 +7,9 @@ import { User, LogOut, Key, Shield, X } from 'lucide-react';
 const availableServices: { id: ServiceType; name: string; color: string }[] = [
   { id: 'Netflix', name: 'Netflix', color: 'bg-red-600' },
   { id: 'HBO Max', name: 'HBO Max', color: 'bg-purple-600' },
-  { id: 'Disney+', name: 'Disney+', color: 'bg-blue-600' },
-  { id: 'Prime', name: 'Prime Video', color: 'bg-cyan-600' },
-  { id: 'Apple TV+', name: 'Apple TV+', color: 'bg-gray-700' },
+  { id: 'Disney Plus', name: 'Disney+', color: 'bg-blue-600' },
+  { id: 'Amazon Prime Video', name: 'Prime Video', color: 'bg-cyan-600' },
+  { id: 'Apple TV', name: 'Apple TV+', color: 'bg-gray-700' },
   { id: 'SkyShowtime', name: 'SkyShowtime', color: 'bg-indigo-600' },
   { id: 'Oneplay', name: 'Oneplay', color: 'bg-pink-600' }
 ];

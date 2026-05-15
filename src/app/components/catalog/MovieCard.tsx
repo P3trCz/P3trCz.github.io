@@ -11,9 +11,9 @@ type Props = {
 const serviceColors: Record<ServiceType, string> = {
   'Netflix': 'bg-red-600',
   'HBO Max': 'bg-purple-600',
-  'Disney+': 'bg-blue-600',
-  'Prime': 'bg-cyan-600',
-  'Apple TV+': 'bg-gray-700',
+  'Disney Plus': 'bg-blue-600',
+  'Amazon Prime Video': 'bg-cyan-600',
+  'Apple TV': 'bg-gray-700',
   'SkyShowtime': 'bg-indigo-600',
   'Oneplay': 'bg-pink-600'
 };
@@ -41,18 +41,18 @@ export function MovieCard({ movie, onClick }: Props) {
     >
       <div className="flex items-center gap-3 min-w-0">
         <img 
-          src={movie.posterUrl} 
+          src={movie.poster_url} 
           alt={movie.title} 
           className="w-12 h-16 object-cover rounded shadow shrink-0"
         />
         <div className="font-medium text-white truncate">{movie.title}</div>
         <div className="shrink-0" onClick={e => e.stopPropagation()}>
-          <AddToPlaylistButton movieId={movie.id} />
+          <AddToPlaylistButton movieId={movie.id.toString()} />
         </div>
       </div>
       
       <div className="text-gray-400 text-sm">
-        {movie.year}
+        {movie.type}
       </div>
       
       <div className="text-gray-400 text-sm truncate pr-4">
@@ -64,7 +64,7 @@ export function MovieCard({ movie, onClick }: Props) {
       </div>
       
       <div className="flex flex-wrap gap-1.5">
-        {movie.availableOn.map(service => (
+        {movie.streaming_services.map(service => (
           <span 
             key={service} 
             className={`text-[10px] font-bold px-2 py-0.5 rounded ${serviceColors[service]} text-white`}
@@ -76,3 +76,4 @@ export function MovieCard({ movie, onClick }: Props) {
     </div>
   );
 }
+

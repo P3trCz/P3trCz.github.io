@@ -6,9 +6,9 @@ import { catalog, ServiceType } from '../../data/catalog';
 const serviceColors: Record<string, string> = {
   'Netflix': '#e50914',
   'HBO Max': '#7c3aed',
-  'Disney+': '#2563eb',
-  'Prime': '#0891b2',
-  'Apple TV+': '#374151',
+  'Disney Plus': '#2563eb',
+  'Amazon Prime Video': '#0891b2',
+  'Apple TV': '#374151',
   'SkyShowtime': '#4f46e5',
   'Oneplay': '#db2777'
 };
@@ -21,8 +21,11 @@ export function StatsView() {
   const watchHistoryState = useAppStore(state => state.watchHistory);
   const history = currentUser ? (watchHistoryState[currentUser.id] || []) : [];
 
-  // Pro demo účely budeme ignorovat skutečný čas a použijeme celou historii, 
-  // případně si vygenerujeme "fake" data, pokud je historie prázdná
+  const formatTime = (totalMinutes: number) => {
+    const h = Math.floor(totalMinutes / 60);
+    const m = totalMinutes % 60;
+    return `${h} h ${m} min`;
+  };
   
   const processData = () => {
     const serviceTime: Record<string, number> = {};
@@ -33,7 +36,7 @@ export function StatsView() {
       serviceTime[item.service] = (serviceTime[item.service] || 0) + item.durationMinutes;
       totalMinutes += item.durationMinutes;
 
-      const movie = catalog.find(m => m.id === item.movieId);
+      const movie = catalog.find(m => m.id.toString() === item.movieId);
       if (movie) {
         movie.genres.forEach(g => {
           genreCount[g] = (genreCount[g] || 0) + 1;
@@ -51,12 +54,12 @@ export function StatsView() {
 
     return {
       pieData,
-      totalHours: Math.round(totalMinutes / 60),
+      totalMinutes,
       topGenre: topGenre ? topGenre[0] : 'N/A',
       topGenreCount: topGenre ? topGenre[1] : 0,
       totalMovies: history.length,
       topService: topService ? topService[0] : 'N/A',
-      topServiceHours: topService ? Math.round(topService[1] / 60) : 0
+      topServiceMinutes: topService ? topService[1] : 0
     };
   };
 
@@ -120,7 +123,7 @@ export function StatsView() {
                   <Tooltip 
                     contentStyle={{ backgroundColor: '#1c1c24', borderColor: '#27272a', color: 'white', borderRadius: '8px' }}
                     itemStyle={{ color: 'white' }}
-                    formatter={(value: any) => [`${Math.round(value / 60)} hodin`, 'Čas']}
+                    formatter={(value: any) => [formatTime(value), 'Čas']}
                   />
                 </PieChart>
               </ResponsiveContainer>
@@ -139,7 +142,7 @@ export function StatsView() {
           <div className="space-y-6">
             <div className="bg-[#111116] border border-[#27272a] rounded-xl p-6">
               <h3 className="text-sm font-medium text-gray-400 mb-2">Celkový čas sledování za {range.toLowerCase()}</h3>
-              <div className="text-4xl font-bold text-white mb-2">{stats.totalHours} h</div>
+              <div className="text-4xl font-bold text-white mb-2">{formatTime(stats.totalMinutes)}</div>
               <div className="text-sm text-gray-500">{stats.totalMovies} zhlédnutých filmů</div>
             </div>
 
@@ -164,7 +167,7 @@ export function StatsView() {
                 </div>
                 <div>
                   <div className="text-lg font-bold text-white">{stats.topService}</div>
-                  <div className="text-sm text-gray-500">{stats.topServiceHours} h sledování</div>
+                  <div className="text-sm text-gray-500">{formatTime(stats.topServiceMinutes)} sledování</div>
                 </div>
               </div>
             </div>

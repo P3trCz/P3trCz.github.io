@@ -52,6 +52,12 @@ export function PlaylistsView() {
     setOpenMenuId(null);
   };
 
+  const [displayedCount, setDisplayedCount] = useState(25);
+
+  useEffect(() => {
+    setDisplayedCount(25);
+  }, [activePlaylistId]);
+
   // --- DETAIL SEZNAMU ---
   if (activePlaylistId) {
     const isWatchlist = activePlaylistId === '__watchlist__';
@@ -63,7 +69,13 @@ export function PlaylistsView() {
     }
 
     const title = isWatchlist ? 'Přehrát později' : playlist!.name;
-    const movies = getMovies(isWatchlist ? watchlist : playlist!.movieIds);
+    const allMovies = getMovies(isWatchlist ? watchlist : playlist!.movieIds);
+    const displayedMovies = allMovies.slice(0, displayedCount);
+    const hasMore = displayedCount < allMovies.length;
+
+    const handleLoadMore = () => {
+      setDisplayedCount(prev => Math.min(prev + 25, allMovies.length));
+    };
 
     return (
       <div className="p-8 pb-24">
@@ -81,7 +93,7 @@ export function PlaylistsView() {
           {/* Table Header */}
           <div className="grid grid-cols-[3fr_1fr_2fr_1fr_2fr] gap-4 items-center py-4 px-4 border-b border-[#27272a] text-xs font-semibold text-gray-400 tracking-wider">
             <div>TITULY</div>
-            <div>ROK</div>
+            <div>TYP</div>
             <div>ŽÁNR</div>
             <div>HODNOCENÍ</div>
             <div>DOSTUPNOST</div>
@@ -89,8 +101,8 @@ export function PlaylistsView() {
 
           {/* Table Body */}
           <div className="flex flex-col">
-            {movies.length > 0 ? (
-              movies.map(movie => (
+            {displayedMovies.length > 0 ? (
+              displayedMovies.map(movie => (
                 <MovieCard 
                   key={movie.id} 
                   movie={movie} 
@@ -104,6 +116,17 @@ export function PlaylistsView() {
             )}
           </div>
         </div>
+
+        {hasMore && (
+          <div className="mt-8 flex justify-center">
+            <button
+              onClick={handleLoadMore}
+              className="px-6 py-2.5 bg-[#1c1c24] hover:bg-[#dc2626] border border-[#27272a] hover:border-[#dc2626] rounded-xl text-white font-medium transition-colors"
+            >
+              Načíst dalších 25
+            </button>
+          </div>
+        )}
 
         {selectedMovie && (
           <MovieDetail 
