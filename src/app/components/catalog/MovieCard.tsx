@@ -1,5 +1,5 @@
 import React from 'react';
-import { Movie, ServiceType } from '../../data/catalog';
+import { Movie, ServiceType, serviceLogos, serviceColors } from '../../data/catalog';
 import { Star } from 'lucide-react';
 import { AddToPlaylistButton } from './AddToPlaylistButton';
 
@@ -7,16 +7,6 @@ type Props = {
   movie: Movie;
   onClick: (movie: Movie) => void;
   className?: string;
-};
-
-const serviceColors: Record<ServiceType, string> = {
-  'Netflix': 'bg-red-600',
-  'HBO Max': 'bg-purple-600',
-  'Disney Plus': 'bg-blue-600',
-  'Prime Video': 'bg-cyan-600',
-  'Apple TV': 'bg-gray-700',
-  'SkyShowtime': 'bg-indigo-600',
-  'Oneplay': 'bg-pink-600'
 };
 
 export function MovieCard({ movie, onClick, className = '' }: Props) {
@@ -68,7 +58,8 @@ export function MovieCard({ movie, onClick, className = '' }: Props) {
         {movie.streaming_services.map(service => (
           <span
             key={service}
-            className={`text-[10px] font-bold px-2 py-0.5 rounded ${serviceColors[service]} text-white`}
+            className="text-[10px] font-bold px-2 py-0.5 rounded text-white"
+            style={{ backgroundColor: serviceColors[service] }}
           >
             {service}
           </span>

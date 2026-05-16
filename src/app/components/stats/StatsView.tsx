@@ -1,17 +1,7 @@
 import React, { useState } from 'react';
 import { useAppStore } from '../../store/useAppStore';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
-import { catalog, ServiceType } from '../../data/catalog';
-
-const serviceColors: Record<string, string> = {
-  'Netflix': '#e50914',
-  'HBO Max': '#7c3aed',
-  'Disney Plus': '#2563eb',
-  'Prime Video': '#0891b2',
-  'Apple TV': '#374151',
-  'SkyShowtime': '#4f46e5',
-  'Oneplay': '#db2777'
-};
+import { catalog, ServiceType, serviceLogos, serviceColors } from '../../data/catalog';
 
 const timeRanges = ['Týden', 'Měsíc', '3 měsíce', '6 měsíců', 'Rok', 'Celá doba'];
 
@@ -31,14 +21,19 @@ export function StatsView() {
     const serviceTime: Record<string, number> = {};
     const genreCount: Record<string, number> = {};
     let totalMinutes = 0;
+    let totalFilms = 0;
 
     history.forEach(item => {
       const svc = item.service;
-      serviceTime[svc] = (serviceTime[svc] || 0) + item.durationMinutes;
-      totalMinutes += item.durationMinutes;
-
       const movie = catalog.find(m => m.id.toString() === item.movieId);
+
       if (movie) {
+        if (movie.type === 'Film') {
+          serviceTime[svc] = (serviceTime[svc] || 0) + item.durationMinutes;
+          totalMinutes += item.durationMinutes;
+          totalFilms++;
+        }
+
         movie.genres.forEach(g => {
           genreCount[g] = (genreCount[g] || 0) + 1;
         });
@@ -59,6 +54,7 @@ export function StatsView() {
       topGenre: topGenre ? topGenre[0] : 'N/A',
       topGenreCount: topGenre ? topGenre[1] : 0,
       totalMovies: history.length,
+      totalFilms,
       topService: topService ? topService[0] : 'N/A',
       topServiceMinutes: topService ? topService[1] : 0
     };
@@ -68,7 +64,7 @@ export function StatsView() {
 
   return (
     <div className="p-8">
-      <h1 className="text-3xl font-bold text-white mb-8">Vaše Statistiky Sledování</h1>
+      <h1 className="text-3xl font-bold text-white mb-8">Vaše statistiky sledování</h1>
 
       <div className="flex flex-wrap gap-2 mb-8 bg-[#111116] border border-[#27272a] rounded-xl p-1 w-fit">
         {timeRanges.map(r => (
@@ -101,7 +97,7 @@ export function StatsView() {
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 bg-[#111116] border border-[#27272a] rounded-xl p-6">
-            <h2 className="text-lg font-medium text-white mb-6">Podíl služeb na čase sledování za {range.toLowerCase()}</h2>
+            <h2 className="text-lg font-medium text-white mb-6">Podíl služeb na čase sledování filmů za {range.toLowerCase()}</h2>
 
             <div className="h-80 w-full relative">
               <ResponsiveContainer width="100%" height="100%">
@@ -132,7 +128,7 @@ export function StatsView() {
             <div className="flex flex-wrap justify-center gap-6 mt-4">
               {stats.pieData.map(entry => (
                 <div key={entry.name} className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full" style={{ backgroundColor: serviceColors[entry.name] }}></div>
+                  <div className="w-3 h-3 rounded-full" style={{ backgroundColor: serviceColors[entry.name as ServiceType] }}></div>
                   <span className="text-sm text-gray-400">{entry.name}</span>
                 </div>
               ))}
@@ -141,9 +137,11 @@ export function StatsView() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-6">
             <div className="bg-[#111116] border border-[#27272a] rounded-xl p-6">
-              <h3 className="text-sm font-medium text-gray-400 mb-2">Celkový čas sledování za {range.toLowerCase()}</h3>
+              <h3 className="text-sm font-medium text-gray-400 mb-2">Celkový čas sledování filmů za {range.toLowerCase()}</h3>
               <div className="text-4xl font-bold text-white mb-2">{formatTime(stats.totalMinutes)}</div>
-              <div className="text-sm text-gray-500">{stats.totalMovies} zhlédnutých filmů</div>
+              <div className="text-sm text-gray-500">
+                {stats.totalFilms} {stats.totalFilms === 1 ? 'zhlédnutý film' : stats.totalFilms >= 2 && stats.totalFilms <= 4 ? 'zhlédnuté filmy' : 'zhlédnutých filmů'}
+              </div>
             </div>
 
             <div className="bg-[#111116] border border-[#27272a] rounded-xl p-6">
@@ -153,21 +151,22 @@ export function StatsView() {
               <div className="w-full bg-[#27272a] rounded-full h-2">
                 <div className="bg-[#2563eb] h-2 rounded-full" style={{ width: `${stats.totalMovies > 0 ? Math.round((stats.topGenreCount / stats.totalMovies) * 100) : 0}%` }}></div>
               </div>
-              <div className="text-xs text-gray-500 mt-2">{stats.totalMovies > 0 ? Math.round((stats.topGenreCount / stats.totalMovies) * 100) : 0} % ze všech zhlédnutých filmů a seriálů</div>
+              <div className="text-sm text-gray-500 mt-3">{stats.totalMovies > 0 ? Math.round((stats.topGenreCount / stats.totalMovies) * 100) : 0} % ze všech zhlédnutých filmů a seriálů</div>
             </div>
 
             <div className="bg-[#111116] border border-[#27272a] rounded-xl p-6">
-              <h3 className="text-sm font-medium text-gray-400 mb-4">Nejpoužívanější služba</h3>
+              <h3 className="text-sm font-medium text-gray-400 mb-4">Nejpoužívanější služba (podle filmů)</h3>
               <div className="flex items-center gap-4">
-                <div
-                  className="w-12 h-12 rounded flex items-center justify-center text-white font-bold text-xl"
-                  style={{ backgroundColor: serviceColors[stats.topService] || '#6b7280' }}
-                >
-                  {stats.topService.charAt(0)}
+                <div className="w-12 h-12 rounded-lg bg-[#1c1c24] border border-[#27272a] p-2 flex items-center justify-center overflow-hidden">
+                  <img
+                    src={serviceLogos[stats.topService as ServiceType]}
+                    alt={stats.topService}
+                    className="max-w-full max-h-full object-contain"
+                  />
                 </div>
                 <div>
                   <div className="text-lg font-bold text-white">{stats.topService}</div>
-                  <div className="text-sm text-gray-500">{formatTime(stats.topServiceMinutes)} sledování</div>
+                  <div className="text-sm text-gray-500">{formatTime(stats.topServiceMinutes)} sledování filmů</div>
                 </div>
               </div>
             </div>

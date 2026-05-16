@@ -18,6 +18,26 @@ export type Movie = {
   backdrop_url: string;
 };
 
+export const serviceLogos: Record<ServiceType, string> = {
+  'Netflix': '/src/app/images/netflix_logo.svg',
+  'HBO Max': '/src/app/images/hbo_max_logo.png',
+  'Disney Plus': '/src/app/images/Disney_plus_logo.png',
+  'Prime Video': '/src/app/images/prime_video_logo.png',
+  'Apple TV': '/src/app/images/apple_tv_logo.png',
+  'SkyShowtime': '/src/app/images/skyshowtime_logo.png',
+  'Oneplay': '/src/app/images/oneplay_logo.png'
+};
+
+export const serviceColors: Record<ServiceType, string> = {
+  'Netflix': '#e50914',
+  'HBO Max': '#7c3aed',
+  'Disney Plus': '#0063e5',
+  'Prime Video': '#00a8e1',
+  'Apple TV': '#444444',
+  'SkyShowtime': '#4f46e5',
+  'Oneplay': '#F2B705'
+};
+
 const rawData = tmdbData as any[];
 const uniqueDataMap = new Map<string, Movie>();
 

@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
 import { useAppStore } from '../../store/useAppStore';
-import { ServiceType } from '../../data/catalog';
+import { ServiceType, serviceLogos, serviceColors } from '../../data/catalog';
 import { usersDb } from '../../data/usersDb';
 import { User, LogOut, Key, Shield, X } from 'lucide-react';
 
-const availableServices: { id: ServiceType; name: string; color: string }[] = [
-  { id: 'Netflix', name: 'Netflix', color: 'bg-red-600' },
-  { id: 'HBO Max', name: 'HBO Max', color: 'bg-purple-600' },
-  { id: 'Disney Plus', name: 'Disney+', color: 'bg-blue-600' },
-  { id: 'Prime Video', name: 'Prime Video', color: 'bg-cyan-600' },
-  { id: 'Apple TV', name: 'Apple TV+', color: 'bg-gray-700' },
-  { id: 'SkyShowtime', name: 'SkyShowtime', color: 'bg-indigo-600' },
-  { id: 'Oneplay', name: 'Oneplay', color: 'bg-pink-600' }
+const availableServices: { id: ServiceType; name: string }[] = [
+  { id: 'Netflix', name: 'Netflix' },
+  { id: 'HBO Max', name: 'HBO Max' },
+  { id: 'Disney Plus', name: 'Disney Plus' },
+  { id: 'Prime Video', name: 'Prime Video' },
+  { id: 'Apple TV', name: 'Apple TV' },
+  { id: 'SkyShowtime', name: 'SkyShowtime' },
+  { id: 'Oneplay', name: 'Oneplay' }
 ];
 
 export function SettingsView() {
@@ -119,15 +119,19 @@ export function SettingsView() {
                     }`}
                   >
                     {isSubscribed && (
-                      <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-[#dc2626] flex items-center justify-center border-2 border-[#111116]">
+                      <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-[#dc2626] flex items-center justify-center border-2 border-[#111116] z-10">
                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="text-white"><polyline points="20 6 9 17 4 12"></polyline></svg>
                       </div>
                     )}
-                    <div className={`w-8 h-8 rounded mb-3 flex items-center justify-center text-white font-bold text-xs ${service.color}`}>
-                      {service.name.charAt(0)}
+                    <div className="w-20 h-20 rounded-xl bg-[#0a0a0f] border border-[#27272a] p-3 flex items-center justify-center mb-4 overflow-hidden mx-auto">
+                      <img 
+                        src={serviceLogos[service.id]} 
+                        alt={service.name} 
+                        className="max-w-full max-h-full object-contain"
+                      />
                     </div>
-                    <div className="text-left font-medium text-white">{service.name}</div>
-                    <div className="text-left text-xs text-gray-500 mt-1">
+                    <div className="text-center font-medium text-white">{service.name}</div>
+                    <div className="text-center text-xs text-gray-500 mt-1">
                       {isSubscribed ? 'Aktivní' : 'Neaktivní'}
                     </div>
                   </button>

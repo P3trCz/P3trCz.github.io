@@ -139,85 +139,111 @@ export function PlaylistsView() {
     );
   }
 
-  // --- PŘEHLED SEZNAMŮ (KRABIČKY) ---
-  return (
-    <div className="p-8">
-      <h1 className="text-3xl font-bold text-white mb-8">Moje seznamy</h1>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {/* Watchlist box */}
-        <div 
-          onClick={() => setActivePlaylistId('__watchlist__')}
-          className="bg-[#111116] border border-[#27272a] rounded-xl p-6 hover:border-[#3f3f46] transition-colors cursor-pointer group flex flex-col"
-        >
-          <div className="flex justify-between items-start mb-6">
-            <h2 className="text-xl font-bold text-white group-hover:text-[#dc2626] transition-colors">Přehrát později</h2>
+    // --- PŘEHLED SEZNAMŮ (KRABIČKY) ---
+    const renderPreview = (movieIds: string[]) => {
+      const previewMovies = getMovies(movieIds.slice(0, 4));
+      
+      if (previewMovies.length === 0) {
+        return (
+          <div className="flex-1 flex items-center justify-center border border-dashed border-[#27272a] rounded-lg py-8 mb-4 bg-[#0a0a0f]">
+            <span className="text-sm text-gray-500 font-medium">Seznam je prázdný</span>
           </div>
-          
-          <div className="flex-1 flex items-center justify-center border border-dashed border-[#27272a] rounded-lg py-8 mb-4">
-            <span className="text-sm text-gray-500 font-medium">
-              {watchlist.length === 0 ? 'Prázdný' : `${watchlist.length} filmů k přehrání`}
-            </span>
-          </div>
+        );
+      }
 
-          <div className="text-sm text-gray-500 mt-auto">
-            {watchlist.length} filmů
+      return (
+        <div className="flex-1 flex items-center justify-center mb-4 py-4 relative min-h-[140px]">
+          <div className="relative h-28 w-full flex justify-center items-center">
+            {previewMovies.map((m, idx) => (
+              <img
+                key={`${m.id}-${idx}`}
+                src={m.poster_url}
+                alt={m.title}
+                className="absolute w-20 h-28 object-cover rounded shadow-2xl border border-[#27272a] transition-all duration-300 group-hover:scale-110"
+                style={{
+                  left: `calc(50% - 40px + ${(idx - (previewMovies.length - 1) / 2) * 20}px)`,
+                  zIndex: idx,
+                  transform: `rotate(${(idx - (previewMovies.length - 1) / 2) * 8}deg)`,
+                  opacity: 1 - (previewMovies.length - 1 - idx) * 0.1
+                }}
+              />
+            ))}
           </div>
         </div>
+      );
+    };
 
-        {/* Custom playlists */}
-        {playlists.map(pl => (
+    return (
+      <div className="p-8">
+        <h1 className="text-3xl font-bold text-white mb-8">Moje seznamy</h1>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {/* Watchlist box */}
           <div 
-            key={pl.id}
-            onClick={() => setActivePlaylistId(pl.id)}
-            className="bg-[#111116] border border-[#27272a] rounded-xl p-6 hover:border-[#3f3f46] transition-colors cursor-pointer group flex flex-col relative"
+            onClick={() => setActivePlaylistId('__watchlist__')}
+            className="bg-[#111116] border border-[#27272a] rounded-xl p-6 hover:border-[#3f3f46] transition-all cursor-pointer group flex flex-col shadow-sm hover:shadow-xl"
           >
-            <div className="flex justify-between items-start mb-6">
-              <h2 className="text-xl font-bold text-white group-hover:text-[#dc2626] transition-colors truncate pr-8">{pl.name}</h2>
-              
-              <button 
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setOpenMenuId(openMenuId === pl.id ? null : pl.id);
-                }}
-                className="absolute top-6 right-6 text-gray-400 hover:text-white"
-              >
-                <MoreHorizontal size={20} />
-              </button>
-
-              {openMenuId === pl.id && (
-                <div 
-                  ref={menuRef}
-                  className="absolute top-12 right-6 w-48 bg-[#1c1c24] border border-[#27272a] rounded-xl shadow-2xl overflow-hidden z-20"
-                >
-                  <button
-                    onClick={(e) => { e.stopPropagation(); handleRename(pl.id, pl.name); }}
-                    className="w-full flex items-center gap-3 px-4 py-3 text-sm text-gray-300 hover:text-white hover:bg-[#27272a] transition-colors"
-                  >
-                    <Edit2 size={16} /> Přejmenovat
-                  </button>
-                  <button
-                    onClick={(e) => { e.stopPropagation(); handleDelete(pl.id); }}
-                    className="w-full flex items-center gap-3 px-4 py-3 text-sm text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-colors"
-                  >
-                    <Trash2 size={16} /> Odstranit
-                  </button>
-                </div>
-              )}
+            <div className="flex justify-between items-start mb-4">
+              <h2 className="text-xl font-bold text-white group-hover:text-[#dc2626] transition-colors">Přehrát později</h2>
             </div>
             
-            <div className="flex-1 flex items-center justify-center border border-dashed border-[#27272a] rounded-lg py-8 mb-4">
-              <span className="text-sm text-gray-500 font-medium">
-                {pl.movieIds.length === 0 ? 'Prázdný' : `${pl.movieIds.length} položek`}
-              </span>
-            </div>
+            {renderPreview(watchlist)}
 
-            <div className="text-sm text-gray-500 mt-auto">
-              {pl.movieIds.length} filmů
+            <div className="text-sm text-gray-500 mt-auto pt-2 border-t border-[#27272a]/50">
+              {watchlist.length} {watchlist.length === 1 ? 'položka' : watchlist.length >= 2 && watchlist.length <= 4 ? 'položky' : 'položek'}
             </div>
           </div>
-        ))}
+
+          {/* Custom playlists */}
+          {playlists.map(pl => (
+            <div 
+              key={pl.id}
+              onClick={() => setActivePlaylistId(pl.id)}
+              className="bg-[#111116] border border-[#27272a] rounded-xl p-6 hover:border-[#3f3f46] transition-all cursor-pointer group flex flex-col relative shadow-sm hover:shadow-xl"
+            >
+              <div className="flex justify-between items-start mb-4">
+                <h2 className="text-xl font-bold text-white group-hover:text-[#dc2626] transition-colors truncate pr-8">{pl.name}</h2>
+                
+                <button 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setOpenMenuId(openMenuId === pl.id ? null : pl.id);
+                  }}
+                  className="absolute top-6 right-6 text-gray-400 hover:text-white z-10"
+                >
+                  <MoreHorizontal size={20} />
+                </button>
+
+                {openMenuId === pl.id && (
+                  <div 
+                    ref={menuRef}
+                    className="absolute top-12 right-6 w-48 bg-[#1c1c24] border border-[#27272a] rounded-xl shadow-2xl overflow-hidden z-20"
+                  >
+                    <button
+                      onClick={(e) => { e.stopPropagation(); handleRename(pl.id, pl.name); }}
+                      className="w-full flex items-center gap-3 px-4 py-3 text-sm text-gray-300 hover:text-white hover:bg-[#27272a] transition-colors"
+                    >
+                      <Edit2 size={16} /> Přejmenovat
+                    </button>
+                    <button
+                      onClick={(e) => { e.stopPropagation(); handleDelete(pl.id); }}
+                      className="w-full flex items-center gap-3 px-4 py-3 text-sm text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-colors"
+                    >
+                      <Trash2 size={16} /> Odstranit
+                    </button>
+                  </div>
+                )}
+              </div>
+              
+              {renderPreview(pl.movieIds)}
+
+              <div className="text-sm text-gray-500 mt-auto pt-2 border-t border-[#27272a]/50">
+                {pl.movieIds.length} {pl.movieIds.length === 1 ? 'položka' : pl.movieIds.length >= 2 && pl.movieIds.length <= 4 ? 'položky' : 'položek'}
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
-    </div>
-  );
-}
+    );
+  }
+

@@ -1,21 +1,11 @@
 import React from 'react';
-import { Movie, ServiceType } from '../../data/catalog';
+import { Movie, ServiceType, serviceLogos, serviceColors } from '../../data/catalog';
 import { X, Star, Play } from 'lucide-react';
 import { useAppStore } from '../../store/useAppStore';
 
 type Props = {
   movie: Movie;
   onClose: () => void;
-};
-
-const serviceColors: Record<ServiceType, string> = {
-  'Netflix': 'bg-[#e50914] hover:bg-[#f40612]',
-  'HBO Max': 'bg-[#7c3aed] hover:bg-[#6d28d9]',
-  'Disney Plus': 'bg-[#2563eb] hover:bg-[#1d4ed8]',
-  'Prime Video': 'bg-[#0891b2] hover:bg-[#0e7490]',
-  'Apple TV': 'bg-[#374151] hover:bg-[#1f2937]',
-  'SkyShowtime': 'bg-[#4f46e5] hover:bg-[#4338ca]',
-  'Oneplay': 'bg-[#db2777] hover:bg-[#be185d]'
 };
 
 export function MovieDetail({ movie, onClose }: Props) {
@@ -103,17 +93,19 @@ export function MovieDetail({ movie, onClose }: Props) {
             <div className="flex flex-wrap gap-3">
               {movie.streaming_services.map(service => {
                 const isOwned = userSubscriptions.includes(service);
+                const color = serviceColors[service];
                 return (
                   <button
                     key={service}
                     onClick={() => isOwned ? handlePlay(service) : null}
-                    className={`flex items-center justify-center gap-2 flex-1 min-w-[160px] px-4 py-3 rounded-xl font-medium transition-colors ${isOwned
-                      ? `${serviceColors[service]} text-white`
+                    style={isOwned ? { backgroundColor: color } : {}}
+                    className={`flex items-center justify-center gap-3 flex-1 min-w-[200px] px-5 py-4 rounded-xl font-semibold transition-all group ${isOwned
+                      ? 'text-white hover:scale-[1.02] active:scale-100 shadow-lg'
                       : 'bg-[#1c1c24] text-gray-500 cursor-not-allowed border border-[#27272a]'
                       }`}
                   >
-                    <Play size={18} className={isOwned ? "fill-white shrink-0" : "fill-gray-500 shrink-0"} />
-                    Přehrát na {service}
+                    <Play size={18} className={isOwned ? "fill-white shrink-0 group-hover:translate-x-0.5 transition-transform" : "fill-gray-500 shrink-0"} />
+                    <span className="text-sm">Přehrát na {service}</span>
                   </button>
                 );
               })}
