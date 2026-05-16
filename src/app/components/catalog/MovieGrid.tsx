@@ -148,9 +148,9 @@ export function MovieGrid() {
         )}
       </div>
 
-      <div className="bg-[#0a0a0f] border border-[#27272a] rounded-xl overflow-hidden shadow-sm">
+      <div className="bg-[#0a0a0f] border border-[#27272a] rounded-xl shadow-sm">
         {/* Table Header */}
-        <div className="grid grid-cols-[3fr_2fr] lg:grid-cols-[3fr_1fr_2fr_1fr_2fr] gap-4 items-center py-4 px-4 border-b border-[#27272a] text-xs font-semibold text-gray-400 tracking-wider">
+        <div className="grid grid-cols-[3fr_2fr] lg:grid-cols-[3fr_1fr_2fr_1fr_2fr] gap-4 items-center py-4 px-4 border-b border-[#27272a] text-xs font-semibold text-gray-400 tracking-wider bg-[#0a0a0f] rounded-t-xl">
           <div>TITULY</div>
           <div className="hidden lg:block">TYP</div>
           <div className="hidden lg:block">ŽÁNR</div>
@@ -161,11 +161,12 @@ export function MovieGrid() {
         {/* Table Body */}
         <div className="flex flex-col">
           {displayedCatalog.length > 0 ? (
-            displayedCatalog.map(movie => (
+            displayedCatalog.map((movie, index) => (
               <MovieCard 
                 key={`${movie.type}-${movie.id}`} 
                 movie={movie} 
                 onClick={(m) => setSelectedMovie(m)} 
+                className={index === displayedCatalog.length - 1 ? "rounded-b-xl border-b-0" : ""}
               />
             ))
           ) : (

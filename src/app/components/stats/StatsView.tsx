@@ -7,7 +7,7 @@ const serviceColors: Record<string, string> = {
   'Netflix': '#e50914',
   'HBO Max': '#7c3aed',
   'Disney Plus': '#2563eb',
-  'Amazon Prime Video': '#0891b2',
+  'Prime Video': '#0891b2',
   'Apple TV': '#374151',
   'SkyShowtime': '#4f46e5',
   'Oneplay': '#db2777'
@@ -27,21 +27,14 @@ export function StatsView() {
     return `${h} h ${m} min`;
   };
 
-  const normalizeService = (service: string) => {
-    if (service === 'Disney+') return 'Disney Plus';
-    if (service === 'Prime') return 'Amazon Prime Video';
-    if (service === 'Apple TV+') return 'Apple TV';
-    return service;
-  };
-
   const processData = () => {
     const serviceTime: Record<string, number> = {};
     const genreCount: Record<string, number> = {};
     let totalMinutes = 0;
 
     history.forEach(item => {
-      const normalizedSvc = normalizeService(item.service);
-      serviceTime[normalizedSvc] = (serviceTime[normalizedSvc] || 0) + item.durationMinutes;
+      const svc = item.service;
+      serviceTime[svc] = (serviceTime[svc] || 0) + item.durationMinutes;
       totalMinutes += item.durationMinutes;
 
       const movie = catalog.find(m => m.id.toString() === item.movieId);
@@ -83,8 +76,8 @@ export function StatsView() {
             key={r}
             onClick={() => setRange(r)}
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${range === r
-                ? 'bg-[#2563eb] text-white'
-                : 'text-gray-400 hover:text-white'
+              ? 'bg-[#2563eb] text-white'
+              : 'text-gray-400 hover:text-white'
               }`}
           >
             {r}
@@ -160,7 +153,7 @@ export function StatsView() {
               <div className="w-full bg-[#27272a] rounded-full h-2">
                 <div className="bg-[#2563eb] h-2 rounded-full" style={{ width: `${stats.totalMovies > 0 ? Math.round((stats.topGenreCount / stats.totalMovies) * 100) : 0}%` }}></div>
               </div>
-              <div className="text-xs text-gray-500 mt-2">{stats.totalMovies > 0 ? Math.round((stats.topGenreCount / stats.totalMovies) * 100) : 0} % ze všech zhlédnutých filmů</div>
+              <div className="text-xs text-gray-500 mt-2">{stats.totalMovies > 0 ? Math.round((stats.topGenreCount / stats.totalMovies) * 100) : 0} % ze všech zhlédnutých filmů a seriálů</div>
             </div>
 
             <div className="bg-[#111116] border border-[#27272a] rounded-xl p-6">

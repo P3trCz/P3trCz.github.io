@@ -9,13 +9,13 @@ type Props = {
 };
 
 const serviceColors: Record<ServiceType, string> = {
-  'Netflix': 'bg-red-600 hover:bg-red-700',
-  'HBO Max': 'bg-purple-600 hover:bg-purple-700',
-  'Disney Plus': 'bg-blue-600 hover:bg-blue-700',
-  'Amazon Prime Video': 'bg-cyan-600 hover:bg-cyan-700',
-  'Apple TV': 'bg-gray-700 hover:bg-gray-800',
-  'SkyShowtime': 'bg-indigo-600 hover:bg-indigo-700',
-  'Oneplay': 'bg-pink-600 hover:bg-pink-700'
+  'Netflix': 'bg-[#e50914] hover:bg-[#f40612]',
+  'HBO Max': 'bg-[#7c3aed] hover:bg-[#6d28d9]',
+  'Disney Plus': 'bg-[#2563eb] hover:bg-[#1d4ed8]',
+  'Prime Video': 'bg-[#0891b2] hover:bg-[#0e7490]',
+  'Apple TV': 'bg-[#374151] hover:bg-[#1f2937]',
+  'SkyShowtime': 'bg-[#4f46e5] hover:bg-[#4338ca]',
+  'Oneplay': 'bg-[#db2777] hover:bg-[#be185d]'
 };
 
 export function MovieDetail({ movie, onClose }: Props) {

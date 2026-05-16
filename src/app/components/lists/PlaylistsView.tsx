@@ -89,24 +89,25 @@ export function PlaylistsView() {
 
         <h1 className="text-3xl font-bold text-white mb-8">{title}</h1>
 
-        <div className="bg-[#0a0a0f] border border-[#27272a] rounded-xl overflow-hidden shadow-sm">
+        <div className="bg-[#0a0a0f] border border-[#27272a] rounded-xl shadow-sm">
           {/* Table Header */}
-          <div className="grid grid-cols-[3fr_1fr_2fr_1fr_2fr] gap-4 items-center py-4 px-4 border-b border-[#27272a] text-xs font-semibold text-gray-400 tracking-wider">
+          <div className="grid grid-cols-[3fr_2fr] lg:grid-cols-[3fr_1fr_2fr_1fr_2fr] gap-4 items-center py-4 px-4 border-b border-[#27272a] text-xs font-semibold text-gray-400 tracking-wider bg-[#0a0a0f] rounded-t-xl">
             <div>TITULY</div>
-            <div>TYP</div>
-            <div>ŽÁNR</div>
-            <div>HODNOCENÍ</div>
+            <div className="hidden lg:block">TYP</div>
+            <div className="hidden lg:block">ŽÁNR</div>
+            <div className="hidden lg:block">HODNOCENÍ</div>
             <div>DOSTUPNOST</div>
           </div>
 
           {/* Table Body */}
           <div className="flex flex-col">
             {displayedMovies.length > 0 ? (
-              displayedMovies.map(movie => (
+              displayedMovies.map((movie, index) => (
                 <MovieCard 
                   key={`${movie.type}-${movie.id}`} 
                   movie={movie} 
                   onClick={(m) => setSelectedMovie(m)} 
+                  className={index === displayedMovies.length - 1 ? "rounded-b-xl border-b-0" : ""}
                 />
               ))
             ) : (

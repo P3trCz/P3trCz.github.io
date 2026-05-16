@@ -8,7 +8,7 @@ const availableServices: { id: ServiceType; name: string; color: string }[] = [
   { id: 'Netflix', name: 'Netflix', color: 'bg-red-600' },
   { id: 'HBO Max', name: 'HBO Max', color: 'bg-purple-600' },
   { id: 'Disney Plus', name: 'Disney+', color: 'bg-blue-600' },
-  { id: 'Amazon Prime Video', name: 'Prime Video', color: 'bg-cyan-600' },
+  { id: 'Prime Video', name: 'Prime Video', color: 'bg-cyan-600' },
   { id: 'Apple TV', name: 'Apple TV+', color: 'bg-gray-700' },
   { id: 'SkyShowtime', name: 'SkyShowtime', color: 'bg-indigo-600' },
   { id: 'Oneplay', name: 'Oneplay', color: 'bg-pink-600' }
@@ -66,7 +66,7 @@ export function SettingsView() {
 
   return (
     <>
-      <div className="p-8 max-w-4xl">
+      <div className="p-8">
         <h1 className="text-3xl font-bold text-white mb-8">Nastavení</h1>
 
         <div className="space-y-8">
