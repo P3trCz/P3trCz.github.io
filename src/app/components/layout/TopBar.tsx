@@ -15,7 +15,7 @@ export function TopBar({ onToggleSidebar }: Props) {
   const logout = useAppStore(state => state.logout);
   const searchQuery = useAppStore(state => state.searchQuery);
   const setSearchQuery = useAppStore(state => state.setSearchQuery);
-  
+
   const navigate = useNavigate();
   const location = useLocation();
 
