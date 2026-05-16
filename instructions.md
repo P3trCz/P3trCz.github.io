@@ -68,3 +68,9 @@ Aplikace je nyní hotová, prozkoumána a postavená plně v Reactu. Designové 
 ## 7. Fáze: Oprava statistik a layoutu
 1. **Prázdný stav statistik** — Když uživatel nemá žádnou historii sledování (`history.length === 0`), místo prázdného grafu se nyní zobrazí karta s ikonou grafu, nadpisem „Zatím žádná data" a vysvětlujícím textem, že graf nemůže být vygenerován, protože uživatel zatím neviděl žádný film. Zároveň jsem opravil hardcoded procenta a text „+ 12 % oproti minulému období" na dynamicky počítané hodnoty z reálných dat.
 2. **Zmenšení padding-top** — TopBar měl výšku `h-20` (80px), což způsobovalo velkou mezeru mezi search barem a obsahem stránky. Změněno na `h-14` (56px) pro kompaktnější layout bez zbytečného scrollování.
+
+## 8. Fáze: Responsivita a vyhledávání
+1. **Skrytí/zobrazení sidebaru** — Sidebar se automaticky skrývá na obrazovkách menších než 1024px. Na mobilu se zobrazuje hamburger menu tlačítko v TopBaru, které sidebar vysune přes obsah s overlay pozadím. Sidebar se zavírá křížkem, kliknutím mimo nebo výběrem položky.
+2. **Responsivní katalog** — Na malých obrazovkách se v tabulce katalogu skryjí sloupce Typ, Žánr a Hodnocení, zůstane jen obrázek s názvem a dostupnost.
+3. **Responsivní statistiky** — Graf a informační karty se na mobilech zobrazují pod sebou. Filtr časového období se zalamuje místo vodorovného scrollování.
+4. **Funkční vyhledávání** — Search bar v TopBaru je nyní funkční. Od 3 znaků se začne filtrovat katalog podle názvu filmu/seriálu. Pokud uživatel hledá z jiné stránky, automaticky se přesměruje do katalogu. Zobrazí se informační lišta s počtem výsledků a tlačítkem pro zrušení hledání. Pokud nic neodpovídá, zobrazí se zpráva „nenalezeno". Vyhledávání funguje společně s ostatními filtry (typ, služby, žánry).

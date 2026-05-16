@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Search, User, LogOut, Menu } from 'lucide-react';
+import { Search, User, LogOut, Menu, X } from 'lucide-react';
 import { useAppStore } from '../../store/useAppStore';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 type Props = {
   onToggleSidebar: () => void;
@@ -12,6 +13,11 @@ export function TopBar({ onToggleSidebar }: Props) {
 
   const currentUser = useAppStore(state => state.currentUser);
   const logout = useAppStore(state => state.logout);
+  const searchQuery = useAppStore(state => state.searchQuery);
+  const setSearchQuery = useAppStore(state => state.setSearchQuery);
+  
+  const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -25,6 +31,19 @@ export function TopBar({ onToggleSidebar }: Props) {
     }
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [isProfileOpen]);
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchQuery(value);
+    // Pokud uživatel začne psát a není na hlavní stránce, přesměrujeme ho do katalogu
+    if (value.length >= 3 && location.pathname !== '/') {
+      navigate('/');
+    }
+  };
+
+  const clearSearch = () => {
+    setSearchQuery('');
+  };
 
   return (
     <header className="h-14 flex items-center justify-between px-8 bg-[#0a0a0f] shrink-0 border-b border-[#27272a] lg:border-none">
@@ -44,9 +63,19 @@ export function TopBar({ onToggleSidebar }: Props) {
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
           <input
             type="text"
+            value={searchQuery}
+            onChange={handleSearchChange}
             placeholder="Hledat..."
-            className="w-full bg-[#111116] border border-[#27272a] text-white rounded-full py-2 pl-12 pr-4 focus:outline-none focus:border-[#dc2626] transition-colors"
+            className="w-full bg-[#111116] border border-[#27272a] text-white rounded-full py-2 pl-12 pr-10 focus:outline-none focus:border-[#dc2626] transition-colors"
           />
+          {searchQuery.length > 0 && (
+            <button
+              onClick={clearSearch}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white transition-colors"
+            >
+              <X size={16} />
+            </button>
+          )}
         </div>
       </div>
 

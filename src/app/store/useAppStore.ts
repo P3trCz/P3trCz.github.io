@@ -25,6 +25,10 @@ type AppState = {
   subscriptions: Record<string, ServiceType[]>;
   watchHistory: Record<string, WatchHistoryItem[]>;
   
+  // Globální vyhledávání
+  searchQuery: string;
+  setSearchQuery: (query: string) => void;
+  
   // Auth akce
   login: (user: User) => void;
   logout: () => void;
@@ -54,10 +58,13 @@ export const useAppStore = create<AppState>()(
       playlists: {},
       subscriptions: {},
       watchHistory: {},
+      searchQuery: '',
+      
+      setSearchQuery: (query) => set({ searchQuery: query }),
       
       login: (user) => set({ currentUser: user }),
       
-      logout: () => set({ currentUser: null }),
+      logout: () => set({ currentUser: null, searchQuery: '' }),
       
       createPlaylist: (name) => {
         const userId = get().currentUser?.id;
@@ -209,6 +216,10 @@ export const useAppStore = create<AppState>()(
     }),
     {
       name: 'streamhub-storage', // klíč v localStorage
+      partialize: (state) => {
+        const { searchQuery, setSearchQuery, ...rest } = state;
+        return rest;
+      },
     }
   )
 );

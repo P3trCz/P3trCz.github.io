@@ -2,7 +2,7 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { catalog, Movie, ServiceType } from '../../data/catalog';
 import { MovieCard } from './MovieCard';
 import { MovieDetail } from './MovieDetail';
-import { Filter, RefreshCw } from 'lucide-react';
+import { Filter, RefreshCw, Search, X } from 'lucide-react';
 import { Dropdown } from './Dropdown';
 import { useAppStore } from '../../store/useAppStore';
 
@@ -16,11 +16,15 @@ export function MovieGrid() {
   const currentUser = useAppStore(state => state.currentUser);
   const subscriptionsState = useAppStore(state => state.subscriptions);
   const userSubscriptions = currentUser ? (subscriptionsState[currentUser.id] || []) : [];
+  const searchQuery = useAppStore(state => state.searchQuery);
+  const setSearchQuery = useAppStore(state => state.setSearchQuery);
 
-  // Reset pagination when filters change
+  const isSearchActive = searchQuery.length >= 3;
+
+  // Reset pagination when filters or search change
   useEffect(() => {
     setDisplayedCount(25);
-  }, [selectedServices, selectedGenres, selectedTypes, userSubscriptions]);
+  }, [selectedServices, selectedGenres, selectedTypes, userSubscriptions, searchQuery]);
 
   // Filmy dostupné na uživatelových službách
   const availableMovies = useMemo(() => {
@@ -42,26 +46,33 @@ export function MovieGrid() {
       const hasSubscribedService = movie.streaming_services.some(service => userSubscriptions.includes(service));
       if (!hasSubscribedService) return false;
 
-      // 2. Filtr podle služeb (OR logiky)
+      // 2. Fulltextové vyhledávání v názvu (od 3 znaků)
+      if (isSearchActive) {
+        const query = searchQuery.toLowerCase();
+        const matchesSearch = movie.title.toLowerCase().includes(query);
+        if (!matchesSearch) return false;
+      }
+
+      // 3. Filtr podle služeb (OR logiky)
       if (selectedServices.length > 0) {
         const matchesService = movie.streaming_services.some(service => selectedServices.includes(service));
         if (!matchesService) return false;
       }
 
-      // 3. Filtr podle žánrů (AND logika)
+      // 4. Filtr podle žánrů (AND logika)
       if (selectedGenres.length > 0) {
         const matchesGenres = selectedGenres.every(genre => movie.genres.includes(genre));
         if (!matchesGenres) return false;
       }
 
-      // 4. Filtr podle typu (Film / Seriál)
+      // 5. Filtr podle typu (Film / Seriál)
       if (selectedTypes.length > 0) {
         if (!selectedTypes.includes(movie.type)) return false;
       }
 
       return true;
     });
-  }, [selectedServices, selectedGenres, selectedTypes, userSubscriptions]);
+  }, [selectedServices, selectedGenres, selectedTypes, userSubscriptions, searchQuery, isSearchActive]);
 
   const displayedCatalog = filteredCatalog.slice(0, displayedCount);
   const hasMore = displayedCount < filteredCatalog.length;
@@ -80,6 +91,26 @@ export function MovieGrid() {
 
   return (
     <div className="p-8 pb-24">
+      {/* Search results header */}
+      {isSearchActive && (
+        <div className="flex items-center justify-between mb-6 bg-[#111116] border border-[#27272a] rounded-xl px-5 py-3">
+          <div className="flex items-center gap-3 text-gray-300">
+            <Search size={18} className="text-gray-500" />
+            <span>
+              Výsledky pro „<span className="text-white font-medium">{searchQuery}</span>" 
+              <span className="text-gray-500 ml-2">({filteredCatalog.length} {filteredCatalog.length === 1 ? 'výsledek' : filteredCatalog.length >= 2 && filteredCatalog.length <= 4 ? 'výsledky' : 'výsledků'})</span>
+            </span>
+          </div>
+          <button
+            onClick={() => setSearchQuery('')}
+            className="flex items-center gap-2 text-sm text-red-400 hover:text-red-300 font-medium transition-colors"
+          >
+            <X size={14} />
+            Zrušit hledání
+          </button>
+        </div>
+      )}
+
       <div className="flex items-center justify-between mb-6">
         <div className="flex flex-wrap items-center gap-4 text-sm text-gray-400">
           <div className="flex items-center gap-2">
@@ -139,7 +170,10 @@ export function MovieGrid() {
             ))
           ) : (
             <div className="py-12 text-center text-gray-500">
-              Nenalezeny žádné filmy odpovídající zadaným kritériím nebo nemáte aktivní předplatné.
+              {isSearchActive 
+                ? `Žádný film ani seriál odpovídající „${searchQuery}" nebyl nalezen.`
+                : 'Nenalezeny žádné filmy odpovídající zadaným kritériím nebo nemáte aktivní předplatné.'
+              }
             </div>
           )}
         </div>
