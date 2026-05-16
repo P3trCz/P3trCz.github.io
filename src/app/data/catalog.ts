@@ -38,13 +38,12 @@ export const serviceColors: Record<ServiceType, string> = {
   'Oneplay': '#F2B705'
 };
 
-
 const rawData = tmdbData as any[];
 const uniqueDataMap = new Map<string, Movie>();
 
 rawData.forEach(m => {
   // Normalizace názvu Prime Video
-  const services = (m.streaming_services as string[]).map(s =>
+  const services = (m.streaming_services as string[]).map(s => 
     s === 'Amazon Prime Video' ? 'Prime Video' : s
   ) as ServiceType[];
 
