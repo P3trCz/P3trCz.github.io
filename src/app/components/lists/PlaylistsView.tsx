@@ -14,6 +14,9 @@ export function PlaylistsView() {
 
   const playlists = currentUser ? (playlistsState[currentUser.id] || []) : [];
   const watchlist = currentUser ? (watchlistsState[currentUser.id] || []) : [];
+  const watchHistory = currentUser ? (useAppStore.getState().watchHistory[currentUser.id] || []) : [];
+  // Unikátní movieIds pro historii, seřazené od nejnovějších
+  const historyMovieIds = Array.from(new Set([...watchHistory].reverse().map(h => h.movieId)));
 
   const [activePlaylistId, setActivePlaylistId] = useState<string | null>(null);
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
@@ -61,15 +64,16 @@ export function PlaylistsView() {
   // --- DETAIL SEZNAMU ---
   if (activePlaylistId) {
     const isWatchlist = activePlaylistId === '__watchlist__';
-    const playlist = isWatchlist ? null : playlists.find(p => p.id === activePlaylistId);
+    const isHistory = activePlaylistId === '__history__';
+    const playlist = (isWatchlist || isHistory) ? null : playlists.find(p => p.id === activePlaylistId);
     
-    if (!isWatchlist && !playlist) {
+    if (!isWatchlist && !isHistory && !playlist) {
       setActivePlaylistId(null);
       return null;
     }
 
-    const title = isWatchlist ? 'Přehrát později' : playlist!.name;
-    const allMovies = getMovies(isWatchlist ? watchlist : playlist!.movieIds);
+    const title = isWatchlist ? 'Přehrát později' : isHistory ? 'Historie sledování' : playlist!.name;
+    const allMovies = getMovies(isWatchlist ? watchlist : isHistory ? historyMovieIds : playlist!.movieIds);
     const displayedMovies = allMovies.slice(0, displayedCount);
     const hasMore = displayedCount < allMovies.length;
 
@@ -162,9 +166,9 @@ export function PlaylistsView() {
                 className="absolute w-20 h-28 object-cover rounded shadow-2xl border border-[#27272a] transition-all duration-300 group-hover:scale-110"
                 style={{
                   left: `calc(50% - 40px + ${(idx - (previewMovies.length - 1) / 2) * 20}px)`,
-                  zIndex: idx,
+                  zIndex: previewMovies.length - idx,
                   transform: `rotate(${(idx - (previewMovies.length - 1) / 2) * 8}deg)`,
-                  opacity: 1 - (previewMovies.length - 1 - idx) * 0.1
+                  opacity: 1
                 }}
               />
             ))}
@@ -178,6 +182,22 @@ export function PlaylistsView() {
         <h1 className="text-3xl font-bold text-white mb-8">Moje seznamy</h1>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {/* History box */}
+          <div 
+            onClick={() => setActivePlaylistId('__history__')}
+            className="bg-[#111116] border border-[#27272a] rounded-xl p-6 hover:border-[#3f3f46] transition-all cursor-pointer group flex flex-col shadow-sm hover:shadow-xl"
+          >
+            <div className="flex justify-between items-start mb-4">
+              <h2 className="text-xl font-bold text-white group-hover:text-[#dc2626] transition-colors">Historie sledování</h2>
+            </div>
+            
+            {renderPreview(historyMovieIds)}
+
+            <div className="text-sm text-gray-500 mt-auto pt-2 border-t border-[#27272a]/50">
+              {historyMovieIds.length} {historyMovieIds.length === 1 ? 'položka' : historyMovieIds.length >= 2 && historyMovieIds.length <= 4 ? 'položky' : 'položek'}
+            </div>
+          </div>
+
           {/* Watchlist box */}
           <div 
             onClick={() => setActivePlaylistId('__watchlist__')}
