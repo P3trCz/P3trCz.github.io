@@ -10,14 +10,14 @@ export function AddToPlaylistButton({ movieId }: Props) {
   const [isOpen, setIsOpen] = useState(false);
   const [newPlaylistName, setNewPlaylistName] = useState('');
   const popoverRef = useRef<HTMLDivElement>(null);
-  
+
   const currentUser = useAppStore(state => state.currentUser);
   const playlistsState = useAppStore(state => state.playlists);
   const watchlistsState = useAppStore(state => state.watchlists);
-  
+
   const playlists = currentUser ? (playlistsState[currentUser.id] || []) : [];
   const watchlist = currentUser ? (watchlistsState[currentUser.id] || []) : [];
-  
+
   const createPlaylist = useAppStore(state => state.createPlaylist);
   const addToPlaylist = useAppStore(state => state.addToPlaylist);
   const removeFromPlaylist = useAppStore(state => state.removeFromPlaylist);
@@ -74,16 +74,16 @@ export function AddToPlaylistButton({ movieId }: Props) {
               <X size={16} />
             </button>
           </div>
-          
+
           <div className="p-2 max-h-48 overflow-y-auto">
             <button
               onClick={() => toggleWatchlist(movieId)}
               className="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-[#1c1c24] text-sm text-left transition-colors"
             >
-              <div className={`w-4 h-4 rounded border flex items-center justify-center ${isInWatchlist ? 'bg-[#dc2626] border-[#dc2626]' : 'border-gray-500'}`}>
+              <div className={`w-4 h-4 shrink-0 rounded border flex items-center justify-center ${isInWatchlist ? 'bg-[#dc2626] border-[#dc2626]' : 'border-gray-500'}`}>
                 {isInWatchlist && <Check size={12} className="text-white" />}
               </div>
-              <span>Přehrát později (Watchlist)</span>
+              <span>Přehrát později</span>
             </button>
 
             {playlists.map(pl => {
@@ -94,7 +94,7 @@ export function AddToPlaylistButton({ movieId }: Props) {
                   onClick={() => handleTogglePlaylist(pl.id, hasMovie)}
                   className="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-[#1c1c24] text-sm text-left transition-colors"
                 >
-                  <div className={`w-4 h-4 rounded border flex items-center justify-center ${hasMovie ? 'bg-[#dc2626] border-[#dc2626]' : 'border-gray-500'}`}>
+                  <div className={`w-4 h-4 shrink-0 rounded border flex items-center justify-center ${hasMovie ? 'bg-[#dc2626] border-[#dc2626]' : 'border-gray-500'}`}>
                     {hasMovie && <Check size={12} className="text-white" />}
                   </div>
                   <span className="truncate">{pl.name}</span>

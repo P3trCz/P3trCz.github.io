@@ -33,7 +33,7 @@ export function StatsView() {
     if (service === 'Apple TV+') return 'Apple TV';
     return service;
   };
-  
+
   const processData = () => {
     const serviceTime: Record<string, number> = {};
     const genreCount: Record<string, number> = {};
@@ -77,16 +77,15 @@ export function StatsView() {
     <div className="p-8">
       <h1 className="text-3xl font-bold text-white mb-8">Vaše Statistiky Sledování</h1>
 
-      <div className="flex gap-2 mb-8 bg-[#111116] border border-[#27272a] rounded-xl p-1 inline-flex">
+      <div className="flex flex-wrap gap-2 mb-8 bg-[#111116] border border-[#27272a] rounded-xl p-1 w-fit">
         {timeRanges.map(r => (
           <button
             key={r}
             onClick={() => setRange(r)}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-              range === r 
-                ? 'bg-[#2563eb] text-white' 
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${range === r
+                ? 'bg-[#2563eb] text-white'
                 : 'text-gray-400 hover:text-white'
-            }`}
+              }`}
           >
             {r}
           </button>
@@ -107,10 +106,10 @@ export function StatsView() {
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-3 gap-6">
-          <div className="col-span-2 bg-[#111116] border border-[#27272a] rounded-xl p-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2 bg-[#111116] border border-[#27272a] rounded-xl p-6">
             <h2 className="text-lg font-medium text-white mb-6">Podíl služeb na čase sledování za {range.toLowerCase()}</h2>
-            
+
             <div className="h-80 w-full relative">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
@@ -128,7 +127,7 @@ export function StatsView() {
                       <Cell key={`cell-${index}`} fill={serviceColors[entry.name] || '#8884d8'} />
                     ))}
                   </Pie>
-                  <Tooltip 
+                  <Tooltip
                     contentStyle={{ backgroundColor: '#1c1c24', borderColor: '#27272a', color: 'white', borderRadius: '8px' }}
                     itemStyle={{ color: 'white' }}
                     formatter={(value: any) => [formatTime(value), 'Čas']}
@@ -147,7 +146,7 @@ export function StatsView() {
             </div>
           </div>
 
-          <div className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-6">
             <div className="bg-[#111116] border border-[#27272a] rounded-xl p-6">
               <h3 className="text-sm font-medium text-gray-400 mb-2">Celkový čas sledování za {range.toLowerCase()}</h3>
               <div className="text-4xl font-bold text-white mb-2">{formatTime(stats.totalMinutes)}</div>
@@ -157,17 +156,17 @@ export function StatsView() {
             <div className="bg-[#111116] border border-[#27272a] rounded-xl p-6">
               <h3 className="text-sm font-medium text-gray-400 mb-2">Nejsledovanější žánr</h3>
               <div className="text-2xl font-bold text-white mb-4">{stats.topGenre}</div>
-              
+
               <div className="w-full bg-[#27272a] rounded-full h-2">
                 <div className="bg-[#2563eb] h-2 rounded-full" style={{ width: `${stats.totalMovies > 0 ? Math.round((stats.topGenreCount / stats.totalMovies) * 100) : 0}%` }}></div>
               </div>
-              <div className="text-xs text-gray-500 mt-2">{stats.totalMovies > 0 ? Math.round((stats.topGenreCount / stats.totalMovies) * 100) : 0} % ze všech filmů</div>
+              <div className="text-xs text-gray-500 mt-2">{stats.totalMovies > 0 ? Math.round((stats.topGenreCount / stats.totalMovies) * 100) : 0} % ze všech zhlédnutých filmů</div>
             </div>
 
             <div className="bg-[#111116] border border-[#27272a] rounded-xl p-6">
               <h3 className="text-sm font-medium text-gray-400 mb-4">Nejpoužívanější služba</h3>
               <div className="flex items-center gap-4">
-                <div 
+                <div
                   className="w-12 h-12 rounded flex items-center justify-center text-white font-bold text-xl"
                   style={{ backgroundColor: serviceColors[stats.topService] || '#6b7280' }}
                 >

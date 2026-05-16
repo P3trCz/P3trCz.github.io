@@ -8,7 +8,12 @@ export function cn(...inputs: (string | undefined | null | false)[]) {
   return twMerge(clsx(inputs));
 }
 
-export function Sidebar() {
+type SidebarProps = {
+  isOpen: boolean;
+  onClose: () => void;
+};
+
+export function Sidebar({ isOpen, onClose }: SidebarProps) {
   const location = useLocation();
   const [showAbout, setShowAbout] = useState(false);
 
@@ -21,12 +26,24 @@ export function Sidebar() {
 
   return (
     <>
-      <aside className="w-56 flex flex-col bg-[#0a0a0f] border-r border-[#27272a] h-screen text-gray-300">
-        <div className="p-6 flex items-center gap-3 text-white">
-          <div className="border-2 border-red-600 rounded-lg p-1.5 flex items-center justify-center">
-            <Play size={20} className="fill-red-600 text-red-600" />
+      <aside className={cn(
+        "fixed inset-y-0 left-0 z-40 w-64 flex flex-col bg-[#0a0a0f] border-r border-[#27272a] h-screen text-gray-300 transition-transform duration-300 ease-in-out lg:static lg:translate-x-0",
+        isOpen ? "translate-x-0" : "-translate-x-full"
+      )}>
+        <div className="p-6 flex items-center justify-between text-white">
+          <div className="flex items-center gap-3">
+            <div className="border-2 border-red-600 rounded-lg p-1.5 flex items-center justify-center">
+              <Play size={20} className="fill-red-600 text-red-600" />
+            </div>
+            <span className="text-xl font-bold tracking-tight">StreamHub</span>
           </div>
-          <span className="text-xl font-bold tracking-tight">StreamHub</span>
+          
+          <button 
+            onClick={onClose}
+            className="lg:hidden text-gray-400 hover:text-white"
+          >
+            <X size={20} />
+          </button>
         </div>
 
         <nav className="flex-1 px-4 py-4 space-y-2">
@@ -36,6 +53,9 @@ export function Sidebar() {
               <NavLink
                 key={item.to}
                 to={item.to}
+                onClick={() => {
+                  if (window.innerWidth < 1024) onClose();
+                }}
                 className={
                   cn(
                     'flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 font-medium',

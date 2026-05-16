@@ -36,30 +36,30 @@ export function MovieCard({ movie, onClick }: Props) {
 
   return (
     <div 
-      className="grid grid-cols-[3fr_1fr_2fr_1fr_2fr] gap-4 items-center py-3 border-b border-[#27272a] hover:bg-[#111116] transition-colors cursor-pointer px-4"
+      className="grid grid-cols-[3fr_2fr] lg:grid-cols-[3fr_1fr_2fr_1fr_2fr] gap-4 items-center py-3 border-b border-[#27272a] hover:bg-[#111116] transition-colors cursor-pointer px-4"
       onClick={() => onClick(movie)}
     >
       <div className="flex items-center gap-3 min-w-0">
         <img 
           src={movie.poster_url} 
           alt={movie.title} 
-          className="w-12 h-16 object-cover rounded shadow shrink-0"
+          className="w-10 h-14 lg:w-12 lg:h-16 object-cover rounded shadow shrink-0"
         />
-        <div className="font-medium text-white truncate">{movie.title}</div>
+        <div className="font-medium text-white truncate text-sm lg:text-base">{movie.title}</div>
         <div className="shrink-0" onClick={e => e.stopPropagation()}>
           <AddToPlaylistButton movieId={movie.id.toString()} />
         </div>
       </div>
       
-      <div className="text-gray-400 text-sm">
+      <div className="hidden lg:block text-gray-400 text-sm">
         {movie.type}
       </div>
       
-      <div className="text-gray-400 text-sm truncate pr-4">
+      <div className="hidden lg:block text-gray-400 text-sm truncate pr-4">
         {movie.genres.join(', ')}
       </div>
       
-      <div>
+      <div className="hidden lg:block">
         {renderStars(movie.rating)}
       </div>
       

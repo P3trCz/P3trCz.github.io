@@ -119,11 +119,11 @@ export function MovieGrid() {
 
       <div className="bg-[#0a0a0f] border border-[#27272a] rounded-xl overflow-hidden shadow-sm">
         {/* Table Header */}
-        <div className="grid grid-cols-[3fr_1fr_2fr_1fr_2fr] gap-4 items-center py-4 px-4 border-b border-[#27272a] text-xs font-semibold text-gray-400 tracking-wider">
+        <div className="grid grid-cols-[3fr_2fr] lg:grid-cols-[3fr_1fr_2fr_1fr_2fr] gap-4 items-center py-4 px-4 border-b border-[#27272a] text-xs font-semibold text-gray-400 tracking-wider">
           <div>TITULY</div>
-          <div>TYP</div>
-          <div>ŽÁNR</div>
-          <div>HODNOCENÍ</div>
+          <div className="hidden lg:block">TYP</div>
+          <div className="hidden lg:block">ŽÁNR</div>
+          <div className="hidden lg:block">HODNOCENÍ</div>
           <div>DOSTUPNOST</div>
         </div>
 
