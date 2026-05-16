@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { Home, ListVideo, BarChart2, Settings, Play, Info, X } from 'lucide-react';
+import { Home, ListVideo, BarChart2, Settings, Play, Info, X, Users } from 'lucide-react';
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
@@ -21,6 +21,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
     { to: '/', icon: Home, label: 'Katalog' },
     { to: '/lists', icon: ListVideo, label: 'Seznamy' },
     { to: '/stats', icon: BarChart2, label: 'Statistiky' },
+    { to: '/friends', icon: Users, label: 'Přátelé' },
     { to: '/settings', icon: Settings, label: 'Nastavení' },
   ];
 

@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useAppStore } from '../../store/useAppStore';
 import { catalog, Movie } from '../../data/catalog';
-import { MoreHorizontal, ArrowLeft, Edit2, Trash2 } from 'lucide-react';
+import { usersDb } from '../../data/usersDb';
+import { MoreHorizontal, ArrowLeft, Edit2, Trash2, Share2, X } from 'lucide-react';
 import { MovieCard } from '../catalog/MovieCard';
 import { MovieDetail } from '../catalog/MovieDetail';
 
@@ -11,6 +12,8 @@ export function PlaylistsView() {
   const watchlistsState = useAppStore(state => state.watchlists);
   const renamePlaylist = useAppStore(state => state.renamePlaylist);
   const deletePlaylist = useAppStore(state => state.deletePlaylist);
+  const sharePlaylistAction = useAppStore(state => state.sharePlaylist);
+  const friends = useAppStore(state => state.friends);
 
   const playlists = currentUser ? (playlistsState[currentUser.id] || []) : [];
   const watchlist = currentUser ? (watchlistsState[currentUser.id] || []) : [];
@@ -21,7 +24,14 @@ export function PlaylistsView() {
   const [activePlaylistId, setActivePlaylistId] = useState<string | null>(null);
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
-  
+
+  const myFriendsIds = currentUser ? (friends[currentUser.id] || []) : [];
+  const myFriends = myFriendsIds.map(id => usersDb.getUsers().find(u => u.id === id)).filter(Boolean);
+
+  const [shareModalPlaylistId, setShareModalPlaylistId] = useState<string | null>(null);
+  const [shareMessage, setShareMessage] = useState('');
+  const [shareSelectedFriendId, setShareSelectedFriendId] = useState('');
+
   const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -61,12 +71,11 @@ export function PlaylistsView() {
     setDisplayedCount(25);
   }, [activePlaylistId]);
 
-  // --- DETAIL SEZNAMU ---
-  if (activePlaylistId) {
+  const renderDetail = () => {
     const isWatchlist = activePlaylistId === '__watchlist__';
     const isHistory = activePlaylistId === '__history__';
     const playlist = (isWatchlist || isHistory) ? null : playlists.find(p => p.id === activePlaylistId);
-    
+
     if (!isWatchlist && !isHistory && !playlist) {
       setActivePlaylistId(null);
       return null;
@@ -83,7 +92,7 @@ export function PlaylistsView() {
 
     return (
       <div className="p-8 pb-24">
-        <button 
+        <button
           onClick={() => setActivePlaylistId(null)}
           className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors mb-6"
         >
@@ -91,10 +100,24 @@ export function PlaylistsView() {
           <span>Zpět na seznamy</span>
         </button>
 
-        <h1 className="text-3xl font-bold text-white mb-8">{title}</h1>
+        <div className="flex justify-between items-start gap-4 flex-wrap mb-8">
+          <div>
+            <h1 className="text-3xl font-bold text-white mb-1">{title}</h1>
+            {!isWatchlist && !isHistory && playlist?.fromUsername && (
+              <p className="text-xs text-[#dc2626] font-medium uppercase tracking-widest">Sdíleno od uživatele: {playlist.fromUsername}</p>
+            )}
+          </div>
+          {!isWatchlist && !isHistory && playlist && (
+            <button
+              onClick={() => setShareModalPlaylistId(playlist.id)}
+              className="flex items-center gap-2 bg-[#27272a] hover:bg-[#3f3f46] text-white px-4 py-2 rounded-lg font-medium transition-colors"
+            >
+              <Share2 size={18} /> Sdílet
+            </button>
+          )}
+        </div>
 
         <div className="bg-[#0a0a0f] border border-[#27272a] rounded-xl shadow-sm">
-          {/* Table Header */}
           <div className="grid grid-cols-[3fr_2fr] lg:grid-cols-[3fr_1fr_2fr_1fr_2fr] gap-4 items-center py-4 px-4 border-b border-[#27272a] text-xs font-semibold text-gray-400 tracking-wider bg-[#0a0a0f] rounded-t-xl">
             <div>TITULY</div>
             <div className="hidden lg:block">TYP</div>
@@ -103,14 +126,13 @@ export function PlaylistsView() {
             <div>DOSTUPNOST</div>
           </div>
 
-          {/* Table Body */}
           <div className="flex flex-col">
             {displayedMovies.length > 0 ? (
               displayedMovies.map((movie, index) => (
-                <MovieCard 
-                  key={`${movie.type}-${movie.id}`} 
-                  movie={movie} 
-                  onClick={(m) => setSelectedMovie(m)} 
+                <MovieCard
+                  key={`${movie.type}-${movie.id}`}
+                  movie={movie}
+                  onClick={(m) => setSelectedMovie(m)}
                   className={index === displayedMovies.length - 1 ? "rounded-b-xl border-b-0" : ""}
                 />
               ))
@@ -134,63 +156,62 @@ export function PlaylistsView() {
         )}
 
         {selectedMovie && (
-          <MovieDetail 
-            movie={selectedMovie} 
-            onClose={() => setSelectedMovie(null)} 
+          <MovieDetail
+            movie={selectedMovie}
+            onClose={() => setSelectedMovie(null)}
           />
         )}
       </div>
     );
-  }
+  };
 
-    // --- PŘEHLED SEZNAMŮ (KRABIČKY) ---
-    const renderPreview = (movieIds: string[]) => {
-      const previewMovies = getMovies(movieIds.slice(0, 4));
-      
-      if (previewMovies.length === 0) {
-        return (
-          <div className="flex-1 flex items-center justify-center border border-dashed border-[#27272a] rounded-lg py-8 mb-4 bg-[#0a0a0f]">
-            <span className="text-sm text-gray-500 font-medium">Seznam je prázdný</span>
-          </div>
-        );
-      }
+  const renderPreview = (movieIds: string[]) => {
+    const previewMovies = getMovies(movieIds.slice(0, 4));
 
+    if (previewMovies.length === 0) {
       return (
-        <div className="flex-1 flex items-center justify-center mb-4 py-4 relative min-h-[140px]">
-          <div className="relative h-28 w-full flex justify-center items-center">
-            {previewMovies.map((m, idx) => (
-              <img
-                key={`${m.id}-${idx}`}
-                src={m.poster_url}
-                alt={m.title}
-                className="absolute w-20 h-28 object-cover rounded shadow-2xl border border-[#27272a] transition-all duration-300 group-hover:scale-110"
-                style={{
-                  left: `calc(50% - 40px + ${(idx - (previewMovies.length - 1) / 2) * 20}px)`,
-                  zIndex: previewMovies.length - idx,
-                  transform: `rotate(${(idx - (previewMovies.length - 1) / 2) * 8}deg)`,
-                  opacity: 1
-                }}
-              />
-            ))}
-          </div>
+        <div className="flex-1 flex items-center justify-center border border-dashed border-[#27272a] rounded-lg py-8 mb-4 bg-[#0a0a0f]">
+          <span className="text-sm text-gray-500 font-medium">Seznam je prázdný</span>
         </div>
       );
-    };
+    }
 
+    return (
+      <div className="flex-1 flex items-center justify-center mb-4 py-4 relative min-h-[140px]">
+        <div className="relative h-28 w-full flex justify-center items-center">
+          {previewMovies.map((m, idx) => (
+            <img
+              key={`${m.id}-${idx}`}
+              src={m.poster_url}
+              alt={m.title}
+              className="absolute w-20 h-28 object-cover rounded shadow-2xl border border-[#27272a] transition-all duration-300 group-hover:scale-110"
+              style={{
+                left: `calc(50% - 40px + ${(idx - (previewMovies.length - 1) / 2) * 20}px)`,
+                zIndex: previewMovies.length - idx,
+                transform: `rotate(${(idx - (previewMovies.length - 1) / 2) * 8}deg)`,
+                opacity: 1
+              }}
+            />
+          ))}
+        </div>
+      </div>
+    );
+  };
+
+  const renderOverview = () => {
     return (
       <div className="p-8">
         <h1 className="text-3xl font-bold text-white mb-8">Moje seznamy</h1>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {/* History box */}
-          <div 
+          <div
             onClick={() => setActivePlaylistId('__history__')}
             className="bg-[#111116] border border-[#27272a] rounded-xl p-6 hover:border-[#3f3f46] transition-all cursor-pointer group flex flex-col shadow-sm hover:shadow-xl"
           >
             <div className="flex justify-between items-start mb-4">
               <h2 className="text-xl font-bold text-white group-hover:text-[#dc2626] transition-colors">Historie sledování</h2>
             </div>
-            
+
             {renderPreview(historyMovieIds)}
 
             <div className="text-sm text-gray-500 mt-auto pt-2 border-t border-[#27272a]/50">
@@ -198,15 +219,14 @@ export function PlaylistsView() {
             </div>
           </div>
 
-          {/* Watchlist box */}
-          <div 
+          <div
             onClick={() => setActivePlaylistId('__watchlist__')}
             className="bg-[#111116] border border-[#27272a] rounded-xl p-6 hover:border-[#3f3f46] transition-all cursor-pointer group flex flex-col shadow-sm hover:shadow-xl"
           >
             <div className="flex justify-between items-start mb-4">
               <h2 className="text-xl font-bold text-white group-hover:text-[#dc2626] transition-colors">Přehrát později</h2>
             </div>
-            
+
             {renderPreview(watchlist)}
 
             <div className="text-sm text-gray-500 mt-auto pt-2 border-t border-[#27272a]/50">
@@ -214,17 +234,16 @@ export function PlaylistsView() {
             </div>
           </div>
 
-          {/* Custom playlists */}
           {playlists.map(pl => (
-            <div 
+            <div
               key={pl.id}
               onClick={() => setActivePlaylistId(pl.id)}
               className="bg-[#111116] border border-[#27272a] rounded-xl p-6 hover:border-[#3f3f46] transition-all cursor-pointer group flex flex-col relative shadow-sm hover:shadow-xl"
             >
               <div className="flex justify-between items-start mb-4">
                 <h2 className="text-xl font-bold text-white group-hover:text-[#dc2626] transition-colors truncate pr-8">{pl.name}</h2>
-                
-                <button 
+
+                <button
                   onClick={(e) => {
                     e.stopPropagation();
                     setOpenMenuId(openMenuId === pl.id ? null : pl.id);
@@ -235,7 +254,7 @@ export function PlaylistsView() {
                 </button>
 
                 {openMenuId === pl.id && (
-                  <div 
+                  <div
                     ref={menuRef}
                     className="absolute top-12 right-6 w-48 bg-[#1c1c24] border border-[#27272a] rounded-xl shadow-2xl overflow-hidden z-20"
                   >
@@ -246,6 +265,12 @@ export function PlaylistsView() {
                       <Edit2 size={16} /> Přejmenovat
                     </button>
                     <button
+                      onClick={(e) => { e.stopPropagation(); setShareModalPlaylistId(pl.id); setOpenMenuId(null); }}
+                      className="w-full flex items-center gap-3 px-4 py-3 text-sm text-gray-300 hover:text-white hover:bg-[#27272a] transition-colors"
+                    >
+                      <Share2 size={16} /> Sdílet
+                    </button>
+                    <button
                       onClick={(e) => { e.stopPropagation(); handleDelete(pl.id); }}
                       className="w-full flex items-center gap-3 px-4 py-3 text-sm text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-colors"
                     >
@@ -254,16 +279,84 @@ export function PlaylistsView() {
                   </div>
                 )}
               </div>
-              
+
               {renderPreview(pl.movieIds)}
 
-              <div className="text-sm text-gray-500 mt-auto pt-2 border-t border-[#27272a]/50">
-                {pl.movieIds.length} {pl.movieIds.length === 1 ? 'položka' : pl.movieIds.length >= 2 && pl.movieIds.length <= 4 ? 'položky' : 'položek'}
+              <div className="text-sm text-gray-500 mt-auto pt-2 border-t border-[#27272a]/50 flex justify-between items-center">
+                <span>{pl.movieIds.length} {pl.movieIds.length === 1 ? 'položka' : pl.movieIds.length >= 2 && pl.movieIds.length <= 4 ? 'položky' : 'položek'}</span>
+                {pl.fromUsername && (
+                  <span className="text-[10px] text-[#dc2626] font-bold uppercase tracking-wider">OD: {pl.fromUsername}</span>
+                )}
               </div>
             </div>
           ))}
         </div>
       </div>
     );
-  }
+  };
+
+  return (
+    <>
+      {activePlaylistId ? renderDetail() : renderOverview()}
+
+      {/* SDÍLET MODAL */}
+      {shareModalPlaylistId && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm" onClick={() => setShareModalPlaylistId(null)}>
+          <div className="w-full max-w-md bg-[#111116] rounded-2xl border border-[#27272a] shadow-2xl p-6" onClick={e => e.stopPropagation()}>
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-xl font-bold text-white">Sdílet seznam</h2>
+              <button onClick={() => setShareModalPlaylistId(null)} className="text-gray-400 hover:text-white"><X size={20} /></button>
+            </div>
+
+            {myFriends.length === 0 ? (
+              <div className="text-center text-gray-500 py-6">Nemáte přidané žádné přátele.</div>
+            ) : (
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-400 mb-2">Vyberte přítele</label>
+                  <select
+                    value={shareSelectedFriendId}
+                    onChange={e => setShareSelectedFriendId(e.target.value)}
+                    className="w-full bg-[#1c1c24] border border-[#27272a] text-white rounded-xl px-4 py-3 focus:outline-none focus:border-[#dc2626]"
+                  >
+                    <option value="" disabled>Zvolte přítele...</option>
+                    {myFriends.map(f => f && (
+                      <option key={f.id} value={f.id}>{f.username}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-400 mb-2">Zpráva (nepovinné)</label>
+                  <textarea
+                    value={shareMessage}
+                    onChange={e => setShareMessage(e.target.value)}
+                    placeholder="Podívej se na tohle. Je to opravdu hustý!"
+                    className="w-full bg-[#1c1c24] border border-[#27272a] text-white rounded-xl px-4 py-3 focus:outline-none focus:border-[#dc2626] h-24 resize-none"
+                  ></textarea>
+                </div>
+
+                <button
+                  onClick={() => {
+                    const pl = playlists.find(p => p.id === shareModalPlaylistId);
+                    if (pl && shareSelectedFriendId) {
+                      sharePlaylistAction(shareSelectedFriendId, pl, shareMessage);
+                      setShareModalPlaylistId(null);
+                      setShareMessage('');
+                      setShareSelectedFriendId('');
+                    }
+                  }}
+                  disabled={!shareSelectedFriendId}
+                  className="w-full flex items-center justify-center gap-2 bg-[#dc2626] hover:bg-[#b91c1c] disabled:opacity-50 disabled:cursor-not-allowed text-white py-3 rounded-xl font-semibold transition-colors mt-2"
+                >
+                  <Share2 size={18} /> Sdílet s přítelem
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
 

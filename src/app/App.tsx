@@ -7,6 +7,7 @@ import { MovieGrid } from './components/catalog/MovieGrid';
 import { PlaylistsView } from './components/lists/PlaylistsView';
 import { StatsView } from './components/stats/StatsView';
 import { SettingsView } from './components/settings/SettingsView';
+import { FriendsView } from './components/friends/FriendsView';
 
 export default function App() {
   const currentUser = useAppStore(state => state.currentUser);
@@ -22,6 +23,7 @@ export default function App() {
           <Route index element={<MovieGrid />} />
           <Route path="lists" element={<PlaylistsView />} />
           <Route path="stats" element={<StatsView />} />
+          <Route path="friends" element={<FriendsView />} />
           <Route path="settings" element={<SettingsView />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>

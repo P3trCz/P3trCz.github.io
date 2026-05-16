@@ -7,6 +7,7 @@ export type Playlist = {
   id: string;
   name: string;
   movieIds: string[];
+  fromUsername?: string; // Informace o tom, od koho seznam je
 };
 
 export type WatchHistoryItem = {
@@ -14,6 +15,35 @@ export type WatchHistoryItem = {
   watchedAt: number; // timestamp
   service: ServiceType;
   durationMinutes: number;
+};
+
+export type NotificationType = 
+  | 'FRIEND_REQUEST' 
+  | 'FRIEND_REQUEST_REJECTED' 
+  | 'SHARED_PLAYLIST' 
+  | 'RECOMMENDED_MOVIE';
+
+export type Notification = {
+  id: string;
+  type: NotificationType;
+  fromUserId: string;
+  fromUsername: string;
+  timestamp: number;
+  message?: string;
+  playlist?: Playlist;
+  movieId?: string;
+};
+
+export type ChatMessage = {
+  id: string;
+  fromUserId: string;
+  fromUsername: string;
+  toUserId: string;
+  timestamp: number;
+  type: 'SHARED_PLAYLIST' | 'RECOMMENDED_MOVIE';
+  message?: string;
+  playlist?: Playlist;
+  movieId?: string;
 };
 
 type AppState = {
@@ -24,6 +54,9 @@ type AppState = {
   playlists: Record<string, Playlist[]>;
   subscriptions: Record<string, ServiceType[]>;
   watchHistory: Record<string, WatchHistoryItem[]>;
+  friends: Record<string, string[]>; // Pole ID přátel
+  notifications: Record<string, Notification[]>; // Notifikace pro uživatele
+  messageHistory: Record<string, ChatMessage[]>; // Historie zpráv (pro oba uživatele)
   
   // Globální vyhledávání
   searchQuery: string;
@@ -48,6 +81,17 @@ type AppState = {
   
   // History akce
   addToHistory: (movieId: string, service: ServiceType, durationMinutes: number) => void;
+
+  // Přátelé a Sdílení akce
+  sendFriendRequest: (toUser: User) => void;
+  acceptFriendRequest: (notificationId: string) => void;
+  rejectFriendRequest: (notificationId: string) => void;
+  removeFriend: (friendId: string) => void;
+  sharePlaylist: (friendId: string, playlist: Playlist, message?: string) => void;
+  recommendMovie: (friendId: string, movieId: string, message?: string) => void;
+  importPlaylist: (playlist: Playlist, fromUsername: string) => boolean; // Vrací true při úspěchu
+  dismissNotification: (notificationId: string) => void;
+  saveSharedPlaylist: (notificationId: string) => void;
 };
 
 export const useAppStore = create<AppState>()(
@@ -58,6 +102,9 @@ export const useAppStore = create<AppState>()(
       playlists: {},
       subscriptions: {},
       watchHistory: {},
+      friends: {},
+      notifications: {},
+      messageHistory: {},
       searchQuery: '',
       
       setSearchQuery: (query) => set({ searchQuery: query }),
@@ -209,6 +256,296 @@ export const useAppStore = create<AppState>()(
                 ...currentHistory,
                 { movieId, watchedAt: Date.now(), service, durationMinutes }
               ]
+            }
+          };
+        });
+      },
+
+      // PŘÁTELÉ A SDÍLENÍ
+      sendFriendRequest: (toUser) => {
+        const currentUser = get().currentUser;
+        if (!currentUser) return;
+        
+        set(state => {
+          const toUserNotifs = state.notifications[toUser.id] || [];
+          // Zjistíme, jestli už od nás nemá žádost
+          if (toUserNotifs.some(n => n.type === 'FRIEND_REQUEST' && n.fromUserId === currentUser.id)) return state;
+
+          const newNotif: Notification = {
+            id: Math.random().toString(36).substr(2, 9),
+            type: 'FRIEND_REQUEST',
+            fromUserId: currentUser.id,
+            fromUsername: currentUser.username,
+            timestamp: Date.now()
+          };
+          
+          return {
+            notifications: {
+              ...state.notifications,
+              [toUser.id]: [newNotif, ...toUserNotifs]
+            }
+          };
+        });
+      },
+
+      acceptFriendRequest: (notificationId) => {
+        const currentUser = get().currentUser;
+        if (!currentUser) return;
+
+        set(state => {
+          const currentNotifs = state.notifications[currentUser.id] || [];
+          const notif = currentNotifs.find(n => n.id === notificationId);
+          if (!notif || notif.type !== 'FRIEND_REQUEST') return state;
+
+          const friendId = notif.fromUserId;
+          const currentUserFriends = state.friends[currentUser.id] || [];
+          const friendFriends = state.friends[friendId] || [];
+
+          return {
+            notifications: {
+              ...state.notifications,
+              [currentUser.id]: currentNotifs.filter(n => n.id !== notificationId)
+            },
+            friends: {
+              ...state.friends,
+              [currentUser.id]: [...new Set([...currentUserFriends, friendId])],
+              [friendId]: [...new Set([...friendFriends, currentUser.id])]
+            }
+          };
+        });
+      },
+
+      rejectFriendRequest: (notificationId) => {
+        const currentUser = get().currentUser;
+        if (!currentUser) return;
+
+        set(state => {
+          const currentNotifs = state.notifications[currentUser.id] || [];
+          const notif = currentNotifs.find(n => n.id === notificationId);
+          if (!notif || notif.type !== 'FRIEND_REQUEST') return state;
+
+          const friendId = notif.fromUserId;
+          const friendNotifs = state.notifications[friendId] || [];
+          
+          const rejectNotif: Notification = {
+            id: Math.random().toString(36).substr(2, 9),
+            type: 'FRIEND_REQUEST_REJECTED',
+            fromUserId: currentUser.id,
+            fromUsername: currentUser.username,
+            timestamp: Date.now()
+          };
+
+          return {
+            notifications: {
+              ...state.notifications,
+              [currentUser.id]: currentNotifs.filter(n => n.id !== notificationId),
+              [friendId]: [rejectNotif, ...friendNotifs]
+            }
+          };
+        });
+      },
+
+      removeFriend: (friendId) => {
+        const currentUser = get().currentUser;
+        if (!currentUser) return;
+
+        set(state => {
+          const currentUserFriends = state.friends[currentUser.id] || [];
+          const friendFriends = state.friends[friendId] || [];
+
+          return {
+            friends: {
+              ...state.friends,
+              [currentUser.id]: currentUserFriends.filter(id => id !== friendId),
+              [friendId]: friendFriends.filter(id => id !== currentUser.id)
+            }
+          };
+        });
+      },
+
+      sharePlaylist: (friendId, playlist, message) => {
+        const currentUser = get().currentUser;
+        if (!currentUser) return;
+
+        set(state => {
+          const friendNotifs = state.notifications[friendId] || [];
+          const newNotif: Notification = {
+            id: Math.random().toString(36).substr(2, 9),
+            type: 'SHARED_PLAYLIST',
+            fromUserId: currentUser.id,
+            fromUsername: currentUser.username,
+            timestamp: Date.now(),
+            message,
+            playlist
+          };
+
+          const newMessage: ChatMessage = {
+            id: newNotif.id,
+            fromUserId: currentUser.id,
+            fromUsername: currentUser.username,
+            toUserId: friendId,
+            timestamp: newNotif.timestamp,
+            type: 'SHARED_PLAYLIST',
+            message,
+            playlist
+          };
+
+          const currentUserHistory = state.messageHistory[currentUser.id] || [];
+          const friendHistory = state.messageHistory[friendId] || [];
+
+          return {
+            notifications: {
+              ...state.notifications,
+              [friendId]: [newNotif, ...friendNotifs]
+            },
+            messageHistory: {
+              ...state.messageHistory,
+              [currentUser.id]: [newMessage, ...currentUserHistory],
+              [friendId]: [newMessage, ...friendHistory]
+            }
+          };
+        });
+      },
+
+      importPlaylist: (playlist, fromUsername) => {
+        const currentUser = get().currentUser;
+        if (!currentUser) return false;
+
+        const userPlaylists = get().playlists[currentUser.id] || [];
+        
+        // ZPŘÍSNĚNÁ KONTROLA:
+        // 1. Mám už seznam se stejným obsahem (ID filmů)?
+        const sortedNewIds = JSON.stringify([...playlist.movieIds].sort());
+        const hasIdenticalContent = userPlaylists.some(p => 
+          JSON.stringify([...p.movieIds].sort()) === sortedNewIds
+        );
+
+        // 2. Mám už seznam se stejným názvem od stejného autora?
+        const hasSameNameAndAuthor = userPlaylists.some(p => 
+          p.name === playlist.name && p.fromUsername === fromUsername
+        );
+        
+        if (hasIdenticalContent || hasSameNameAndAuthor) return false;
+
+        set(state => {
+          const newUserPlaylists = state.playlists[currentUser.id] || [];
+          const newPlaylist: Playlist = {
+            ...playlist,
+            id: Math.random().toString(36).substr(2, 9),
+            fromUsername // Uložíme autora
+          };
+          return {
+            playlists: {
+              ...state.playlists,
+              [currentUser.id]: [...newUserPlaylists, newPlaylist]
+            }
+          };
+        });
+        return true;
+      },
+
+      recommendMovie: (friendId, movieId, message) => {
+        const currentUser = get().currentUser;
+        if (!currentUser) return;
+
+        set(state => {
+          const friendNotifs = state.notifications[friendId] || [];
+          const newNotif: Notification = {
+            id: Math.random().toString(36).substr(2, 9),
+            type: 'RECOMMENDED_MOVIE',
+            fromUserId: currentUser.id,
+            fromUsername: currentUser.username,
+            timestamp: Date.now(),
+            message,
+            movieId
+          };
+
+          const newMessage: ChatMessage = {
+            id: newNotif.id,
+            fromUserId: currentUser.id,
+            fromUsername: currentUser.username,
+            toUserId: friendId,
+            timestamp: newNotif.timestamp,
+            type: 'RECOMMENDED_MOVIE',
+            message,
+            movieId
+          };
+
+          const currentUserHistory = state.messageHistory[currentUser.id] || [];
+          const friendHistory = state.messageHistory[friendId] || [];
+
+          return {
+            notifications: {
+              ...state.notifications,
+              [friendId]: [newNotif, ...friendNotifs]
+            },
+            messageHistory: {
+              ...state.messageHistory,
+              [currentUser.id]: [newMessage, ...currentUserHistory],
+              [friendId]: [newMessage, ...friendHistory]
+            }
+          };
+        });
+      },
+
+      dismissNotification: (notificationId) => {
+        const currentUser = get().currentUser;
+        if (!currentUser) return;
+
+        set(state => {
+          const currentNotifs = state.notifications[currentUser.id] || [];
+          return {
+            notifications: {
+              ...state.notifications,
+              [currentUser.id]: currentNotifs.filter(n => n.id !== notificationId)
+            }
+          };
+        });
+      },
+
+      saveSharedPlaylist: (notificationId) => {
+        const currentUser = get().currentUser;
+        if (!currentUser) return;
+
+        set(state => {
+          const currentNotifs = state.notifications[currentUser.id] || [];
+          const notif = currentNotifs.find(n => n.id === notificationId);
+          if (!notif || notif.type !== 'SHARED_PLAYLIST' || !notif.playlist) return state;
+
+          const userPlaylists = state.playlists[currentUser.id] || [];
+          
+          // ZPŘÍSNĚNÁ KONTROLA i v notifikacích:
+          const sortedNewIds = JSON.stringify([...notif.playlist!.movieIds].sort());
+          const isDuplicate = userPlaylists.some(p => 
+            (p.name === notif.playlist!.name && p.fromUsername === notif.fromUsername) || 
+            JSON.stringify([...p.movieIds].sort()) === sortedNewIds
+          );
+
+          if (isDuplicate) {
+            // Pokud je to duplicita, jen smažeme notifikaci
+            return {
+              notifications: {
+                ...state.notifications,
+                [currentUser.id]: currentNotifs.filter(n => n.id !== notificationId)
+              }
+            };
+          }
+
+          const newPlaylist: Playlist = {
+            id: Math.random().toString(36).substr(2, 9),
+            name: notif.playlist.name,
+            movieIds: notif.playlist.movieIds,
+            fromUsername: notif.fromUsername
+          };
+
+          return {
+            playlists: {
+              ...state.playlists,
+              [currentUser.id]: [...userPlaylists, newPlaylist]
+            },
+            notifications: {
+              ...state.notifications,
+              [currentUser.id]: currentNotifs.filter(n => n.id !== notificationId)
             }
           };
         });
