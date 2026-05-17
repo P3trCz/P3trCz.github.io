@@ -73,8 +73,8 @@ export function SettingsView() {
   const handlePasswordChange = () => {
     setPasswordError('');
 
-    if (newPassword.length < 4) {
-      setPasswordError('Heslo musí mít alespoň 4 znaky.');
+    if (newPassword.length < 6) {
+      setPasswordError('Heslo musí mít alespoň 6 znaků.');
       return;
     }
 
