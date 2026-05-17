@@ -65,6 +65,7 @@ type AppState = {
   // Auth akce
   login: (user: User) => void;
   logout: () => void;
+  updateUsername: (newUsername: string) => void;
   
   // Akce seznamů
   createPlaylist: (name: string) => void;
@@ -112,6 +113,10 @@ export const useAppStore = create<AppState>()(
       login: (user) => set({ currentUser: user }),
       
       logout: () => set({ currentUser: null, searchQuery: '' }),
+
+      updateUsername: (newUsername) => set(state => ({
+        currentUser: state.currentUser ? { ...state.currentUser, username: newUsername } : null
+      })),
       
       createPlaylist: (name) => {
         const userId = get().currentUser?.id;

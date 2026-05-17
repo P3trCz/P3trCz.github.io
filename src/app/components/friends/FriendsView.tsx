@@ -78,7 +78,7 @@ export function FriendsView() {
   const getMovieById = (id: string) => catalog.find(m => m.id.toString() === id.toString());
 
   return (
-    <div className="p-8 pb-24">
+    <div className="p-8 pt-2 pb-24">
       <h1 className="text-3xl font-bold text-white mb-8">Přátelé</h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -381,12 +381,11 @@ function SharePlaylistModal({ friendName, playlists, onClose, onShare }: { frien
                 {playlists.map(pl => (
                   <div
                     key={pl.id}
-                    onClick={() => setSelectedList(pl.id)}
-                    className={`flex items-center gap-4 p-4 rounded-xl cursor-pointer border transition-all ${
-                      selectedList === pl.id 
-                        ? 'bg-[#dc2626]/10 border-[#dc2626] text-white' 
-                        : 'bg-[#1c1c24] border-[#27272a] text-gray-400 hover:border-[#3f3f46] hover:text-white'
-                    }`}
+                    onClick={() => setSelectedList(selectedList === pl.id ? '' : pl.id)}
+                    className={`flex items-center gap-4 p-4 rounded-xl cursor-pointer border transition-all ${selectedList === pl.id
+                      ? 'bg-[#dc2626]/10 border-[#dc2626] text-white'
+                      : 'bg-[#1c1c24] border-[#27272a] text-gray-400 hover:border-[#3f3f46] hover:text-white'
+                      }`}
                   >
                     <div className={`p-2 rounded-lg ${selectedList === pl.id ? 'bg-[#dc2626] text-white' : 'bg-[#0a0a0f] text-gray-500'}`}>
                       <ListVideo size={20} />
@@ -467,7 +466,7 @@ function RecommendMovieModal({ friendName, onClose, onRecommend }: { friendName:
                 <div className="text-sm text-gray-500 text-center py-2">Zadejte alespoň 3 znaky.</div>
               )}
 
-              {filteredMovies.length > 0 && (
+              {filteredMovies.length > 0 ? (
                 <div className="flex flex-col gap-2 max-h-[300px] overflow-y-auto pr-2">
                   {filteredMovies.map(movie => (
                     <div
@@ -483,6 +482,12 @@ function RecommendMovieModal({ friendName, onClose, onRecommend }: { friendName:
                     </div>
                   ))}
                 </div>
+              ) : (
+                search.trim().length >= 3 && (
+                  <div className="text-sm text-gray-500 text-center py-6">
+                    Žádný film ani seriál odpovídající „<span className="text-white font-medium">{search}</span>“ nebyl nalezen.
+                  </div>
+                )
               )}
             </div>
           ) : (
@@ -539,14 +544,14 @@ function PreviewPlaylistModal({ playlist, fromUsername, onClose, onViewMovie, on
             </div>
           </div>
         </div>
-        
+
         <div className="flex-1 overflow-y-auto p-4 custom-scrollbar">
           {movies.length === 0 ? (
             <p className="text-center text-gray-500 py-8">Tento seznam je prázdný.</p>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {movies.map(movie => (
-                <div 
+                <div
                   key={movie.id}
                   onClick={() => onViewMovie(movie)}
                   className="flex items-center gap-3 bg-[#1c1c24] p-3 rounded-xl border border-transparent hover:border-[#dc2626] cursor-pointer transition-all"
@@ -576,7 +581,7 @@ function PreviewPlaylistModal({ playlist, fromUsername, onClose, onViewMovie, on
 }
 
 function MessageHistoryModal({ friend, history, onClose, onViewMovie, onViewPlaylist, onAddMovieToPlaylist }: { friend: any, history: ChatMessage[], onClose: () => void, onViewMovie: (movie: Movie) => void, onViewPlaylist: (playlist: Playlist, fromUsername: string) => void, onAddMovieToPlaylist: (movieId: string) => void }) {
-  const filteredHistory = history.filter(m => 
+  const filteredHistory = history.filter(m =>
     (m.fromUserId === friend.id) || (m.toUserId === friend.id)
   ).sort((a, b) => b.timestamp - a.timestamp);
 
@@ -629,13 +634,13 @@ function MessageHistoryModal({ friend, history, onClose, onViewMovie, onViewPlay
                               <img src={movie.poster_url} alt={movie.title} className="w-10 h-14 object-cover rounded shadow-sm" />
                               <div className="min-w-0 flex-1">
                                 <div className="text-sm font-bold text-white truncate">{movie.title}</div>
-                                <button 
+                                <button
                                   onClick={() => onViewMovie(movie)}
                                   className="text-[10px] text-[#dc2626] font-bold hover:underline mt-1 mr-3"
                                 >
                                   ZOBRAZIT DETAIL
                                 </button>
-                                <button 
+                                <button
                                   onClick={() => onAddMovieToPlaylist(movie.id.toString())}
                                   className="text-[10px] text-gray-400 font-bold hover:text-white mt-1 flex items-center gap-1 inline-flex"
                                 >
@@ -655,7 +660,7 @@ function MessageHistoryModal({ friend, history, onClose, onViewMovie, onViewPlay
                         </div>
                         <div className="min-w-0">
                           <div className="text-sm font-bold text-white truncate">{msg.playlist?.name}</div>
-                          <button 
+                          <button
                             onClick={() => onViewPlaylist(msg.playlist!, msg.fromUsername)}
                             className="text-[10px] text-[#dc2626] font-bold hover:underline mt-1"
                           >
@@ -720,11 +725,10 @@ function AddMovieToPlaylistModal({ movieId, onClose }: { movieId: string, onClos
                 onClick={() => {
                   if (!isAdded) addToPlaylist(pl.id, movieId);
                 }}
-                className={`w-full flex items-center justify-between p-3 rounded-xl border transition-all ${
-                  isAdded 
-                    ? 'bg-[#dc2626]/10 border-[#dc2626] text-white' 
-                    : 'bg-[#1c1c24] border-[#27272a] text-gray-400 hover:border-[#3f3f46] hover:text-white'
-                }`}
+                className={`w-full flex items-center justify-between p-3 rounded-xl border transition-all ${isAdded
+                  ? 'bg-[#dc2626]/10 border-[#dc2626] text-white'
+                  : 'bg-[#1c1c24] border-[#27272a] text-gray-400 hover:border-[#3f3f46] hover:text-white'
+                  }`}
               >
                 <div className="flex items-center gap-3 truncate">
                   <ListVideo size={16} />

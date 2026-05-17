@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useAppStore } from '../../store/useAppStore';
 import { catalog, Movie } from '../../data/catalog';
 import { usersDb } from '../../data/usersDb';
-import { MoreHorizontal, ArrowLeft, Edit2, Trash2, Share2, X } from 'lucide-react';
+import { MoreHorizontal, ArrowLeft, Edit2, Trash2, Share2, X, Check } from 'lucide-react';
 import { MovieCard } from '../catalog/MovieCard';
 import { MovieDetail } from '../catalog/MovieDetail';
 
@@ -200,7 +200,7 @@ export function PlaylistsView() {
 
   const renderOverview = () => {
     return (
-      <div className="p-8">
+      <div className="p-8 pt-2">
         <h1 className="text-3xl font-bold text-white mb-8">Moje seznamy</h1>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -314,16 +314,35 @@ export function PlaylistsView() {
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-400 mb-2">Vyberte přítele</label>
-                  <select
-                    value={shareSelectedFriendId}
-                    onChange={e => setShareSelectedFriendId(e.target.value)}
-                    className="w-full bg-[#1c1c24] border border-[#27272a] text-white rounded-xl px-4 py-3 focus:outline-none focus:border-[#dc2626]"
-                  >
-                    <option value="" disabled>Zvolte přítele...</option>
-                    {myFriends.map(f => f && (
-                      <option key={f.id} value={f.id}>{f.username}</option>
-                    ))}
-                  </select>
+                  <div className="flex flex-col gap-2 max-h-[250px] overflow-y-auto pr-2 custom-scrollbar">
+                    {myFriends.map(friend => {
+                      if (!friend) return null;
+                      const isSelected = shareSelectedFriendId === friend.id;
+                      return (
+                        <div
+                          key={friend.id}
+                          onClick={() => setShareSelectedFriendId(shareSelectedFriendId === friend.id ? '' : friend.id)}
+                          className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer border transition-all ${
+                            isSelected
+                              ? 'bg-[#dc2626]/10 border-[#dc2626] text-white'
+                              : 'bg-[#1c1c24] border-[#27272a] text-gray-400 hover:border-[#3f3f46] hover:text-white'
+                          }`}
+                        >
+                          <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs ${
+                            isSelected 
+                              ? 'bg-[#dc2626] text-white' 
+                              : 'bg-[#0a0a0f] text-gray-400'
+                          }`}>
+                            {friend.username.charAt(0).toUpperCase()}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="font-bold text-sm truncate text-white">{friend.username}</div>
+                          </div>
+                          {isSelected && <Check size={16} className="text-[#dc2626]" />}
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
 
                 <div>

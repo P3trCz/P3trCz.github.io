@@ -17,6 +17,18 @@ export function StatsView() {
     return `${h} h ${m} min`;
   };
 
+  const formatRangeForSentence = (r: string) => {
+    switch (r) {
+      case 'Týden': return 'poslední týden';
+      case 'Měsíc': return 'poslední měsíc';
+      case '3 měsíce': return 'poslední 3 měsíce';
+      case '6 měsíců': return 'posledních 6 měsíců';
+      case 'Rok': return 'poslední rok';
+      case 'Celá doba': return 'celou dobu';
+      default: return r.toLowerCase();
+    }
+  };
+
   const processData = () => {
     const serviceTime: Record<string, number> = {};
     const genreCount: Record<string, number> = {};
@@ -63,7 +75,7 @@ export function StatsView() {
   const stats = processData();
 
   return (
-    <div className="p-8">
+    <div className="p-8 pt-2">
       <h1 className="text-3xl font-bold text-white mb-8">Vaše statistiky sledování</h1>
 
       <div className="flex flex-wrap gap-2 mb-8 bg-[#111116] border border-[#27272a] rounded-xl p-1 w-fit">
@@ -97,7 +109,7 @@ export function StatsView() {
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 bg-[#111116] border border-[#27272a] rounded-xl p-6">
-            <h2 className="text-lg font-medium text-white mb-6">Podíl služeb na čase sledování filmů za {range.toLowerCase()}</h2>
+            <h2 className="text-lg font-medium text-white mb-6">Podíl služeb na čase sledování filmů za {formatRangeForSentence(range)}</h2>
 
             <div className="h-80 w-full relative">
               <ResponsiveContainer width="100%" height="100%">
@@ -137,7 +149,7 @@ export function StatsView() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-6">
             <div className="bg-[#111116] border border-[#27272a] rounded-xl p-6">
-              <h3 className="text-sm font-medium text-gray-400 mb-2">Celkový čas sledování filmů za {range.toLowerCase()}</h3>
+              <h3 className="text-sm font-medium text-gray-400 mb-2">Celkový čas sledování filmů za {formatRangeForSentence(range)}</h3>
               <div className="text-4xl font-bold text-white mb-2">{formatTime(stats.totalMinutes)}</div>
               <div className="text-sm text-gray-500">
                 {stats.totalFilms} {stats.totalFilms === 1 ? 'zhlédnutý film' : stats.totalFilms >= 2 && stats.totalFilms <= 4 ? 'zhlédnuté filmy' : 'zhlédnutých filmů'}

@@ -61,5 +61,14 @@ export const usersDb = {
       return true;
     }
     return false;
+  },
+  
+  updateUsername: (email: string, newUsername: string) => {
+    const userIndex = users.findIndex(u => u.email.toLowerCase() === email.toLowerCase());
+    if (userIndex !== -1) {
+      users[userIndex].username = newUsername;
+      return true;
+    }
+    return false;
   }
 };

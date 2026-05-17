@@ -36,7 +36,7 @@ export function MovieGrid() {
     const validServices = new Set(availableMovies.flatMap(m => m.streaming_services));
     return userSubscriptions.filter(s => validServices.has(s as ServiceType)).sort();
   }, [availableMovies, userSubscriptions]);
-  
+
   const allGenres = useMemo(() => Array.from(new Set(availableMovies.flatMap(m => m.genres))).sort(), [availableMovies]);
   const allTypes = ['Film', 'Seriál'];
 
@@ -90,14 +90,14 @@ export function MovieGrid() {
   };
 
   return (
-    <div className="p-8 pb-24">
+    <div className="p-8 pt-2 pb-24">
       {/* Search results header */}
       {isSearchActive && (
         <div className="flex items-center justify-between mb-6 bg-[#111116] border border-[#27272a] rounded-xl px-5 py-3">
           <div className="flex items-center gap-3 text-gray-300">
             <Search size={18} className="text-gray-500" />
             <span>
-              Výsledky pro „<span className="text-white font-medium">{searchQuery}</span>" 
+              Výsledky pro „<span className="text-white font-medium">{searchQuery}</span>"
               <span className="text-gray-500 ml-2">({filteredCatalog.length} {filteredCatalog.length === 1 ? 'výsledek' : filteredCatalog.length >= 2 && filteredCatalog.length <= 4 ? 'výsledky' : 'výsledků'})</span>
             </span>
           </div>
@@ -138,7 +138,7 @@ export function MovieGrid() {
         </div>
 
         {hasAnyFilter && (
-          <button 
+          <button
             onClick={clearFilters}
             className="flex items-center gap-2 text-sm text-red-400 hover:text-red-300 font-medium transition-colors"
           >
@@ -162,16 +162,16 @@ export function MovieGrid() {
         <div className="flex flex-col">
           {displayedCatalog.length > 0 ? (
             displayedCatalog.map((movie, index) => (
-              <MovieCard 
-                key={`${movie.type}-${movie.id}`} 
-                movie={movie} 
-                onClick={(m) => setSelectedMovie(m)} 
+              <MovieCard
+                key={`${movie.type}-${movie.id}`}
+                movie={movie}
+                onClick={(m) => setSelectedMovie(m)}
                 className={index === displayedCatalog.length - 1 ? "rounded-b-xl border-b-0" : ""}
               />
             ))
           ) : (
             <div className="py-12 text-center text-gray-500">
-              {isSearchActive 
+              {isSearchActive
                 ? `Žádný film ani seriál odpovídající „${searchQuery}" nebyl nalezen.`
                 : 'Nenalezeny žádné filmy odpovídající zadaným kritériím nebo nemáte aktivní předplatné.'
               }
@@ -192,9 +192,9 @@ export function MovieGrid() {
       )}
 
       {selectedMovie && (
-        <MovieDetail 
-          movie={selectedMovie} 
-          onClose={() => setSelectedMovie(null)} 
+        <MovieDetail
+          movie={selectedMovie}
+          onClose={() => setSelectedMovie(null)}
         />
       )}
     </div>
