@@ -538,7 +538,7 @@ function PreviewPlaylistModal({ playlist, fromUsername, onClose, onViewMovie, on
           <div className="flex-1 min-w-0">
             <h2 className="text-xl font-bold text-white truncate">{playlist.name}</h2>
             <div className="flex items-center gap-2 mt-1">
-              <span className="text-xs text-gray-500">{movies.length} položek</span>
+              <span className="text-xs text-gray-500">{movies.length} {movies.length === 1 ? 'položka' : movies.length >= 2 && movies.length <= 4 ? 'položky' : 'položek'}</span>
               <span className="text-xs text-gray-500">•</span>
               <span className="text-xs text-[#dc2626] font-medium">Od uživatele: {fromUsername}</span>
             </div>
