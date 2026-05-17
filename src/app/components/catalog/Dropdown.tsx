@@ -40,11 +40,10 @@ export function Dropdown({ label, options, selected, onChange }: Props) {
     <div className="relative" ref={popoverRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`flex items-center gap-2 rounded-full px-4 py-1.5 transition-colors border text-sm ${
-          hasSelection || isOpen
-            ? 'bg-[#1c1c24] border-[#2563eb] text-white'
-            : 'bg-[#111116] border-[#27272a] text-gray-400 hover:text-white hover:border-[#3f3f46]'
-        }`}
+        className={`flex items-center gap-2 rounded-full px-4 py-1.5 transition-colors border text-sm ${hasSelection || isOpen
+          ? 'bg-[#1c1c24] border-[#dc2626] text-white'
+          : 'bg-[#111116] border-[#27272a] text-gray-400 hover:text-white hover:border-[#3f3f46]'
+          }`}
       >
         {displayLabel}
         <ChevronDown size={14} className={`transition-transform ${isOpen ? 'rotate-180' : ''}`} />
@@ -61,8 +60,8 @@ export function Dropdown({ label, options, selected, onChange }: Props) {
                   onClick={() => toggleOption(option)}
                   className="w-full flex items-center justify-between px-4 py-2.5 text-sm text-left hover:bg-[#27272a] transition-colors"
                 >
-                  <span className={isSelected ? 'text-white' : 'text-gray-300'}>{option}</span>
-                  {isSelected && <Check size={16} className="text-[#2563eb]" />}
+                  <span className={isSelected ? 'text-[#dc2626] font-medium' : 'text-gray-300'}>{option}</span>
+                  {isSelected && <Check size={16} className="text-[#dc2626]" />}
                 </button>
               );
             })}

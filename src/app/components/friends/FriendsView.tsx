@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useAppStore, Playlist, ChatMessage } from '../../store/useAppStore';
 import { usersDb } from '../../data/usersDb';
 import { catalog, Movie } from '../../data/catalog';
-import { Search, UserPlus, Check, X, Share2, Film, Trash2, Play, Download, ListVideo, MessageSquare, Eye, History, Plus } from 'lucide-react';
+import { Search, UserPlus, Check, X, Share2, Film, Trash2, Play, Download, ListVideo, MessageSquare, Eye, History, Plus, Clock } from 'lucide-react';
 import { MovieDetail } from '../catalog/MovieDetail';
 
 export function FriendsView() {
@@ -260,7 +260,7 @@ export function FriendsView() {
                           <Film size={16} /> Doporučit titul
                         </button>
                         <button onClick={() => setHistoryFriendId(friend.id)} className="w-full flex items-center justify-center gap-2 bg-[#27272a] hover:bg-[#3f3f46] text-white py-2 rounded-lg text-sm font-medium transition-colors">
-                          <MessageSquare size={16} /> Zprávy a historie
+                          <MessageSquare size={16} /> Historie zpráv
                         </button>
                         <button onClick={() => handleRemoveFriend(friend.id, friend.username)} className="w-full flex items-center justify-center gap-2 bg-transparent hover:bg-red-500/10 text-red-500 py-2 rounded-lg text-sm font-medium transition-colors mt-2">
                           <Trash2 size={16} /> Odebrat z přátel
@@ -332,10 +332,10 @@ export function FriendsView() {
             if (success) {
               setPreviewPlaylist(null);
               setPreviewFromUsername('');
-              setAddSuccess('Seznam byl uložen do vašich playlistů.');
+              setAddSuccess('Seznam byl uložen do vašich seznamů.');
               setTimeout(() => setAddSuccess(''), 3000);
             } else {
-              alert('Tento seznam už ve svých playlistech máte.');
+              alert('Tento seznam už ve svých seznamech máte.');
             }
           }}
         />
@@ -685,9 +685,12 @@ function AddMovieToPlaylistModal({ movieId, onClose }: { movieId: string, onClos
   const playlists = useAppStore(state => state.playlists);
   const addToPlaylist = useAppStore(state => state.addToPlaylist);
   const createPlaylist = useAppStore(state => state.createPlaylist);
+  const watchlists = useAppStore(state => state.watchlists);
+  const toggleWatchlist = useAppStore(state => state.toggleWatchlist);
 
   const [newPlaylistName, setNewPlaylistName] = useState('');
   const userPlaylists = currentUser ? (playlists[currentUser.id] || []) : [];
+  const userWatchlist = currentUser ? (watchlists[currentUser.id] || []) : [];
   const movie = catalog.find(m => m.id.toString() === movieId);
 
   const handleCreateAndAdd = () => {
@@ -717,6 +720,27 @@ function AddMovieToPlaylistModal({ movieId, onClose }: { movieId: string, onClos
         )}
 
         <div className="space-y-2 max-h-[250px] overflow-y-auto pr-2 custom-scrollbar mb-6">
+          {(() => {
+            const isAddedToWatchlist = userWatchlist.includes(movieId);
+            return (
+              <button
+                onClick={() => {
+                  toggleWatchlist(movieId);
+                }}
+                className={`w-full flex items-center justify-between p-3 rounded-xl border transition-all ${isAddedToWatchlist
+                  ? 'bg-[#dc2626]/10 border-[#dc2626] text-white'
+                  : 'bg-[#1c1c24] border-[#27272a] text-gray-400 hover:border-[#3f3f46] hover:text-white'
+                  }`}
+              >
+                <div className="flex items-center gap-3 truncate">
+                  <Clock size={16} />
+                  <span className="text-sm font-medium truncate">Přehrát později</span>
+                </div>
+                {isAddedToWatchlist && <Check size={16} className="text-[#dc2626]" />}
+              </button>
+            );
+          })()}
+
           {userPlaylists.map(pl => {
             const isAdded = pl.movieIds.includes(movieId);
             return (

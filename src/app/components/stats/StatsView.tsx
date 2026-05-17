@@ -3,7 +3,7 @@ import { useAppStore } from '../../store/useAppStore';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 import { catalog, ServiceType, serviceLogos, serviceColors } from '../../data/catalog';
 
-const timeRanges = ['Týden', 'Měsíc', '3 měsíce', '6 měsíců', 'Rok', 'Celá doba'];
+const timeRanges = ['10 minut', 'Týden', 'Měsíc', '3 měsíce', '6 měsíců', 'Rok', 'Celá doba'];
 
 export function StatsView() {
   const [range, setRange] = useState('Měsíc');
@@ -19,6 +19,7 @@ export function StatsView() {
 
   const formatRangeForSentence = (r: string) => {
     switch (r) {
+      case '10 minut': return 'posledních 10 minut';
       case 'Týden': return 'poslední týden';
       case 'Měsíc': return 'poslední měsíc';
       case '3 měsíce': return 'poslední 3 měsíce';
@@ -35,7 +36,31 @@ export function StatsView() {
     let totalMinutes = 0;
     let totalFilms = 0;
 
-    history.forEach(item => {
+    // Filtrování historie na základě vybraného časového období
+    const filteredHistory = history.filter(item => {
+      if (range === 'Celá doba') return true;
+      const now = Date.now();
+      const diff = now - item.watchedAt;
+      
+      switch (range) {
+        case '10 minut':
+          return diff <= 10 * 60 * 1000;
+        case 'Týden':
+          return diff <= 7 * 24 * 60 * 60 * 1000;
+        case 'Měsíc':
+          return diff <= 30 * 24 * 60 * 60 * 1000;
+        case '3 měsíce':
+          return diff <= 90 * 24 * 60 * 60 * 1000;
+        case '6 měsíců':
+          return diff <= 180 * 24 * 60 * 60 * 1000;
+        case 'Rok':
+          return diff <= 365 * 24 * 60 * 60 * 1000;
+        default:
+          return true;
+      }
+    });
+
+    filteredHistory.forEach(item => {
       const svc = item.service;
       const movie = catalog.find(m => m.id.toString() === item.movieId);
 
@@ -65,7 +90,7 @@ export function StatsView() {
       totalMinutes,
       topGenre: topGenre ? topGenre[0] : 'N/A',
       topGenreCount: topGenre ? topGenre[1] : 0,
-      totalMovies: history.length,
+      totalMovies: filteredHistory.length,
       totalFilms,
       topService: topService ? topService[0] : 'N/A',
       topServiceMinutes: topService ? topService[1] : 0
@@ -104,6 +129,19 @@ export function StatsView() {
           <h2 className="text-xl font-semibold text-white mb-2">Zatím žádná data</h2>
           <p className="text-gray-400 max-w-md">
             Graf nemůže být vygenerován, protože jste zatím nezhlédli žádný film. Přejděte do katalogu a spusťte přehrávání — statistiky se začnou automaticky zaznamenávat.
+          </p>
+        </div>
+      ) : stats.totalMovies === 0 ? (
+        <div className="bg-[#111116] border border-[#27272a] rounded-xl p-12 flex flex-col items-center justify-center text-center">
+          <div className="w-16 h-16 rounded-full bg-[#1c1c24] flex items-center justify-center mb-4">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-gray-500">
+              <path d="M21.21 15.89A10 10 0 1 1 8 2.83" />
+              <path d="M22 12A10 10 0 0 0 12 2v10z" />
+            </svg>
+          </div>
+          <h2 className="text-xl font-semibold text-white mb-2">Žádná data za vybrané období</h2>
+          <p className="text-gray-400 max-w-md">
+            Za zvolené období ({formatRangeForSentence(range)}) nemáte zaznamenaná žádná data sledování. Zkuste zvolit delší časové období nebo zhlédnout nějaký film.
           </p>
         </div>
       ) : (
