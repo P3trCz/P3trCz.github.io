@@ -1,7 +1,8 @@
 import React from 'react';
 import { Movie, ServiceType, serviceLogos, serviceColors } from '../../data/catalog';
-import { Star } from 'lucide-react';
+import { Star, Eye } from 'lucide-react';
 import { AddToPlaylistButton } from './AddToPlaylistButton';
+import { useAppStore } from '../../store/useAppStore';
 
 type Props = {
   movie: Movie;
@@ -10,6 +11,12 @@ type Props = {
 };
 
 export function MovieCard({ movie, onClick, className = '' }: Props) {
+  const currentUser = useAppStore(state => state.currentUser);
+  const watchedTitles = useAppStore(state => state.watchedTitles);
+  const toggleWatchedTitle = useAppStore(state => state.toggleWatchedTitle);
+
+  const isWatched = currentUser && (watchedTitles[currentUser.id] || []).includes(movie.id.toString());
+
   const renderStars = (rating: number) => {
     const stars = Math.round(rating / 20); // 1-5
     return (
@@ -27,7 +34,7 @@ export function MovieCard({ movie, onClick, className = '' }: Props) {
 
   return (
     <div
-      className={`grid grid-cols-[3fr_2fr] lg:grid-cols-[3fr_1fr_2fr_1fr_2fr] gap-4 items-center py-3 border-b border-[#27272a] hover:bg-[#111116] transition-colors cursor-pointer px-4 ${className}`}
+      className={`grid grid-cols-[3fr_2fr] lg:grid-cols-[3fr_1fr_2fr_1fr_2fr] gap-4 items-center py-3 border-b border-[#27272a] hover:bg-[#111116] transition-colors cursor-pointer px-4 ${isWatched ? 'opacity-60' : ''} ${className}`}
       onClick={() => onClick(movie)}
     >
       <div className="flex items-center gap-3 min-w-0">
@@ -37,7 +44,20 @@ export function MovieCard({ movie, onClick, className = '' }: Props) {
           className="w-10 h-14 lg:w-12 lg:h-16 object-cover rounded shadow shrink-0"
         />
         <div className="font-medium text-white truncate text-sm lg:text-base">{movie.title}</div>
-        <div className="shrink-0" onClick={e => e.stopPropagation()}>
+        <div className="shrink-0 flex items-center gap-2" onClick={e => e.stopPropagation()}>
+          <button
+            onClick={() => {
+              if (currentUser) toggleWatchedTitle(movie.id.toString());
+            }}
+            className={`w-8 h-8 rounded-full border flex items-center justify-center transition-colors ${
+              isWatched
+                ? 'bg-green-500/10 border-green-500 text-green-500'
+                : 'bg-[#111116] border-[#27272a] text-gray-500 hover:text-white hover:border-[#dc2626]'
+            }`}
+            title={isWatched ? 'Označeno jako zhlédnuté' : 'Označit jako zhlédnuté'}
+          >
+            <Eye size={16} />
+          </button>
           <AddToPlaylistButton movieId={movie.id.toString()} />
         </div>
       </div>

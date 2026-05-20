@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Movie, ServiceType, serviceLogos, serviceColors } from '../../data/catalog';
-import { X, Star, Play, Share2, Check } from 'lucide-react';
+import { X, Star, Play, Share2, Check, Eye } from 'lucide-react';
 import { useAppStore } from '../../store/useAppStore';
+import { AddToPlaylistButton } from './AddToPlaylistButton';
 import { usersDb } from '../../data/usersDb';
 
 type Props = {
@@ -14,6 +15,9 @@ export function MovieDetail({ movie, onClose }: Props) {
   const currentUser = useAppStore(state => state.currentUser);
   const subscriptionsState = useAppStore(state => state.subscriptions);
   const userSubscriptions = currentUser ? (subscriptionsState[currentUser.id] || []) : [];
+  const watchedTitles = useAppStore(state => state.watchedTitles);
+  const toggleWatchedTitle = useAppStore(state => state.toggleWatchedTitle);
+  const isWatched = currentUser && (watchedTitles[currentUser.id] || []).includes(movie.id.toString());
 
   const friends = useAppStore(state => state.friends);
   const recommendMovie = useAppStore(state => state.recommendMovie);
@@ -47,6 +51,21 @@ export function MovieDetail({ movie, onClose }: Props) {
       >
         {/* Fixed Buttons in corner of the whole modal */}
         <div className="absolute top-4 right-4 flex items-center gap-2 z-50">
+          <button
+            onClick={() => {
+              if (currentUser) toggleWatchedTitle(movie.id.toString());
+            }}
+            className={`w-10 h-10 flex items-center justify-center rounded-full backdrop-blur-md transition-colors ${isWatched
+                ? 'bg-green-500/20 text-green-500 border border-green-500/50'
+                : 'bg-black/40 text-gray-400 hover:text-white border border-white/10'
+              }`}
+            title={isWatched ? "Odznačit jako zhlédnuté" : "Označit jako zhlédnuté"}
+          >
+            <Eye size={18} />
+          </button>
+          <div className="w-10 h-10 flex items-center justify-center rounded-full bg-black/40 backdrop-blur-md border border-white/10">
+            <AddToPlaylistButton movieId={movie.id.toString()} />
+          </div>
           <button
             onClick={() => setShareModalOpen(true)}
             className="w-10 h-10 flex items-center justify-center rounded-full bg-black/40 backdrop-blur-md text-gray-400 hover:text-white border border-white/10 transition-colors"
@@ -164,17 +183,15 @@ export function MovieDetail({ movie, onClose }: Props) {
                         <div
                           key={friend.id}
                           onClick={() => setShareSelectedFriendId(shareSelectedFriendId === friend.id ? '' : friend.id)}
-                          className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer border transition-all ${
-                            isSelected
+                          className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer border transition-all ${isSelected
                               ? 'bg-[#dc2626]/10 border-[#dc2626] text-white'
                               : 'bg-[#1c1c24] border-[#27272a] text-gray-400 hover:border-[#3f3f46] hover:text-white'
-                          }`}
+                            }`}
                         >
-                          <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs ${
-                            isSelected 
-                              ? 'bg-[#dc2626] text-white' 
+                          <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs ${isSelected
+                              ? 'bg-[#dc2626] text-white'
                               : 'bg-[#0a0a0f] text-gray-400'
-                          }`}>
+                            }`}>
                             {friend.username.charAt(0).toUpperCase()}
                           </div>
                           <div className="flex-1 min-w-0">

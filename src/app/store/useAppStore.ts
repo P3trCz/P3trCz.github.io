@@ -51,6 +51,7 @@ type AppState = {
   
   // Data per uživatel, klíčem je userId
   watchlists: Record<string, string[]>; // Pole movieIds
+  watchedTitles: Record<string, string[]>; // Zhlédnuté tituly
   playlists: Record<string, Playlist[]>;
   subscriptions: Record<string, ServiceType[]>;
   watchHistory: Record<string, WatchHistoryItem[]>;
@@ -76,6 +77,7 @@ type AppState = {
   
   // Watchlist akce
   toggleWatchlist: (movieId: string) => void;
+  toggleWatchedTitle: (titleId: string) => void;
   
   // Subscriptions akce
   toggleSubscription: (service: ServiceType) => void;
@@ -100,6 +102,7 @@ export const useAppStore = create<AppState>()(
     (set, get) => ({
       currentUser: null,
       watchlists: {},
+      watchedTitles: {},
       playlists: {},
       subscriptions: {},
       watchHistory: {},
@@ -224,6 +227,25 @@ export const useAppStore = create<AppState>()(
               [userId]: exists 
                 ? currentList.filter(id => id !== movieId)
                 : [...currentList, movieId]
+            }
+          };
+        });
+      },
+
+      toggleWatchedTitle: (titleId) => {
+        const userId = get().currentUser?.id;
+        if (!userId) return;
+        
+        set((state) => {
+          const currentList = state.watchedTitles[userId] || [];
+          const exists = currentList.includes(titleId);
+          
+          return {
+            watchedTitles: {
+              ...state.watchedTitles,
+              [userId]: exists 
+                ? currentList.filter(id => id !== titleId)
+                : [...currentList, titleId]
             }
           };
         });

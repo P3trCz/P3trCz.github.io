@@ -38,14 +38,6 @@ export function MessageHistoryModal({
       zIndex="z-40"
     >
       <div className="flex flex-col space-y-6">
-        <div className="flex items-center gap-3 mb-2 px-2">
-          <div className="w-10 h-10 bg-gradient-to-br from-[#dc2626] to-[#7c3aed] rounded-full flex items-center justify-center text-white font-bold">
-            {friend.username.charAt(0).toUpperCase()}
-          </div>
-          <div>
-            <p className="text-xs text-gray-500">{filteredHistory.length} zpráv v historii</p>
-          </div>
-        </div>
 
         {filteredHistory.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-64 text-gray-500">

@@ -11,11 +11,14 @@ export function MovieGrid() {
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
   const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
   const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
+  const [selectedWatched, setSelectedWatched] = useState<string[]>([]);
   const [displayedCount, setDisplayedCount] = useState(25);
 
   const currentUser = useAppStore(state => state.currentUser);
   const subscriptionsState = useAppStore(state => state.subscriptions);
   const userSubscriptions = currentUser ? (subscriptionsState[currentUser.id] || []) : [];
+  const watchedTitles = useAppStore(state => state.watchedTitles);
+  const userWatchedTitles = currentUser ? (watchedTitles[currentUser.id] || []) : [];
   const searchQuery = useAppStore(state => state.searchQuery);
   const setSearchQuery = useAppStore(state => state.setSearchQuery);
 
@@ -24,7 +27,7 @@ export function MovieGrid() {
   // Reset pagination when filters or search change
   useEffect(() => {
     setDisplayedCount(25);
-  }, [selectedServices, selectedGenres, selectedTypes, userSubscriptions, searchQuery]);
+  }, [selectedServices, selectedGenres, selectedTypes, selectedWatched, userSubscriptions, searchQuery]);
 
   // Filmy dostupné na uživatelových službách
   const availableMovies = useMemo(() => {
@@ -70,19 +73,27 @@ export function MovieGrid() {
         if (!selectedTypes.includes(movie.type)) return false;
       }
 
+      // 6. Filtr podle zhlédnutí
+      if (selectedWatched.length > 0 && selectedWatched.length < 2) {
+        const isWatched = userWatchedTitles.includes(movie.id.toString());
+        if (selectedWatched.includes('Zhlédnuté') && !isWatched) return false;
+        if (selectedWatched.includes('Nezhlédnuté') && isWatched) return false;
+      }
+
       return true;
     });
-  }, [selectedServices, selectedGenres, selectedTypes, userSubscriptions, searchQuery, isSearchActive]);
+  }, [selectedServices, selectedGenres, selectedTypes, selectedWatched, userSubscriptions, searchQuery, isSearchActive, userWatchedTitles]);
 
   const displayedCatalog = filteredCatalog.slice(0, displayedCount);
   const hasMore = displayedCount < filteredCatalog.length;
 
-  const hasAnyFilter = selectedServices.length > 0 || selectedGenres.length > 0 || selectedTypes.length > 0;
+  const hasAnyFilter = selectedServices.length > 0 || selectedGenres.length > 0 || selectedTypes.length > 0 || selectedWatched.length > 0;
 
   const clearFilters = () => {
     setSelectedServices([]);
     setSelectedGenres([]);
     setSelectedTypes([]);
+    setSelectedWatched([]);
   };
 
   const handleLoadMore = () => {
@@ -122,6 +133,12 @@ export function MovieGrid() {
             options={allTypes}
             selected={selectedTypes}
             onChange={setSelectedTypes}
+          />
+          <Dropdown
+            label="Zhlédnuto"
+            options={['Zhlédnuté', 'Nezhlédnuté']}
+            selected={selectedWatched}
+            onChange={setSelectedWatched}
           />
           <Dropdown
             label="Služby"

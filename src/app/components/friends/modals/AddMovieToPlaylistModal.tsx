@@ -13,6 +13,7 @@ export function AddMovieToPlaylistModal({ movieId, onClose }: AddMovieToPlaylist
   const currentUser = useAppStore(state => state.currentUser);
   const playlists = useAppStore(state => state.playlists);
   const addToPlaylist = useAppStore(state => state.addToPlaylist);
+  const removeFromPlaylist = useAppStore(state => state.removeFromPlaylist);
   const createPlaylist = useAppStore(state => state.createPlaylist);
   const watchlists = useAppStore(state => state.watchlists);
   const toggleWatchlist = useAppStore(state => state.toggleWatchlist);
@@ -76,6 +77,7 @@ export function AddMovieToPlaylistModal({ movieId, onClose }: AddMovieToPlaylist
                 key={pl.id}
                 onClick={() => {
                   if (!isAdded) addToPlaylist(pl.id, movieId);
+                  else removeFromPlaylist(pl.id, movieId);
                 }}
                 className={`w-full flex items-center justify-between p-3 rounded-xl border transition-all ${isAdded
                   ? 'bg-[#dc2626]/10 border-[#dc2626] text-white'
@@ -85,6 +87,11 @@ export function AddMovieToPlaylistModal({ movieId, onClose }: AddMovieToPlaylist
                 <div className="flex items-center gap-3 truncate">
                   <ListVideo size={16} />
                   <span className="text-sm font-medium truncate">{pl.name}</span>
+                  {pl.fromUsername && (
+                    <span className="text-[10px] bg-[#dc2626]/20 text-[#dc2626] px-1.5 py-0.5 rounded uppercase tracking-wider ml-2">
+                      Sdíleno od: {pl.fromUsername}
+                    </span>
+                  )}
                 </div>
                 {isAdded && <Check size={16} className="text-[#dc2626]" />}
               </button>

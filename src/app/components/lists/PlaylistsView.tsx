@@ -3,7 +3,7 @@ import { useAppStore } from '../../store/useAppStore';
 import { catalog, Movie } from '../../data/catalog';
 import { usersDb } from '../../data/usersDb';
 import { Modal } from '../common/Modal';
-import { MoreHorizontal, ArrowLeft, Edit2, Trash2, Share2, X, Check } from 'lucide-react';
+import { MoreHorizontal, ArrowLeft, Edit2, Trash2, Share2, X, Check, Plus } from 'lucide-react';
 import { useOnClickOutside } from '../../hooks/useOnClickOutside';
 import { MovieCard } from '../catalog/MovieCard';
 import { MovieDetail } from '../catalog/MovieDetail';
@@ -15,6 +15,7 @@ export function PlaylistsView() {
   const renamePlaylist = useAppStore(state => state.renamePlaylist);
   const deletePlaylist = useAppStore(state => state.deletePlaylist);
   const sharePlaylistAction = useAppStore(state => state.sharePlaylist);
+  const createPlaylist = useAppStore(state => state.createPlaylist);
   const friends = useAppStore(state => state.friends);
 
   const playlists = currentUser ? (playlistsState[currentUser.id] || []) : [];
@@ -26,6 +27,8 @@ export function PlaylistsView() {
   const [activePlaylistId, setActivePlaylistId] = useState<string | null>(null);
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
+  const [isCreating, setIsCreating] = useState(false);
+  const [newPlaylistName, setNewPlaylistName] = useState('');
 
   const myFriendsIds = currentUser ? (friends[currentUser.id] || []) : [];
   const myFriends = myFriendsIds.map(id => usersDb.getUsers().find(u => u.id === id)).filter(Boolean);
@@ -196,6 +199,66 @@ export function PlaylistsView() {
         <h1 className="text-3xl font-bold text-white mb-8">Moje seznamy</h1>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div
+            className="bg-[#111116] border border-[#27272a] border-dashed rounded-xl p-6 hover:border-[#dc2626] transition-all flex flex-col items-center justify-center cursor-pointer min-h-[250px] shadow-sm hover:shadow-xl group"
+            onClick={() => setIsCreating(true)}
+          >
+            {isCreating ? (
+              <div className="w-full" onClick={e => e.stopPropagation()}>
+                <h3 className="text-white font-bold mb-3 text-center">Nový seznam</h3>
+                <input
+                  type="text"
+                  autoFocus
+                  placeholder="Název seznamu..."
+                  value={newPlaylistName}
+                  onChange={e => setNewPlaylistName(e.target.value)}
+                  onKeyDown={e => {
+                    if (e.key === 'Enter' && newPlaylistName.trim()) {
+                      createPlaylist(newPlaylistName.trim());
+                      setNewPlaylistName('');
+                      setIsCreating(false);
+                    } else if (e.key === 'Escape') {
+                      setIsCreating(false);
+                      setNewPlaylistName('');
+                    }
+                  }}
+                  className="w-full bg-[#1c1c24] border border-[#27272a] rounded-lg px-4 py-2 text-white focus:outline-none focus:border-[#dc2626] mb-3 text-center"
+                />
+                <div className="flex gap-2 justify-center">
+                  <button
+                    onClick={() => {
+                      if (newPlaylistName.trim()) {
+                        createPlaylist(newPlaylistName.trim());
+                        setNewPlaylistName('');
+                        setIsCreating(false);
+                      }
+                    }}
+                    disabled={!newPlaylistName.trim()}
+                    className="bg-[#dc2626] hover:bg-[#b91c1c] text-white px-4 py-1.5 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
+                  >
+                    Vytvořit
+                  </button>
+                  <button
+                    onClick={() => {
+                      setIsCreating(false);
+                      setNewPlaylistName('');
+                    }}
+                    className="bg-[#27272a] hover:bg-[#3f3f46] text-white px-4 py-1.5 rounded-lg text-sm font-medium transition-colors"
+                  >
+                    Zrušit
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <>
+                <div className="w-16 h-16 rounded-full bg-[#1c1c24] flex items-center justify-center text-gray-400 group-hover:text-[#dc2626] group-hover:bg-[#dc2626]/10 transition-all mb-4">
+                  <Plus size={32} />
+                </div>
+                <h2 className="text-lg font-bold text-gray-400 group-hover:text-white transition-colors">Vytvořit seznam</h2>
+              </>
+            )}
+          </div>
+
           <div
             onClick={() => setActivePlaylistId('__history__')}
             className="bg-[#111116] border border-[#27272a] rounded-xl p-6 hover:border-[#3f3f46] transition-all cursor-pointer group flex flex-col shadow-sm hover:shadow-xl"
