@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Search, User, LogOut, Menu, X } from 'lucide-react';
 import { useAppStore } from '../../store/useAppStore';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useOnClickOutside } from '../../hooks/useOnClickOutside';
 
 type Props = {
   onToggleSidebar: () => void;
@@ -19,18 +20,7 @@ export function TopBar({ onToggleSidebar }: Props) {
   const navigate = useNavigate();
   const location = useLocation();
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (popoverRef.current && !popoverRef.current.contains(event.target as Node)) {
-        setIsProfileOpen(false);
-      }
-    };
-
-    if (isProfileOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-    }
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [isProfileOpen]);
+  useOnClickOutside(popoverRef, () => setIsProfileOpen(false), isProfileOpen);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;

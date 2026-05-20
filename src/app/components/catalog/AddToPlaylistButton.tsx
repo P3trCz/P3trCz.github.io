@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Plus, Check, X } from 'lucide-react';
 import { useAppStore } from '../../store/useAppStore';
+import { useOnClickOutside } from '../../hooks/useOnClickOutside';
 
 type Props = {
   movieId: string;
@@ -23,18 +24,7 @@ export function AddToPlaylistButton({ movieId }: Props) {
   const removeFromPlaylist = useAppStore(state => state.removeFromPlaylist);
   const toggleWatchlist = useAppStore(state => state.toggleWatchlist);
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (popoverRef.current && !popoverRef.current.contains(event.target as Node)) {
-        setIsOpen(false);
-      }
-    };
-
-    if (isOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-    }
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [isOpen]);
+  useOnClickOutside(popoverRef, () => setIsOpen(false), isOpen);
 
   const handleCreatePlaylist = (e: React.FormEvent) => {
     e.preventDefault();

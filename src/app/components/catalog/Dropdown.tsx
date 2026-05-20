@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { ChevronDown, Check } from 'lucide-react';
+import { useOnClickOutside } from '../../hooks/useOnClickOutside';
 
 type Props = {
   label: string;
@@ -12,18 +13,7 @@ export function Dropdown({ label, options, selected, onChange }: Props) {
   const [isOpen, setIsOpen] = useState(false);
   const popoverRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (popoverRef.current && !popoverRef.current.contains(event.target as Node)) {
-        setIsOpen(false);
-      }
-    };
-
-    if (isOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-    }
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [isOpen]);
+  useOnClickOutside(popoverRef, () => setIsOpen(false), isOpen);
 
   const toggleOption = (option: string) => {
     if (selected.includes(option)) {

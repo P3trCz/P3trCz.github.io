@@ -163,7 +163,7 @@ export function StatsView() {
                     stroke="none"
                   >
                     {stats.pieData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={serviceColors[entry.name] || '#8884d8'} />
+                      <Cell key={`cell-${index}`} fill={serviceColors[entry.name as ServiceType] || '#8884d8'} />
                     ))}
                   </Pie>
                   <Tooltip

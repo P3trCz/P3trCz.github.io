@@ -1,0 +1,75 @@
+import React, { useState } from 'react';
+import { ListVideo, Check, Share2 } from 'lucide-react';
+import { Playlist } from '../../../store/useAppStore';
+import { Modal } from '../../common/Modal';
+
+type SharePlaylistModalProps = {
+  friendName: string;
+  playlists: Playlist[];
+  onClose: () => void;
+  onShare: (playlistId: string, message: string) => void;
+};
+
+export function SharePlaylistModal({ friendName, playlists, onClose, onShare }: SharePlaylistModalProps) {
+  const [selectedList, setSelectedList] = useState('');
+  const [message, setMessage] = useState('');
+
+  return (
+    <Modal
+      isOpen={true}
+      onClose={onClose}
+      title={`Sdílet seznam s ${friendName}`}
+    >
+      {playlists.length === 0 ? (
+        <div className="text-center text-gray-500 py-6">Nemáte žádné vlastní seznamy ke sdílení.</div>
+      ) : (
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-400 mb-3">Vyberte seznam</label>
+            <div className="flex flex-col gap-2 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
+              {playlists.map(pl => (
+                <div
+                  key={pl.id}
+                  onClick={() => setSelectedList(selectedList === pl.id ? '' : pl.id)}
+                  className={`flex items-center gap-4 p-4 rounded-xl cursor-pointer border transition-all ${selectedList === pl.id
+                    ? 'bg-[#dc2626]/10 border-[#dc2626] text-white'
+                    : 'bg-[#1c1c24] border-[#27272a] text-gray-400 hover:border-[#3f3f46] hover:text-white'
+                    }`}
+                >
+                  <div className={`p-2 rounded-lg ${selectedList === pl.id ? 'bg-[#dc2626] text-white' : 'bg-[#0a0a0f] text-gray-500'}`}>
+                    <ListVideo size={20} />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="font-bold truncate">{pl.name}</div>
+                    <div className="text-xs opacity-60">
+                      {pl.movieIds.length} {pl.movieIds.length === 1 ? 'položka' : pl.movieIds.length >= 2 && pl.movieIds.length <= 4 ? 'položky' : 'položek'}
+                    </div>
+                  </div>
+                  {selectedList === pl.id && <Check size={18} className="text-[#dc2626]" />}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-400 mb-2">Zpráva (nepovinné)</label>
+            <textarea
+              value={message}
+              onChange={e => setMessage(e.target.value)}
+              placeholder="Podívej se na tohle. Je to opravdu hustý!"
+              className="w-full bg-[#1c1c24] border border-[#27272a] text-white rounded-xl px-4 py-3 focus:outline-none focus:border-[#dc2626] h-24 resize-none transition-colors"
+            ></textarea>
+          </div>
+
+          <button
+            onClick={() => onShare(selectedList, message)}
+            disabled={!selectedList}
+            className="w-full flex items-center justify-center gap-2 bg-[#dc2626] hover:bg-[#b91c1c] disabled:opacity-50 disabled:cursor-not-allowed text-white py-3 rounded-xl font-semibold transition-colors mt-2 shadow-lg shadow-red-900/20"
+          >
+            <Share2 size={18} /> Odeslat seznam
+          </button>
+        </div>
+      )}
+    </Modal>
+  );
+}

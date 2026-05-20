@@ -2,7 +2,9 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useAppStore } from '../../store/useAppStore';
 import { catalog, Movie } from '../../data/catalog';
 import { usersDb } from '../../data/usersDb';
+import { Modal } from '../common/Modal';
 import { MoreHorizontal, ArrowLeft, Edit2, Trash2, Share2, X, Check } from 'lucide-react';
+import { useOnClickOutside } from '../../hooks/useOnClickOutside';
 import { MovieCard } from '../catalog/MovieCard';
 import { MovieDetail } from '../catalog/MovieDetail';
 
@@ -34,17 +36,7 @@ export function PlaylistsView() {
 
   const menuRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        setOpenMenuId(null);
-      }
-    };
-    if (openMenuId) {
-      document.addEventListener('mousedown', handleClickOutside);
-    }
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [openMenuId]);
+  useOnClickOutside(menuRef, () => setOpenMenuId(null), !!openMenuId);
 
   const getMovies = (movieIds: string[]) => {
     return movieIds.map(id => catalog.find(m => m.id.toString() === id.toString())).filter(Boolean) as typeof catalog;
@@ -300,81 +292,76 @@ export function PlaylistsView() {
       {activePlaylistId ? renderDetail() : renderOverview()}
 
       {/* SDÍLET MODAL */}
-      {shareModalPlaylistId && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm" onClick={() => setShareModalPlaylistId(null)}>
-          <div className="w-full max-w-md bg-[#111116] rounded-2xl border border-[#27272a] shadow-2xl p-6" onClick={e => e.stopPropagation()}>
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-bold text-white">Sdílet seznam</h2>
-              <button onClick={() => setShareModalPlaylistId(null)} className="text-gray-400 hover:text-white"><X size={20} /></button>
+      <Modal
+        isOpen={!!shareModalPlaylistId}
+        onClose={() => setShareModalPlaylistId(null)}
+        title="Sdílet seznam"
+      >
+        {myFriends.length === 0 ? (
+          <div className="text-center text-gray-500 py-6">Nemáte přidané žádné přátele.</div>
+        ) : (
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-400 mb-2">Vyberte přítele</label>
+              <div className="flex flex-col gap-2 max-h-[250px] overflow-y-auto pr-2 custom-scrollbar">
+                {myFriends.map(friend => {
+                  if (!friend) return null;
+                  const isSelected = shareSelectedFriendId === friend.id;
+                  return (
+                    <div
+                      key={friend.id}
+                      onClick={() => setShareSelectedFriendId(shareSelectedFriendId === friend.id ? '' : friend.id)}
+                      className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer border transition-all ${
+                        isSelected
+                          ? 'bg-[#dc2626]/10 border-[#dc2626] text-white'
+                          : 'bg-[#1c1c24] border-[#27272a] text-gray-400 hover:border-[#3f3f46] hover:text-white'
+                      }`}
+                    >
+                      <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs ${
+                        isSelected 
+                          ? 'bg-[#dc2626] text-white' 
+                          : 'bg-[#0a0a0f] text-gray-400'
+                      }`}>
+                        {friend.username.charAt(0).toUpperCase()}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="font-bold text-sm truncate text-white">{friend.username}</div>
+                      </div>
+                      {isSelected && <Check size={16} className="text-[#dc2626]" />}
+                    </div>
+                  );
+                })}
+              </div>
             </div>
 
-            {myFriends.length === 0 ? (
-              <div className="text-center text-gray-500 py-6">Nemáte přidané žádné přátele.</div>
-            ) : (
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-400 mb-2">Vyberte přítele</label>
-                  <div className="flex flex-col gap-2 max-h-[250px] overflow-y-auto pr-2 custom-scrollbar">
-                    {myFriends.map(friend => {
-                      if (!friend) return null;
-                      const isSelected = shareSelectedFriendId === friend.id;
-                      return (
-                        <div
-                          key={friend.id}
-                          onClick={() => setShareSelectedFriendId(shareSelectedFriendId === friend.id ? '' : friend.id)}
-                          className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer border transition-all ${
-                            isSelected
-                              ? 'bg-[#dc2626]/10 border-[#dc2626] text-white'
-                              : 'bg-[#1c1c24] border-[#27272a] text-gray-400 hover:border-[#3f3f46] hover:text-white'
-                          }`}
-                        >
-                          <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs ${
-                            isSelected 
-                              ? 'bg-[#dc2626] text-white' 
-                              : 'bg-[#0a0a0f] text-gray-400'
-                          }`}>
-                            {friend.username.charAt(0).toUpperCase()}
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <div className="font-bold text-sm truncate text-white">{friend.username}</div>
-                          </div>
-                          {isSelected && <Check size={16} className="text-[#dc2626]" />}
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-400 mb-2">Zpráva (nepovinné)</label>
+              <textarea
+                value={shareMessage}
+                onChange={e => setShareMessage(e.target.value)}
+                placeholder="Podívej se na tohle. Je to opravdu hustý!"
+                className="w-full bg-[#1c1c24] border border-[#27272a] text-white rounded-xl px-4 py-3 focus:outline-none focus:border-[#dc2626] h-24 resize-none"
+              ></textarea>
+            </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-400 mb-2">Zpráva (nepovinné)</label>
-                  <textarea
-                    value={shareMessage}
-                    onChange={e => setShareMessage(e.target.value)}
-                    placeholder="Podívej se na tohle. Je to opravdu hustý!"
-                    className="w-full bg-[#1c1c24] border border-[#27272a] text-white rounded-xl px-4 py-3 focus:outline-none focus:border-[#dc2626] h-24 resize-none"
-                  ></textarea>
-                </div>
-
-                <button
-                  onClick={() => {
-                    const pl = playlists.find(p => p.id === shareModalPlaylistId);
-                    if (pl && shareSelectedFriendId) {
-                      sharePlaylistAction(shareSelectedFriendId, pl, shareMessage);
-                      setShareModalPlaylistId(null);
-                      setShareMessage('');
-                      setShareSelectedFriendId('');
-                    }
-                  }}
-                  disabled={!shareSelectedFriendId}
-                  className="w-full flex items-center justify-center gap-2 bg-[#dc2626] hover:bg-[#b91c1c] disabled:opacity-50 disabled:cursor-not-allowed text-white py-3 rounded-xl font-semibold transition-colors mt-2"
-                >
-                  <Share2 size={18} /> Sdílet s přítelem
-                </button>
-              </div>
-            )}
+            <button
+              onClick={() => {
+                const pl = playlists.find(p => p.id === shareModalPlaylistId);
+                if (pl && shareSelectedFriendId) {
+                  sharePlaylistAction(shareSelectedFriendId, pl, shareMessage);
+                  setShareModalPlaylistId(null);
+                  setShareMessage('');
+                  setShareSelectedFriendId('');
+                }
+              }}
+              disabled={!shareSelectedFriendId}
+              className="w-full flex items-center justify-center gap-2 bg-[#dc2626] hover:bg-[#b91c1c] disabled:opacity-50 disabled:cursor-not-allowed text-white py-3 rounded-xl font-semibold transition-colors mt-2"
+            >
+              <Share2 size={18} /> Sdílet s přítelem
+            </button>
           </div>
-        </div>
-      )}
+        )}
+      </Modal>
     </>
   );
 }

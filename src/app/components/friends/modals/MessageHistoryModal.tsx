@@ -1,0 +1,121 @@
+import React from 'react';
+import { History, ListVideo, Plus } from 'lucide-react';
+import { ChatMessage, Playlist } from '../../../store/useAppStore';
+import { catalog, Movie } from '../../../data/catalog';
+import { Modal } from '../../common/Modal';
+
+type MessageHistoryModalProps = {
+  friend: any;
+  history: ChatMessage[];
+  onClose: () => void;
+  onViewMovie: (movie: Movie) => void;
+  onViewPlaylist: (playlist: Playlist, fromUsername: string) => void;
+  onAddMovieToPlaylist: (movieId: string) => void;
+};
+
+export function MessageHistoryModal({
+  friend,
+  history,
+  onClose,
+  onViewMovie,
+  onViewPlaylist,
+  onAddMovieToPlaylist
+}: MessageHistoryModalProps) {
+  const filteredHistory = history.filter(m =>
+    (m.fromUserId === friend.id) || (m.toUserId === friend.id)
+  ).sort((a, b) => b.timestamp - a.timestamp);
+
+  const formatDate = (ts: number) => {
+    return new Date(ts).toLocaleString('cs-CZ', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+  };
+
+  return (
+    <Modal
+      isOpen={true}
+      onClose={onClose}
+      title={`Historie s ${friend.username}`}
+      maxWidth="max-w-2xl"
+      zIndex="z-40"
+    >
+      <div className="flex flex-col space-y-6">
+        <div className="flex items-center gap-3 mb-2 px-2">
+          <div className="w-10 h-10 bg-gradient-to-br from-[#dc2626] to-[#7c3aed] rounded-full flex items-center justify-center text-white font-bold">
+            {friend.username.charAt(0).toUpperCase()}
+          </div>
+          <div>
+            <p className="text-xs text-gray-500">{filteredHistory.length} zpráv v historii</p>
+          </div>
+        </div>
+
+        {filteredHistory.length === 0 ? (
+          <div className="flex flex-col items-center justify-center h-64 text-gray-500">
+            <History size={48} className="mb-4 opacity-10" />
+            <p>Zatím zde nejsou žádné společné zprávy.</p>
+          </div>
+        ) : (
+          filteredHistory.map(msg => {
+            const isMe = msg.fromUserId !== friend.id;
+            return (
+              <div key={msg.id} className={`flex flex-col ${isMe ? 'items-end' : 'items-start'}`}>
+                <div className={`max-w-[85%] rounded-2xl p-4 ${isMe ? 'bg-[#dc2626]/10 border border-[#dc2626]/20' : 'bg-[#1c1c24] border border-[#27272a]'}`}>
+                  <div className="flex justify-between items-center gap-4 mb-2">
+                    <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">{isMe ? 'Vy' : msg.fromUsername}</span>
+                    <span className="text-[10px] text-gray-500">{formatDate(msg.timestamp)}</span>
+                  </div>
+
+                  {msg.message && <p className="text-sm text-gray-200 mb-3 italic">"{msg.message}"</p>}
+
+                  {msg.type === 'RECOMMENDED_MOVIE' && (
+                    <div className="bg-black/20 rounded-xl p-3 flex items-center gap-3">
+                      {(() => {
+                        const movie = catalog.find(m => m.id.toString() === msg.movieId);
+                        if (!movie) return <span className="text-xs text-red-500">Titul nenalezen</span>;
+                        return (
+                          <>
+                            <img src={movie.poster_url} alt={movie.title} className="w-10 h-14 object-cover rounded shadow-sm" />
+                            <div className="min-w-0 flex-1">
+                              <div className="text-sm font-bold text-white truncate">{movie.title}</div>
+                              <button
+                                onClick={() => onViewMovie(movie)}
+                                className="text-[10px] text-[#dc2626] font-bold hover:underline mt-1 mr-3"
+                              >
+                                ZOBRAZIT DETAIL
+                              </button>
+                              <button
+                                onClick={() => onAddMovieToPlaylist(movie.id.toString())}
+                                className="text-[10px] text-gray-400 font-bold hover:text-white mt-1 inline-flex items-center gap-1"
+                              >
+                                <Plus size={10} /> PŘIDAT DO SEZNAMU
+                              </button>
+                            </div>
+                          </>
+                        );
+                      })()}
+                    </div>
+                  )}
+
+                  {msg.type === 'SHARED_PLAYLIST' && (
+                    <div className="bg-black/20 rounded-xl p-3 flex items-center gap-3">
+                      <div className="p-2 bg-[#dc2626] rounded-lg text-white">
+                        <ListVideo size={16} />
+                      </div>
+                      <div className="min-w-0">
+                        <div className="text-sm font-bold text-white truncate">{msg.playlist?.name}</div>
+                        <button
+                          onClick={() => onViewPlaylist(msg.playlist!, msg.fromUsername)}
+                          className="text-[10px] text-[#dc2626] font-bold hover:underline mt-1"
+                        >
+                          OTEVŘÍT SEZNAM
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            );
+          })
+        )}
+      </div>
+    </Modal>
+  );
+}

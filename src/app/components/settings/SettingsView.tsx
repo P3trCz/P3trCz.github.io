@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { useAppStore } from '../../store/useAppStore';
 import { ServiceType, serviceLogos, serviceColors } from '../../data/catalog';
 import { usersDb } from '../../data/usersDb';
-import { User, LogOut, Key, X, Edit2 } from 'lucide-react';
+import { User, LogOut, Key, Edit2 } from 'lucide-react';
+import { Modal } from '../common/Modal';
 
 const availableServices: { id: ServiceType; name: string }[] = [
   { id: 'Netflix', name: 'Netflix' },
@@ -198,118 +199,94 @@ export function SettingsView() {
         </div>
       </div>
 
-      {showPasswordModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm" onClick={closePasswordModal}>
-          <div
-            className="w-full max-w-md bg-[#111116] rounded-2xl border border-[#27272a] shadow-2xl p-8 relative"
-            onClick={e => e.stopPropagation()}
-          >
-            <button
-              onClick={closePasswordModal}
-              className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-[#1c1c24] text-gray-400 hover:text-white transition-colors"
-            >
-              <X size={18} />
-            </button>
-
-            <h2 className="text-xl font-bold text-white mb-6">Změnit heslo</h2>
-
-            {passwordSuccess ? (
-              <div className="text-center py-4">
-                <div className="w-12 h-12 rounded-full bg-green-500/20 flex items-center justify-center mx-auto mb-3">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-green-400"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                </div>
-                <p className="text-green-400 font-medium">Heslo bylo úspěšně změněno!</p>
-              </div>
-            ) : (
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm text-gray-400 mb-2">Nové heslo</label>
-                  <input
-                    type="password"
-                    value={newPassword}
-                    onChange={e => setNewPassword(e.target.value)}
-                    placeholder="Zadejte nové heslo"
-                    className="w-full bg-[#0a0a0f] border border-[#27272a] text-white rounded-lg py-2.5 px-4 focus:outline-none focus:border-[#dc2626] transition-colors"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm text-gray-400 mb-2">Potvrďte nové heslo</label>
-                  <input
-                    type="password"
-                    value={confirmPassword}
-                    onChange={e => setConfirmPassword(e.target.value)}
-                    placeholder="Zadejte heslo znovu"
-                    className="w-full bg-[#0a0a0f] border border-[#27272a] text-white rounded-lg py-2.5 px-4 focus:outline-none focus:border-[#dc2626] transition-colors"
-                  />
-                </div>
-
-                {passwordError && (
-                  <p className="text-sm text-red-400">{passwordError}</p>
-                )}
-
-                <button
-                  onClick={handlePasswordChange}
-                  className="w-full py-3 rounded-xl bg-[#dc2626] hover:bg-[#b91c1c] text-white font-medium transition-colors mt-2"
-                >
-                  Uložit nové heslo
-                </button>
-              </div>
-            )}
+      <Modal
+        isOpen={showPasswordModal}
+        onClose={closePasswordModal}
+        title="Změnit heslo"
+      >
+        {passwordSuccess ? (
+          <div className="text-center py-4">
+            <div className="w-12 h-12 rounded-full bg-green-500/20 flex items-center justify-center mx-auto mb-3">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-green-400"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </div>
+            <p className="text-green-400 font-medium">Heslo bylo úspěšně změněno!</p>
           </div>
-        </div>
-      )}
+        ) : (
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm text-gray-400 mb-2">Nové heslo</label>
+              <input
+                type="password"
+                value={newPassword}
+                onChange={e => setNewPassword(e.target.value)}
+                placeholder="Zadejte nové heslo"
+                className="w-full bg-[#0a0a0f] border border-[#27272a] text-white rounded-lg py-2.5 px-4 focus:outline-none focus:border-[#dc2626] transition-colors"
+              />
+            </div>
 
-      {showUsernameModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm" onClick={closeUsernameModal}>
-          <div
-            className="w-full max-w-md bg-[#111116] rounded-2xl border border-[#27272a] shadow-2xl p-8 relative"
-            onClick={e => e.stopPropagation()}
-          >
-            <button
-              onClick={closeUsernameModal}
-              className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-[#1c1c24] text-gray-400 hover:text-white transition-colors"
-            >
-              <X size={18} />
-            </button>
+            <div>
+              <label className="block text-sm text-gray-400 mb-2">Potvrďte nové heslo</label>
+              <input
+                type="password"
+                value={confirmPassword}
+                onChange={e => setConfirmPassword(e.target.value)}
+                placeholder="Zadejte heslo znovu"
+                className="w-full bg-[#0a0a0f] border border-[#27272a] text-white rounded-lg py-2.5 px-4 focus:outline-none focus:border-[#dc2626] transition-colors"
+              />
+            </div>
 
-            <h2 className="text-xl font-bold text-white mb-6">Změnit uživatelské jméno</h2>
-
-            {usernameSuccess ? (
-              <div className="text-center py-4">
-                <div className="w-12 h-12 rounded-full bg-green-500/20 flex items-center justify-center mx-auto mb-3">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-green-400"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                </div>
-                <p className="text-green-400 font-medium">Uživatelské jméno bylo úspěšně změněno!</p>
-              </div>
-            ) : (
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm text-gray-400 mb-2">Nové uživatelské jméno</label>
-                  <input
-                    type="text"
-                    value={newUsername}
-                    onChange={e => setNewUsername(e.target.value)}
-                    placeholder="Zadejte nové uživatelské jméno"
-                    className="w-full bg-[#0a0a0f] border border-[#27272a] text-white rounded-lg py-2.5 px-4 focus:outline-none focus:border-[#dc2626] transition-colors"
-                  />
-                </div>
-
-                {usernameError && (
-                  <p className="text-sm text-red-400">{usernameError}</p>
-                )}
-
-                <button
-                  onClick={handleUsernameChange}
-                  className="w-full py-3 rounded-xl bg-[#dc2626] hover:bg-[#b91c1c] text-white font-medium transition-colors mt-2"
-                >
-                  Uložit jméno
-                </button>
-              </div>
+            {passwordError && (
+              <p className="text-sm text-red-400">{passwordError}</p>
             )}
+
+            <button
+              onClick={handlePasswordChange}
+              className="w-full py-3 rounded-xl bg-[#dc2626] hover:bg-[#b91c1c] text-white font-medium transition-colors mt-2"
+            >
+              Uložit nové heslo
+            </button>
           </div>
-        </div>
-      )}
+        )}
+      </Modal>
+
+      <Modal
+        isOpen={showUsernameModal}
+        onClose={closeUsernameModal}
+        title="Změnit uživatelské jméno"
+      >
+        {usernameSuccess ? (
+          <div className="text-center py-4">
+            <div className="w-12 h-12 rounded-full bg-green-500/20 flex items-center justify-center mx-auto mb-3">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-green-400"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </div>
+            <p className="text-green-400 font-medium">Uživatelské jméno bylo úspěšně změněno!</p>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm text-gray-400 mb-2">Nové uživatelské jméno</label>
+              <input
+                type="text"
+                value={newUsername}
+                onChange={e => setNewUsername(e.target.value)}
+                placeholder="Zadejte nové uživatelské jméno"
+                className="w-full bg-[#0a0a0f] border border-[#27272a] text-white rounded-lg py-2.5 px-4 focus:outline-none focus:border-[#dc2626] transition-colors"
+              />
+            </div>
+
+            {usernameError && (
+              <p className="text-sm text-red-400">{usernameError}</p>
+            )}
+
+            <button
+              onClick={handleUsernameChange}
+              className="w-full py-3 rounded-xl bg-[#dc2626] hover:bg-[#b91c1c] text-white font-medium transition-colors mt-2"
+            >
+              Uložit jméno
+            </button>
+          </div>
+        )}
+      </Modal>
     </>
   );
 }
