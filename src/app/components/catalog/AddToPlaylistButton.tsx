@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Plus } from 'lucide-react';
-import { AddMovieToPlaylistModal } from '../friends/modals/AddMovieToPlaylistModal';
+import { AddTitleToPlaylistModal } from '../friends/modals/AddTitleToPlaylistModal';
 
 type Props = {
   movieId: string;
@@ -22,7 +22,7 @@ export function AddToPlaylistButton({ movieId }: Props) {
       </button>
 
       {isOpen && (
-        <AddMovieToPlaylistModal
+        <AddTitleToPlaylistModal
           movieId={movieId}
           onClose={() => setIsOpen(false)}
         />

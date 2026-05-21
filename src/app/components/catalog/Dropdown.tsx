@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { ChevronDown, Check } from 'lucide-react';
 import { useOnClickOutside } from '../../hooks/useOnClickOutside';
 

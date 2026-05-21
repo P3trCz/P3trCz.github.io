@@ -11,14 +11,14 @@ type RecommendMovieModalProps = {
 
 export function RecommendMovieModal({ friendName, onClose, onRecommend }: RecommendMovieModalProps) {
   const [search, setSearch] = useState('');
-  const [selectedMovieId, setSelectedMovieId] = useState<string | null>(null);
+  const [selectedTitleId, setSelectedTitleId] = useState<string | null>(null);
   const [message, setMessage] = useState('');
 
   const filteredMovies = search.trim().length >= 3
     ? catalog.filter(m => m.title.toLowerCase().includes(search.toLowerCase())).slice(0, 5)
     : [];
 
-  const selectedMovie = selectedMovieId ? catalog.find(m => m.id.toString() === selectedMovieId.toString()) : null;
+  const selectedTitle = selectedTitleId ? catalog.find(m => m.id.toString() === selectedTitleId.toString()) : null;
 
   return (
     <Modal
@@ -28,7 +28,7 @@ export function RecommendMovieModal({ friendName, onClose, onRecommend }: Recomm
       maxWidth="max-w-lg"
     >
       <div className="space-y-4">
-        {!selectedMovie ? (
+        {!selectedTitle ? (
           <div>
             <div className="relative mb-4">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
@@ -50,16 +50,16 @@ export function RecommendMovieModal({ friendName, onClose, onRecommend }: Recomm
 
             {filteredMovies.length > 0 ? (
               <div className="flex flex-col gap-2 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
-                {filteredMovies.map(movie => (
+                {filteredMovies.map(title => (
                   <div
-                    key={`${movie.type}-${movie.id}`}
-                    onClick={() => setSelectedMovieId(movie.id.toString())}
+                    key={`${title.type}-${title.id}`}
+                    onClick={() => setSelectedTitleId(title.id.toString())}
                     className="flex items-center gap-3 p-2 hover:bg-[#27272a] rounded-lg cursor-pointer transition-colors border border-transparent hover:border-[#3f3f46]"
                   >
-                    <img src={movie.poster_url} alt={movie.title} className="w-10 h-14 object-cover rounded" />
+                    <img src={title.poster_url} alt={title.title} className="w-10 h-14 object-cover rounded" />
                     <div>
-                      <div className="font-bold text-white text-sm">{movie.title}</div>
-                      <div className="text-xs text-gray-400">{movie.release_year} • {movie.type}</div>
+                      <div className="font-bold text-white text-sm">{title.title}</div>
+                      <div className="text-xs text-gray-400">{title.release_year} • {title.type}</div>
                     </div>
                   </div>
                 ))}
@@ -75,11 +75,11 @@ export function RecommendMovieModal({ friendName, onClose, onRecommend }: Recomm
         ) : (
           <div className="animate-in fade-in slide-in-from-bottom-4 duration-300">
             <div className="flex items-center gap-4 bg-[#1c1c24] border border-[#27272a] p-3 rounded-xl mb-4">
-              <img src={selectedMovie.poster_url} alt={selectedMovie.title} className="w-16 h-24 object-cover rounded shadow-md" />
+              <img src={selectedTitle.poster_url} alt={selectedTitle.title} className="w-16 h-24 object-cover rounded shadow-md" />
               <div className="flex-1">
-                <div className="font-bold text-white text-lg">{selectedMovie.title}</div>
-                <div className="text-sm text-gray-400">{selectedMovie.release_year} • {selectedMovie.type}</div>
-                <button onClick={() => setSelectedMovieId(null)} className="text-xs text-[#dc2626] hover:text-white mt-2 transition-colors">Vybrat jiný titul</button>
+                <div className="font-bold text-white text-lg">{selectedTitle.title}</div>
+                <div className="text-sm text-gray-400">{selectedTitle.release_year} • {selectedTitle.type}</div>
+                <button onClick={() => setSelectedTitleId(null)} className="text-xs text-[#dc2626] hover:text-white mt-2 transition-colors">Vybrat jiný titul</button>
               </div>
             </div>
 
@@ -94,7 +94,7 @@ export function RecommendMovieModal({ friendName, onClose, onRecommend }: Recomm
             </div>
 
             <button
-              onClick={() => onRecommend(selectedMovie.id.toString(), message)}
+              onClick={() => onRecommend(selectedTitle.id.toString(), message)}
               className="w-full flex items-center justify-center gap-2 bg-[#dc2626] hover:bg-[#b91c1c] text-white py-3 rounded-xl font-semibold transition-colors mt-4"
             >
               <Film size={18} /> Odeslat doporučení

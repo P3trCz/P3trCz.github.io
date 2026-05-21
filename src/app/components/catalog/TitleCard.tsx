@@ -1,21 +1,21 @@
 import React from 'react';
-import { Movie, ServiceType, serviceLogos, serviceColors } from '../../data/catalog';
+import { Title, ServiceType, serviceLogos, serviceColors } from '../../data/catalog';
 import { Star, Eye } from 'lucide-react';
 import { AddToPlaylistButton } from './AddToPlaylistButton';
 import { useAppStore } from '../../store/useAppStore';
 
 type Props = {
-  movie: Movie;
-  onClick: (movie: Movie) => void;
+  title: Title;
+  onClick: (title: Title) => void;
   className?: string;
 };
 
-export function MovieCard({ movie, onClick, className = '' }: Props) {
+export function TitleCard({ title, onClick, className = '' }: Props) {
   const currentUser = useAppStore(state => state.currentUser);
   const watchedTitles = useAppStore(state => state.watchedTitles);
   const toggleWatchedTitle = useAppStore(state => state.toggleWatchedTitle);
 
-  const isWatched = currentUser && (watchedTitles[currentUser.id] || []).includes(movie.id.toString());
+  const isWatched = currentUser && (watchedTitles[currentUser.id] || []).includes(title.id.toString());
 
   const renderStars = (rating: number) => {
     const stars = Math.round(rating / 20); // 1-5
@@ -35,19 +35,19 @@ export function MovieCard({ movie, onClick, className = '' }: Props) {
   return (
     <div
       className={`grid grid-cols-[3fr_2fr] lg:grid-cols-[3fr_1fr_2fr_1fr_2fr] gap-4 items-center py-3 border-b border-[#27272a] hover:bg-[#111116] transition-colors cursor-pointer px-4 ${isWatched ? 'opacity-60' : ''} ${className}`}
-      onClick={() => onClick(movie)}
+      onClick={() => onClick(title)}
     >
       <div className="flex items-center gap-3 min-w-0">
         <img
-          src={movie.poster_url}
-          alt={movie.title}
+          src={title.poster_url}
+          alt={title.title}
           className="w-10 h-14 lg:w-12 lg:h-16 object-cover rounded shadow shrink-0"
         />
-        <div className="font-medium text-white truncate text-sm lg:text-base">{movie.title}</div>
+        <div className="font-medium text-white truncate text-sm lg:text-base">{title.title}</div>
         <div className="shrink-0 flex items-center gap-2" onClick={e => e.stopPropagation()}>
           <button
             onClick={() => {
-              if (currentUser) toggleWatchedTitle(movie.id.toString());
+              if (currentUser) toggleWatchedTitle(title.id.toString());
             }}
             className={`w-8 h-8 rounded-full border flex items-center justify-center transition-colors ${
               isWatched
@@ -58,24 +58,24 @@ export function MovieCard({ movie, onClick, className = '' }: Props) {
           >
             <Eye size={16} />
           </button>
-          <AddToPlaylistButton movieId={movie.id.toString()} />
+          <AddToPlaylistButton movieId={title.id.toString()} />
         </div>
       </div>
 
       <div className="hidden lg:block text-gray-400 text-sm">
-        {movie.type}
+        {title.type}
       </div>
 
       <div className="hidden lg:block text-gray-400 text-sm truncate pr-4">
-        {movie.genres.join(', ')}
+        {title.genres.join(', ')}
       </div>
 
       <div className="hidden lg:block">
-        {renderStars(movie.rating)}
+        {renderStars(title.rating)}
       </div>
 
       <div className="flex flex-wrap gap-1.5">
-        {movie.streaming_services.map(service => (
+        {title.streaming_services.map(service => (
           <span
             key={service}
             className="text-[10px] font-bold px-2 py-0.5 rounded text-white"

@@ -1,13 +1,13 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { catalog, Movie, ServiceType } from '../../data/catalog';
-import { MovieCard } from './MovieCard';
-import { MovieDetail } from './MovieDetail';
+import { catalog, Title, ServiceType } from '../../data/catalog';
+import { TitleCard } from './TitleCard';
+import { TitleDetail } from './TitleDetail';
 import { Filter, RefreshCw, Search, X } from 'lucide-react';
 import { Dropdown } from './Dropdown';
 import { useAppStore } from '../../store/useAppStore';
 
-export function MovieGrid() {
-  const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
+export function TitleGrid() {
+  const [selectedTitle, setSelectedTitle] = useState<Title | null>(null);
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
   const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
   const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
@@ -30,52 +30,52 @@ export function MovieGrid() {
   }, [selectedServices, selectedGenres, selectedTypes, selectedWatched, userSubscriptions, searchQuery]);
 
   // Filmy dostupné na uživatelových službách
-  const availableMovies = useMemo(() => {
-    return catalog.filter(movie => movie.streaming_services.some(s => userSubscriptions.includes(s)));
+  const availableTitles = useMemo(() => {
+    return catalog.filter(title => title.streaming_services.some(s => userSubscriptions.includes(s)));
   }, [userSubscriptions]);
 
   // Filtry nabízejí pouze vlastněné služby a žánry z dostupných filmů
   const allServices = useMemo(() => {
-    const validServices = new Set(availableMovies.flatMap(m => m.streaming_services));
+    const validServices = new Set(availableTitles.flatMap(m => m.streaming_services));
     return userSubscriptions.filter(s => validServices.has(s as ServiceType)).sort();
-  }, [availableMovies, userSubscriptions]);
+  }, [availableTitles, userSubscriptions]);
 
-  const allGenres = useMemo(() => Array.from(new Set(availableMovies.flatMap(m => m.genres))).sort(), [availableMovies]);
+  const allGenres = useMemo(() => Array.from(new Set(availableTitles.flatMap(m => m.genres))).sort(), [availableTitles]);
   const allTypes = ['Film', 'Seriál'];
 
   const filteredCatalog = useMemo(() => {
-    return catalog.filter(movie => {
+    return catalog.filter(title => {
       // 1. Základní filtr - film musí být dostupný na některé ze služeb, které uživatel vlastní
-      const hasSubscribedService = movie.streaming_services.some(service => userSubscriptions.includes(service));
+      const hasSubscribedService = title.streaming_services.some(service => userSubscriptions.includes(service));
       if (!hasSubscribedService) return false;
 
       // 2. Fulltextové vyhledávání v názvu (od 3 znaků)
       if (isSearchActive) {
         const query = searchQuery.toLowerCase();
-        const matchesSearch = movie.title.toLowerCase().includes(query);
+        const matchesSearch = title.title.toLowerCase().includes(query);
         if (!matchesSearch) return false;
       }
 
       // 3. Filtr podle služeb (OR logiky)
       if (selectedServices.length > 0) {
-        const matchesService = movie.streaming_services.some(service => selectedServices.includes(service));
+        const matchesService = title.streaming_services.some(service => selectedServices.includes(service));
         if (!matchesService) return false;
       }
 
       // 4. Filtr podle žánrů (AND logika)
       if (selectedGenres.length > 0) {
-        const matchesGenres = selectedGenres.every(genre => movie.genres.includes(genre));
+        const matchesGenres = selectedGenres.every(genre => title.genres.includes(genre));
         if (!matchesGenres) return false;
       }
 
       // 5. Filtr podle typu (Film / Seriál)
       if (selectedTypes.length > 0) {
-        if (!selectedTypes.includes(movie.type)) return false;
+        if (!selectedTypes.includes(title.type)) return false;
       }
 
       // 6. Filtr podle zhlédnutí
       if (selectedWatched.length > 0 && selectedWatched.length < 2) {
-        const isWatched = userWatchedTitles.includes(movie.id.toString());
+        const isWatched = userWatchedTitles.includes(title.id.toString());
         if (selectedWatched.includes('Zhlédnuté') && !isWatched) return false;
         if (selectedWatched.includes('Nezhlédnuté') && isWatched) return false;
       }
@@ -178,11 +178,11 @@ export function MovieGrid() {
         {/* Table Body */}
         <div className="flex flex-col">
           {displayedCatalog.length > 0 ? (
-            displayedCatalog.map((movie, index) => (
-              <MovieCard
-                key={`${movie.type}-${movie.id}`}
-                movie={movie}
-                onClick={(m) => setSelectedMovie(m)}
+            displayedCatalog.map((title, index) => (
+              <TitleCard
+                key={`${title.type}-${title.id}`}
+                title={title}
+                onClick={(m) => setSelectedTitle(m)}
                 className={index === displayedCatalog.length - 1 ? "rounded-b-xl border-b-0" : ""}
               />
             ))
@@ -208,10 +208,10 @@ export function MovieGrid() {
         </div>
       )}
 
-      {selectedMovie && (
-        <MovieDetail
-          movie={selectedMovie}
-          onClose={() => setSelectedMovie(null)}
+      {selectedTitle && (
+        <TitleDetail
+          title={selectedTitle}
+          onClose={() => setSelectedTitle(null)}
         />
       )}
     </div>

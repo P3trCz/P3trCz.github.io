@@ -62,16 +62,16 @@ export function StatsView() {
 
     filteredHistory.forEach(item => {
       const svc = item.service;
-      const movie = catalog.find(m => m.id.toString() === item.movieId);
+      const title = catalog.find(m => m.id.toString() === item.movieId);
 
-      if (movie) {
-        if (movie.type === 'Film') {
+      if (title) {
+        if (title.type === 'Film') {
           serviceTime[svc] = (serviceTime[svc] || 0) + item.durationMinutes;
           totalMinutes += item.durationMinutes;
           totalFilms++;
         }
 
-        movie.genres.forEach(g => {
+        title.genres.forEach(g => {
           genreCount[g] = (genreCount[g] || 0) + 1;
         });
       }

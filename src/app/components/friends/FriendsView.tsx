@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { useAppStore, Playlist, ChatMessage } from '../../store/useAppStore';
 import { usersDb } from '../../data/usersDb';
-import { catalog, Movie } from '../../data/catalog';
+import { catalog, Title } from '../../data/catalog';
 import { Search, UserPlus, Check, X, Share2, Film, Trash2, Play, Download, ListVideo, MessageSquare, Eye, History, Plus, Clock } from 'lucide-react';
-import { MovieDetail } from '../catalog/MovieDetail';
+import { TitleDetail } from '../catalog/TitleDetail';
 import { SharePlaylistModal } from './modals/SharePlaylistModal';
 import { RecommendMovieModal } from './modals/RecommendMovieModal';
 import { MessageHistoryModal } from './modals/MessageHistoryModal';
 import { PreviewPlaylistModal } from './modals/PreviewPlaylistModal';
-import { AddMovieToPlaylistModal } from './modals/AddMovieToPlaylistModal';
+import { AddTitleToPlaylistModal } from './modals/AddTitleToPlaylistModal';
 export function FriendsView() {
   const currentUser = useAppStore(state => state.currentUser);
   const friends = useAppStore(state => state.friends);
@@ -22,7 +22,7 @@ export function FriendsView() {
   const importPlaylist = useAppStore(state => state.importPlaylist);
   const removeFriend = useAppStore(state => state.removeFriend);
   const sharePlaylist = useAppStore(state => state.sharePlaylist);
-  const recommendMovie = useAppStore(state => state.recommendMovie);
+  const recommendTitle = useAppStore(state => state.recommendTitle);
   const messageHistory = useAppStore(state => state.messageHistory);
 
   const [addUsername, setAddUsername] = useState('');
@@ -31,12 +31,12 @@ export function FriendsView() {
 
   // Modals state
   const [sharePlaylistFriendId, setSharePlaylistFriendId] = useState<string | null>(null);
-  const [recommendMovieFriendId, setRecommendMovieFriendId] = useState<string | null>(null);
+  const [recommendTitleFriendId, setRecommendMovieFriendId] = useState<string | null>(null);
   const [historyFriendId, setHistoryFriendId] = useState<string | null>(null);
   const [previewPlaylist, setPreviewPlaylist] = useState<Playlist | null>(null);
   const [previewFromUsername, setPreviewFromUsername] = useState<string>('');
   const [addingMovieId, setAddingMovieId] = useState<string | null>(null);
-  const [selectedMovieForDetail, setSelectedMovieForDetail] = useState<Movie | null>(null);
+  const [selectedTitleForDetail, setSelectedTitleForDetail] = useState<Title | null>(null);
 
   const myFriendsIds = currentUser ? (friends[currentUser.id] || []) : [];
   const myFriends = myFriendsIds.map(id => usersDb.getUsers().find(u => u.id === id)).filter(Boolean);
@@ -185,7 +185,7 @@ export function FriendsView() {
                       </div>
                     )}
 
-                    {notif.type === 'RECOMMENDED_MOVIE' && (
+                    {notif.type === 'RECOMMENDED_TITLE' && (
                       <div>
                         <div className="flex justify-between items-start mb-2">
                           <p className="text-sm text-gray-300">
@@ -197,16 +197,16 @@ export function FriendsView() {
                         </div>
 
                         {(() => {
-                          const movie = getMovieById(notif.movieId || '');
-                          if (!movie) return <p className="text-red-500 text-xs">Titul nebyl nalezen.</p>;
+                          const title = getMovieById(notif.movieId || '');
+                          if (!title) return <p className="text-red-500 text-xs">Titul nebyl nalezen.</p>;
 
                           return (
                             <div className="flex flex-col gap-3 mt-2">
                               <div className="flex items-center gap-3 bg-[#0a0a0f] p-2 rounded-lg">
-                                <img src={movie.poster_url} alt={movie.title} className="w-12 h-16 object-cover rounded" />
+                                <img src={title.poster_url} alt={title.title} className="w-12 h-16 object-cover rounded" />
                                 <div>
-                                  <div className="text-sm font-bold text-white">{movie.title}</div>
-                                  <div className="text-xs text-gray-500">{movie.release_year} • {movie.type}</div>
+                                  <div className="text-sm font-bold text-white">{title.title}</div>
+                                  <div className="text-xs text-gray-500">{title.release_year} • {title.type}</div>
                                 </div>
                               </div>
                               {notif.message && (
@@ -214,7 +214,7 @@ export function FriendsView() {
                                   "{notif.message}"
                                 </div>
                               )}
-                              <button onClick={() => setSelectedMovieForDetail(movie)} className="w-full flex items-center justify-center gap-2 bg-[#dc2626] hover:bg-[#b91c1c] text-white py-2 rounded-lg text-xs font-medium transition-colors">
+                              <button onClick={() => setSelectedTitleForDetail(title)} className="w-full flex items-center justify-center gap-2 bg-[#dc2626] hover:bg-[#b91c1c] text-white py-2 rounded-lg text-xs font-medium transition-colors">
                                 <Play size={14} fill="currentColor" /> Zobrazit detail
                               </button>
                             </div>
@@ -295,12 +295,12 @@ export function FriendsView() {
       )}
 
       {/* MODAL: Doporučit Film */}
-      {recommendMovieFriendId && (
+      {recommendTitleFriendId && (
         <RecommendMovieModal
-          friendName={myFriends.find(f => f?.id === recommendMovieFriendId)?.username || ''}
+          friendName={myFriends.find(f => f?.id === recommendTitleFriendId)?.username || ''}
           onClose={() => setRecommendMovieFriendId(null)}
           onRecommend={(movieId, message) => {
-            recommendMovie(recommendMovieFriendId, movieId, message);
+            recommendTitle(recommendTitleFriendId, movieId, message);
             setRecommendMovieFriendId(null);
           }}
         />
@@ -312,7 +312,7 @@ export function FriendsView() {
           friend={myFriends.find(f => f?.id === historyFriendId)!}
           history={messageHistory[currentUser?.id || ''] || []}
           onClose={() => setHistoryFriendId(null)}
-          onViewMovie={(movie) => setSelectedMovieForDetail(movie)}
+          onViewMovie={(title) => setSelectedTitleForDetail(title)}
           onAddMovieToPlaylist={(movieId) => setAddingMovieId(movieId)}
           onViewPlaylist={(playlist, fromUsername) => {
             setPreviewPlaylist(playlist);
@@ -330,7 +330,7 @@ export function FriendsView() {
             setPreviewPlaylist(null);
             setPreviewFromUsername('');
           }}
-          onViewMovie={(movie) => setSelectedMovieForDetail(movie)}
+          onViewMovie={(title) => setSelectedTitleForDetail(title)}
           onSave={() => {
             const success = importPlaylist(previewPlaylist, previewFromUsername);
             if (success) {
@@ -347,15 +347,15 @@ export function FriendsView() {
 
       {/* MODAL: Přidat film do seznamu */}
       {addingMovieId && (
-        <AddMovieToPlaylistModal
+        <AddTitleToPlaylistModal
           movieId={addingMovieId}
           onClose={() => setAddingMovieId(null)}
         />
       )}
 
       {/* MODAL: Zobrazit detail filmu (pokud na něj kliknu z notifikace) */}
-      {selectedMovieForDetail && (
-        <MovieDetail movie={selectedMovieForDetail} onClose={() => setSelectedMovieForDetail(null)} />
+      {selectedTitleForDetail && (
+        <TitleDetail title={selectedTitleForDetail} onClose={() => setSelectedTitleForDetail(null)} />
       )}
     </div>
   );

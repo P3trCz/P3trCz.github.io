@@ -4,12 +4,12 @@ import { useAppStore } from '../../../store/useAppStore';
 import { catalog } from '../../../data/catalog';
 import { Modal } from '../../common/Modal';
 
-type AddMovieToPlaylistModalProps = {
+type AddTitleToPlaylistModalProps = {
   movieId: string;
   onClose: () => void;
 };
 
-export function AddMovieToPlaylistModal({ movieId, onClose }: AddMovieToPlaylistModalProps) {
+export function AddTitleToPlaylistModal({ movieId, onClose }: AddTitleToPlaylistModalProps) {
   const currentUser = useAppStore(state => state.currentUser);
   const playlists = useAppStore(state => state.playlists);
   const addToPlaylist = useAppStore(state => state.addToPlaylist);
@@ -21,7 +21,7 @@ export function AddMovieToPlaylistModal({ movieId, onClose }: AddMovieToPlaylist
   const [newPlaylistName, setNewPlaylistName] = useState('');
   const userPlaylists = currentUser ? (playlists[currentUser.id] || []) : [];
   const userWatchlist = currentUser ? (watchlists[currentUser.id] || []) : [];
-  const movie = catalog.find(m => m.id.toString() === movieId);
+  const title = catalog.find(m => m.id.toString() === movieId);
 
   const handleCreateAndAdd = () => {
     if (!newPlaylistName.trim()) return;
@@ -38,12 +38,12 @@ export function AddMovieToPlaylistModal({ movieId, onClose }: AddMovieToPlaylist
       zIndex="z-[110]"
     >
       <div className="flex flex-col">
-        {movie && (
+        {title && (
           <div className="flex items-center gap-3 bg-[#1c1c24] p-3 rounded-xl mb-6">
-            <img src={movie.poster_url} alt={movie.title} className="w-10 h-14 object-cover rounded" />
+            <img src={title.poster_url} alt={title.title} className="w-10 h-14 object-cover rounded" />
             <div className="min-w-0">
-              <div className="text-sm font-bold text-white truncate">{movie.title}</div>
-              <div className="text-xs text-gray-500">{movie.release_year}</div>
+              <div className="text-sm font-bold text-white truncate">{title.title}</div>
+              <div className="text-xs text-gray-500">{title.release_year}</div>
             </div>
           </div>
         )}

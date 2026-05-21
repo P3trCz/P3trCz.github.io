@@ -1,12 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useAppStore } from '../../store/useAppStore';
-import { catalog, Movie } from '../../data/catalog';
+import { catalog, Title } from '../../data/catalog';
 import { usersDb } from '../../data/usersDb';
 import { Modal } from '../common/Modal';
 import { MoreHorizontal, ArrowLeft, Edit2, Trash2, Share2, X, Check, Plus } from 'lucide-react';
 import { useOnClickOutside } from '../../hooks/useOnClickOutside';
-import { MovieCard } from '../catalog/MovieCard';
-import { MovieDetail } from '../catalog/MovieDetail';
+import { TitleCard } from '../catalog/TitleCard';
+import { TitleDetail } from '../catalog/TitleDetail';
 
 export function PlaylistsView() {
   const currentUser = useAppStore(state => state.currentUser);
@@ -25,7 +25,7 @@ export function PlaylistsView() {
   const historyMovieIds = Array.from(new Set([...watchHistory].reverse().map(h => h.movieId)));
 
   const [activePlaylistId, setActivePlaylistId] = useState<string | null>(null);
-  const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
+  const [selectedTitle, setSelectedTitle] = useState<Title | null>(null);
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
   const [isCreating, setIsCreating] = useState(false);
   const [newPlaylistName, setNewPlaylistName] = useState('');
@@ -77,12 +77,12 @@ export function PlaylistsView() {
     }
 
     const title = isWatchlist ? 'Přehrát později' : isHistory ? 'Historie sledování' : playlist!.name;
-    const allMovies = getMovies(isWatchlist ? watchlist : isHistory ? historyMovieIds : playlist!.movieIds);
-    const displayedMovies = allMovies.slice(0, displayedCount);
-    const hasMore = displayedCount < allMovies.length;
+    const allTitles = getMovies(isWatchlist ? watchlist : isHistory ? historyMovieIds : playlist!.movieIds);
+    const displayedTitles = allTitles.slice(0, displayedCount);
+    const hasMore = displayedCount < allTitles.length;
 
     const handleLoadMore = () => {
-      setDisplayedCount(prev => Math.min(prev + 25, allMovies.length));
+      setDisplayedCount(prev => Math.min(prev + 25, allTitles.length));
     };
 
     return (
@@ -104,8 +104,9 @@ export function PlaylistsView() {
           </div>
           {!isWatchlist && !isHistory && playlist && (
             <button
-              onClick={() => setShareModalPlaylistId(playlist.id)}
-              className="flex items-center gap-2 bg-[#27272a] hover:bg-[#3f3f46] text-white px-4 py-2 rounded-lg font-medium transition-colors"
+              onClick={() => playlist.movieIds.length > 0 ? setShareModalPlaylistId(playlist.id) : alert('Prázdný seznam nelze sdílet.')}
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors ${playlist.movieIds.length > 0 ? 'bg-[#27272a] hover:bg-[#3f3f46] text-white' : 'bg-[#27272a]/50 text-gray-500 cursor-not-allowed'}`}
+              title={playlist.movieIds.length === 0 ? "Prázdný seznam nelze sdílet" : ""}
             >
               <Share2 size={18} /> Sdílet
             </button>
@@ -122,13 +123,13 @@ export function PlaylistsView() {
           </div>
 
           <div className="flex flex-col">
-            {displayedMovies.length > 0 ? (
-              displayedMovies.map((movie, index) => (
-                <MovieCard
-                  key={`${movie.type}-${movie.id}`}
-                  movie={movie}
-                  onClick={(m) => setSelectedMovie(m)}
-                  className={index === displayedMovies.length - 1 ? "rounded-b-xl border-b-0" : ""}
+            {displayedTitles.length > 0 ? (
+              displayedTitles.map((title, index) => (
+                <TitleCard
+                  key={`${title.type}-${title.id}`}
+                  title={title}
+                  onClick={(m) => setSelectedTitle(m)}
+                  className={index === displayedTitles.length - 1 ? "rounded-b-xl border-b-0" : ""}
                 />
               ))
             ) : (
@@ -150,10 +151,10 @@ export function PlaylistsView() {
           </div>
         )}
 
-        {selectedMovie && (
-          <MovieDetail
-            movie={selectedMovie}
-            onClose={() => setSelectedMovie(null)}
+        {selectedTitle && (
+          <TitleDetail
+            title={selectedTitle}
+            onClose={() => setSelectedTitle(null)}
           />
         )}
       </div>
@@ -161,9 +162,9 @@ export function PlaylistsView() {
   };
 
   const renderPreview = (movieIds: string[]) => {
-    const previewMovies = getMovies(movieIds.slice(0, 4));
+    const previewTitles = getMovies(movieIds.slice(0, 4));
 
-    if (previewMovies.length === 0) {
+    if (previewTitles.length === 0) {
       return (
         <div className="flex-1 flex items-center justify-center border border-dashed border-[#27272a] rounded-lg py-8 mb-4 bg-[#0a0a0f]">
           <span className="text-sm text-gray-500 font-medium">Seznam je prázdný</span>
@@ -174,16 +175,16 @@ export function PlaylistsView() {
     return (
       <div className="flex-1 flex items-center justify-center mb-4 py-4 relative min-h-[140px]">
         <div className="relative h-28 w-full flex justify-center items-center">
-          {previewMovies.map((m, idx) => (
+          {previewTitles.map((m, idx) => (
             <img
               key={`${m.id}-${idx}`}
               src={m.poster_url}
               alt={m.title}
               className="absolute w-20 h-28 object-cover rounded shadow-2xl border border-[#27272a] transition-all duration-300 group-hover:scale-110"
               style={{
-                left: `calc(50% - 40px + ${(idx - (previewMovies.length - 1) / 2) * 20}px)`,
-                zIndex: previewMovies.length - idx,
-                transform: `rotate(${(idx - (previewMovies.length - 1) / 2) * 8}deg)`,
+                left: `calc(50% - 40px + ${(idx - (previewTitles.length - 1) / 2) * 20}px)`,
+                zIndex: previewTitles.length - idx,
+                transform: `rotate(${(idx - (previewTitles.length - 1) / 2) * 8}deg)`,
                 opacity: 1
               }}
             />
@@ -320,8 +321,17 @@ export function PlaylistsView() {
                       <Edit2 size={16} /> Přejmenovat
                     </button>
                     <button
-                      onClick={(e) => { e.stopPropagation(); setShareModalPlaylistId(pl.id); setOpenMenuId(null); }}
-                      className="w-full flex items-center gap-3 px-4 py-3 text-sm text-gray-300 hover:text-white hover:bg-[#27272a] transition-colors"
+                      onClick={(e) => { 
+                        e.stopPropagation(); 
+                        if (pl.movieIds.length === 0) {
+                          alert('Prázdný seznam nelze sdílet.');
+                        } else {
+                          setShareModalPlaylistId(pl.id); 
+                        }
+                        setOpenMenuId(null); 
+                      }}
+                      className={`w-full flex items-center gap-3 px-4 py-3 text-sm transition-colors ${pl.movieIds.length > 0 ? 'text-gray-300 hover:text-white hover:bg-[#27272a]' : 'text-gray-600 cursor-not-allowed'}`}
+                      title={pl.movieIds.length === 0 ? "Prázdný seznam nelze sdílet" : ""}
                     >
                       <Share2 size={16} /> Sdílet
                     </button>

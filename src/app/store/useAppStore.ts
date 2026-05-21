@@ -21,7 +21,7 @@ export type NotificationType =
   | 'FRIEND_REQUEST' 
   | 'FRIEND_REQUEST_REJECTED' 
   | 'SHARED_PLAYLIST' 
-  | 'RECOMMENDED_MOVIE';
+  | 'RECOMMENDED_TITLE';
 
 export type Notification = {
   id: string;
@@ -40,7 +40,7 @@ export type ChatMessage = {
   fromUsername: string;
   toUserId: string;
   timestamp: number;
-  type: 'SHARED_PLAYLIST' | 'RECOMMENDED_MOVIE';
+  type: 'SHARED_PLAYLIST' | 'RECOMMENDED_TITLE';
   message?: string;
   playlist?: Playlist;
   movieId?: string;
@@ -91,7 +91,7 @@ type AppState = {
   rejectFriendRequest: (notificationId: string) => void;
   removeFriend: (friendId: string) => void;
   sharePlaylist: (friendId: string, playlist: Playlist, message?: string) => void;
-  recommendMovie: (friendId: string, movieId: string, message?: string) => void;
+  recommendTitle: (friendId: string, movieId: string, message?: string) => void;
   importPlaylist: (playlist: Playlist, fromUsername: string) => boolean; // Vrací true při úspěchu
   dismissNotification: (notificationId: string) => void;
   saveSharedPlaylist: (notificationId: string) => void;
@@ -471,7 +471,7 @@ export const useAppStore = create<AppState>()(
         return true;
       },
 
-      recommendMovie: (friendId, movieId, message) => {
+      recommendTitle: (friendId, movieId, message) => {
         const currentUser = get().currentUser;
         if (!currentUser) return;
 
@@ -479,7 +479,7 @@ export const useAppStore = create<AppState>()(
           const friendNotifs = state.notifications[friendId] || [];
           const newNotif: Notification = {
             id: Math.random().toString(36).substr(2, 9),
-            type: 'RECOMMENDED_MOVIE',
+            type: 'RECOMMENDED_TITLE',
             fromUserId: currentUser.id,
             fromUsername: currentUser.username,
             timestamp: Date.now(),
@@ -493,7 +493,7 @@ export const useAppStore = create<AppState>()(
             fromUsername: currentUser.username,
             toUserId: friendId,
             timestamp: newNotif.timestamp,
-            type: 'RECOMMENDED_MOVIE',
+            type: 'RECOMMENDED_TITLE',
             message,
             movieId
           };

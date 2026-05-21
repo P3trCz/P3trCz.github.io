@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { useAppStore } from './store/useAppStore';
 import { AuthView } from './components/auth/AuthView';
 import { Layout } from './components/layout/Layout';
-import { MovieGrid } from './components/catalog/MovieGrid';
+import { TitleGrid } from './components/catalog/TitleGrid';
 import { PlaylistsView } from './components/lists/PlaylistsView';
 import { StatsView } from './components/stats/StatsView';
 import { SettingsView } from './components/settings/SettingsView';
@@ -20,7 +20,7 @@ export default function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Layout />}>
-          <Route index element={<MovieGrid />} />
+          <Route index element={<TitleGrid />} />
           <Route path="lists" element={<PlaylistsView />} />
           <Route path="stats" element={<StatsView />} />
           <Route path="friends" element={<FriendsView />} />

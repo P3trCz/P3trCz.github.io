@@ -1,14 +1,14 @@
 import React from 'react';
 import { History, ListVideo, Plus } from 'lucide-react';
 import { ChatMessage, Playlist } from '../../../store/useAppStore';
-import { catalog, Movie } from '../../../data/catalog';
+import { catalog, Title } from '../../../data/catalog';
 import { Modal } from '../../common/Modal';
 
 type MessageHistoryModalProps = {
   friend: any;
   history: ChatMessage[];
   onClose: () => void;
-  onViewMovie: (movie: Movie) => void;
+  onViewMovie: (title: Title) => void;
   onViewPlaylist: (playlist: Playlist, fromUsername: string) => void;
   onAddMovieToPlaylist: (movieId: string) => void;
 };
@@ -57,24 +57,24 @@ export function MessageHistoryModal({
 
                   {msg.message && <p className="text-sm text-gray-200 mb-3 italic">"{msg.message}"</p>}
 
-                  {msg.type === 'RECOMMENDED_MOVIE' && (
+                  {msg.type === 'RECOMMENDED_TITLE' && (
                     <div className="bg-black/20 rounded-xl p-3 flex items-center gap-3">
                       {(() => {
-                        const movie = catalog.find(m => m.id.toString() === msg.movieId);
-                        if (!movie) return <span className="text-xs text-red-500">Titul nenalezen</span>;
+                        const title = catalog.find(m => m.id.toString() === msg.movieId);
+                        if (!title) return <span className="text-xs text-red-500">Titul nenalezen</span>;
                         return (
                           <>
-                            <img src={movie.poster_url} alt={movie.title} className="w-10 h-14 object-cover rounded shadow-sm" />
+                            <img src={title.poster_url} alt={title.title} className="w-10 h-14 object-cover rounded shadow-sm" />
                             <div className="min-w-0 flex-1">
-                              <div className="text-sm font-bold text-white truncate">{movie.title}</div>
+                              <div className="text-sm font-bold text-white truncate">{title.title}</div>
                               <button
-                                onClick={() => onViewMovie(movie)}
+                                onClick={() => onViewMovie(title)}
                                 className="text-[10px] text-[#dc2626] font-bold hover:underline mt-1 mr-3"
                               >
                                 ZOBRAZIT DETAIL
                               </button>
                               <button
-                                onClick={() => onAddMovieToPlaylist(movie.id.toString())}
+                                onClick={() => onAddMovieToPlaylist(title.id.toString())}
                                 className="text-[10px] text-gray-400 font-bold hover:text-white mt-1 inline-flex items-center gap-1"
                               >
                                 <Plus size={10} /> PŘIDAT DO SEZNAMU

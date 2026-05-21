@@ -2,7 +2,7 @@ import tmdbData from './complete_tmdb_data.json';
 
 export type ServiceType = 'Netflix' | 'HBO Max' | 'Disney Plus' | 'Prime Video' | 'Apple TV' | 'SkyShowtime' | 'Oneplay';
 
-export type Movie = {
+export type Title = {
   id: number;
   type: "Film" | "Seriál";
   title: string;
@@ -39,7 +39,7 @@ export const serviceColors: Record<ServiceType, string> = {
 };
 
 const rawData = tmdbData as any[];
-const uniqueDataMap = new Map<string, Movie>();
+const uniqueDataMap = new Map<string, Title>();
 
 rawData.forEach(m => {
   // Normalizace názvu Prime Video
@@ -47,13 +47,13 @@ rawData.forEach(m => {
     s === 'Amazon Prime Video' ? 'Prime Video' : s
   ) as ServiceType[];
 
-  const movie: Movie = {
+  const title: Title = {
     ...m,
     streaming_services: services
   };
 
   // Zajistí, že ID budou unikátní (kombinace typu a ID pro jistotu)
-  uniqueDataMap.set(`${movie.type}-${movie.id}`, movie);
+  uniqueDataMap.set(`${title.type}-${title.id}`, title);
 });
 
-export const catalog: Movie[] = Array.from(uniqueDataMap.values());
+export const catalog: Title[] = Array.from(uniqueDataMap.values());
