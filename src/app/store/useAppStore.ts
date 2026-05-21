@@ -97,6 +97,19 @@ type AppState = {
   saveSharedPlaylist: (notificationId: string) => void;
 };
 
+const isDuplicatePlaylist = (userPlaylists: Playlist[], playlistToCheck: Playlist, fromUsername?: string) => {
+  const sortedNewIds = JSON.stringify([...playlistToCheck.movieIds].sort());
+  const hasIdenticalContent = userPlaylists.some(p => 
+    JSON.stringify([...p.movieIds].sort()) === sortedNewIds
+  );
+
+  const hasSameNameAndAuthor = userPlaylists.some(p => 
+    p.name === playlistToCheck.name && p.fromUsername === fromUsername
+  );
+  
+  return hasIdenticalContent || hasSameNameAndAuthor;
+};
+
 export const useAppStore = create<AppState>()(
   persist(
     (set, get) => ({
@@ -440,19 +453,7 @@ export const useAppStore = create<AppState>()(
 
         const userPlaylists = get().playlists[currentUser.id] || [];
         
-        // ZPŘÍSNĚNÁ KONTROLA:
-        // 1. Mám už seznam se stejným obsahem (ID filmů)?
-        const sortedNewIds = JSON.stringify([...playlist.movieIds].sort());
-        const hasIdenticalContent = userPlaylists.some(p => 
-          JSON.stringify([...p.movieIds].sort()) === sortedNewIds
-        );
-
-        // 2. Mám už seznam se stejným názvem od stejného autora?
-        const hasSameNameAndAuthor = userPlaylists.some(p => 
-          p.name === playlist.name && p.fromUsername === fromUsername
-        );
-        
-        if (hasIdenticalContent || hasSameNameAndAuthor) return false;
+        if (isDuplicatePlaylist(userPlaylists, playlist, fromUsername)) return false;
 
         set(state => {
           const newUserPlaylists = state.playlists[currentUser.id] || [];
@@ -541,14 +542,7 @@ export const useAppStore = create<AppState>()(
 
           const userPlaylists = state.playlists[currentUser.id] || [];
           
-          // ZPŘÍSNĚNÁ KONTROLA i v notifikacích:
-          const sortedNewIds = JSON.stringify([...notif.playlist!.movieIds].sort());
-          const isDuplicate = userPlaylists.some(p => 
-            (p.name === notif.playlist!.name && p.fromUsername === notif.fromUsername) || 
-            JSON.stringify([...p.movieIds].sort()) === sortedNewIds
-          );
-
-          if (isDuplicate) {
+          if (isDuplicatePlaylist(userPlaylists, notif.playlist, notif.fromUsername)) {
             // Pokud je to duplicita, jen smažeme notifikaci
             return {
               notifications: {
@@ -581,7 +575,8 @@ export const useAppStore = create<AppState>()(
     {
       name: 'streamhub-storage', // klíč v localStorage
       partialize: (state) => {
-        const { searchQuery, setSearchQuery, ...rest } = state;
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { searchQuery: _s, setSearchQuery: _sq, ...rest } = state;
         return rest;
       },
     }

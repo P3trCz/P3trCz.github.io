@@ -57,14 +57,14 @@ export function SharePlaylistModal({ friendName, playlists, onClose, onShare }: 
               value={message}
               onChange={e => setMessage(e.target.value)}
               placeholder="Podívej se na tohle. Je to opravdu hustý!"
-              className="w-full bg-[#1c1c24] border border-[#27272a] text-white rounded-xl px-4 py-3 focus:outline-none focus:border-[#dc2626] h-24 resize-none transition-colors"
+              className="w-full form-input-dark h-24 resize-none transition-colors"
             ></textarea>
           </div>
 
           <button
             onClick={() => onShare(selectedList, message)}
             disabled={!selectedList}
-            className="w-full flex items-center justify-center gap-2 bg-[#dc2626] hover:bg-[#b91c1c] disabled:opacity-50 disabled:cursor-not-allowed text-white py-3 rounded-xl font-semibold transition-colors mt-2 shadow-lg shadow-red-900/20"
+            className="w-full flex items-center justify-center gap-2 btn-action-primary mt-2 shadow-lg shadow-red-900/20"
           >
             <Share2 size={18} /> Odeslat seznam
           </button>

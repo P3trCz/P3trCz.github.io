@@ -58,7 +58,7 @@ export function PreviewPlaylistModal({ playlist, fromUsername, onClose, onViewMo
           <button onClick={onClose} className="flex-1 bg-[#27272a] hover:bg-[#3f3f46] text-white px-6 py-3 rounded-xl font-medium transition-colors">
             Zavřít náhled
           </button>
-          <button onClick={onSave} className="flex-1 bg-[#dc2626] hover:bg-[#b91c1c] text-white px-6 py-3 rounded-xl font-medium transition-colors flex items-center justify-center gap-2">
+          <button onClick={onSave} className="flex-1 btn-action-primary flex items-center justify-center gap-2">
             <Download size={18} /> Uložit seznam
           </button>
         </div>

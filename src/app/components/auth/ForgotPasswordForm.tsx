@@ -56,7 +56,7 @@ export function ForgotPasswordForm({ onNavigate }: Props) {
           </div>
           <button
             onClick={() => onNavigate('login')}
-            className="w-full bg-[#dc2626] hover:bg-[#b91c1c] text-white font-medium py-2.5 rounded-lg transition-colors"
+            className="w-full btn-action-primary"
           >
             Přejít k přihlášení
           </button>
@@ -96,7 +96,7 @@ export function ForgotPasswordForm({ onNavigate }: Props) {
 
           <button
             type="submit"
-            className="w-full bg-[#dc2626] hover:bg-[#b91c1c] text-white font-medium py-2.5 rounded-lg transition-colors mt-6"
+            className="w-full btn-action-primary mt-6"
           >
             Změnit heslo
           </button>

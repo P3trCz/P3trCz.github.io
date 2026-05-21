@@ -16,9 +16,8 @@ export function RegisterForm({ onNavigate }: Props) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
-
-    if (usersDb.findUserByEmail(email)) {
+    setTimeout(() => {
+      if (usersDb.findUserByEmail(email)) {
       setError('Uživatel s tímto emailem již existuje.');
       return;
     }
@@ -29,8 +28,10 @@ export function RegisterForm({ onNavigate }: Props) {
     }
 
     const newUser = usersDb.createUser({ username, email, password });
-    const { password: _, ...userWithoutPassword } = newUser;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password: _p, ...userWithoutPassword } = newUser;
     login(userWithoutPassword);
+    }, 500);
   };
 
   return (
@@ -88,7 +89,7 @@ export function RegisterForm({ onNavigate }: Props) {
 
         <button
           type="submit"
-          className="w-full bg-[#dc2626] hover:bg-[#b91c1c] text-white font-medium py-2.5 rounded-lg transition-colors mt-6"
+          className="w-full btn-action-primary mt-6"
         >
           Zaregistrovat se
         </button>

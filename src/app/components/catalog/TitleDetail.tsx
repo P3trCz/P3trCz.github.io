@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { Title, ServiceType, serviceLogos, serviceColors } from '../../data/catalog';
+import { Title, ServiceType, serviceColors } from '../../data/catalog';
 import { X, Star, Play, Share2, Check, Eye } from 'lucide-react';
 import { useAppStore } from '../../store/useAppStore';
-import { AddToPlaylistButton } from './AddToPlaylistButton';
 import { usersDb } from '../../data/usersDb';
 
 type Props = {
@@ -211,7 +210,7 @@ export function TitleDetail({ title, onClose }: Props) {
                     value={shareMessage}
                     onChange={e => setShareMessage(e.target.value)}
                     placeholder="Podívej se na tohle. Je to opravdu hustý!"
-                    className="w-full bg-[#1c1c24] border border-[#27272a] text-white rounded-xl px-4 py-3 focus:outline-none focus:border-[#dc2626] h-24 resize-none"
+                    className="w-full form-input-dark h-24 resize-none"
                   ></textarea>
                 </div>
 
@@ -225,7 +224,7 @@ export function TitleDetail({ title, onClose }: Props) {
                     }
                   }}
                   disabled={!shareSelectedFriendId}
-                  className="w-full flex items-center justify-center gap-2 bg-[#dc2626] hover:bg-[#b91c1c] disabled:opacity-50 disabled:cursor-not-allowed text-white py-3 rounded-xl font-semibold transition-colors mt-2"
+                  className="w-full flex items-center justify-center gap-2 btn-action-primary mt-2"
                 >
                   <Share2 size={18} /> Odeslat doporučení
                 </button>

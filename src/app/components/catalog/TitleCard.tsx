@@ -1,5 +1,5 @@
 import React from 'react';
-import { Title, ServiceType, serviceLogos, serviceColors } from '../../data/catalog';
+import { Title, serviceColors } from '../../data/catalog';
 import { Star, Eye } from 'lucide-react';
 import { AddToPlaylistButton } from './AddToPlaylistButton';
 import { useAppStore } from '../../store/useAppStore';

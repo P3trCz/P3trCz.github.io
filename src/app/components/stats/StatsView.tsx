@@ -146,7 +146,7 @@ export function StatsView() {
         </div>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 bg-[#111116] border border-[#27272a] rounded-xl p-6">
+          <div className="lg:col-span-2 panel-container-dark">
             <h2 className="text-lg font-medium text-white mb-6">Podíl služeb na čase sledování filmů za {formatRangeForSentence(range)}</h2>
 
             <div className="h-80 w-full relative">
@@ -169,7 +169,7 @@ export function StatsView() {
                   <Tooltip
                     contentStyle={{ backgroundColor: '#1c1c24', borderColor: '#27272a', color: 'white', borderRadius: '8px' }}
                     itemStyle={{ color: 'white' }}
-                    formatter={(value: any) => [formatTime(value), 'Čas']}
+                    formatter={(value: number) => [formatTime(value), 'Čas']}
                   />
                 </PieChart>
               </ResponsiveContainer>
@@ -186,7 +186,7 @@ export function StatsView() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-6">
-            <div className="bg-[#111116] border border-[#27272a] rounded-xl p-6">
+            <div className="panel-container-dark">
               <h3 className="text-sm font-medium text-gray-400 mb-2">Celkový čas sledování filmů za {formatRangeForSentence(range)}</h3>
               <div className="text-4xl font-bold text-white mb-2">{formatTime(stats.totalMinutes)}</div>
               <div className="text-sm text-gray-500">
@@ -194,7 +194,7 @@ export function StatsView() {
               </div>
             </div>
 
-            <div className="bg-[#111116] border border-[#27272a] rounded-xl p-6">
+            <div className="panel-container-dark">
               <h3 className="text-sm font-medium text-gray-400 mb-2">Nejsledovanější žánr</h3>
               <div className="text-2xl font-bold text-white mb-4">{stats.topGenre}</div>
 
@@ -204,7 +204,7 @@ export function StatsView() {
               <div className="text-sm text-gray-500 mt-3">{stats.totalMovies > 0 ? Math.round((stats.topGenreCount / stats.totalMovies) * 100) : 0} % ze všech zhlédnutých filmů a seriálů</div>
             </div>
 
-            <div className="bg-[#111116] border border-[#27272a] rounded-xl p-6">
+            <div className="panel-container-dark">
               <h3 className="text-sm font-medium text-gray-400 mb-4">Nejpoužívanější služba (podle filmů)</h3>
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 rounded-lg bg-[#1c1c24] border border-[#27272a] p-2 flex items-center justify-center overflow-hidden">

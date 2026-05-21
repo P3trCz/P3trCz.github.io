@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAppStore } from '../../store/useAppStore';
-import { ServiceType, serviceLogos, serviceColors } from '../../data/catalog';
+import { ServiceType, serviceLogos } from '../../data/catalog';
 import { usersDb } from '../../data/usersDb';
 import { User, LogOut, Key, Edit2 } from 'lucide-react';
 import { Modal } from '../common/Modal';
@@ -112,7 +112,7 @@ export function SettingsView() {
         <h1 className="text-3xl font-bold text-white mb-8">Nastavení</h1>
 
         <div className="space-y-8">
-          <section className="bg-[#111116] border border-[#27272a] rounded-xl p-6">
+          <section className="panel-container-dark">
             <div className="flex items-center gap-4 mb-6">
               <div className="w-16 h-16 rounded-full bg-[#1c1c24] border border-[#27272a] flex items-center justify-center">
                 <User size={32} className="text-gray-400" />
@@ -149,7 +149,7 @@ export function SettingsView() {
             </div>
           </section>
 
-          <section className="bg-[#111116] border border-[#27272a] rounded-xl p-6">
+          <section className="panel-container-dark">
             <h2 className="text-xl font-semibold text-white mb-2">Moje předplatná</h2>
             <p className="text-sm text-gray-400 mb-6">Vyberte služby, které si aktuálně předplácíte. Obsah z těchto služeb bude primárně doporučován a označen jako dostupný.</p>
 

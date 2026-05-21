@@ -1,9 +1,9 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { useAppStore } from '../../store/useAppStore';
 import { catalog, Title } from '../../data/catalog';
 import { usersDb } from '../../data/usersDb';
 import { Modal } from '../common/Modal';
-import { MoreHorizontal, ArrowLeft, Edit2, Trash2, Share2, X, Check, Plus } from 'lucide-react';
+import { MoreHorizontal, ArrowLeft, Edit2, Trash2, Share2, Check, Plus } from 'lucide-react';
 import { useOnClickOutside } from '../../hooks/useOnClickOutside';
 import { TitleCard } from '../catalog/TitleCard';
 import { TitleDetail } from '../catalog/TitleDetail';
@@ -25,6 +25,12 @@ export function PlaylistsView() {
   const historyMovieIds = Array.from(new Set([...watchHistory].reverse().map(h => h.movieId)));
 
   const [activePlaylistId, setActivePlaylistId] = useState<string | null>(null);
+  const [displayedCount, setDisplayedCount] = useState(25);
+
+  const handlePlaylistClick = (id: string | null) => {
+    setActivePlaylistId(id);
+    setDisplayedCount(25);
+  };
   const [selectedTitle, setSelectedTitle] = useState<Title | null>(null);
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
   const [isCreating, setIsCreating] = useState(false);
@@ -60,11 +66,7 @@ export function PlaylistsView() {
     setOpenMenuId(null);
   };
 
-  const [displayedCount, setDisplayedCount] = useState(25);
 
-  useEffect(() => {
-    setDisplayedCount(25);
-  }, [activePlaylistId]);
 
   const renderDetail = () => {
     const isWatchlist = activePlaylistId === '__watchlist__';
@@ -72,7 +74,7 @@ export function PlaylistsView() {
     const playlist = (isWatchlist || isHistory) ? null : playlists.find(p => p.id === activePlaylistId);
 
     if (!isWatchlist && !isHistory && !playlist) {
-      setActivePlaylistId(null);
+      handlePlaylistClick(null);
       return null;
     }
 
@@ -88,7 +90,7 @@ export function PlaylistsView() {
     return (
       <div className="p-8 pb-24">
         <button
-          onClick={() => setActivePlaylistId(null)}
+          onClick={() => handlePlaylistClick(null)}
           className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors mb-6"
         >
           <ArrowLeft size={20} />
@@ -261,8 +263,8 @@ export function PlaylistsView() {
           </div>
 
           <div
-            onClick={() => setActivePlaylistId('__history__')}
-            className="bg-[#111116] border border-[#27272a] rounded-xl p-6 hover:border-[#3f3f46] transition-all cursor-pointer group flex flex-col shadow-sm hover:shadow-xl"
+            onClick={() => handlePlaylistClick('__history__')}
+            className="panel-container-dark hover:border-[#3f3f46] transition-all cursor-pointer group flex flex-col shadow-sm hover:shadow-xl"
           >
             <div className="flex justify-between items-start mb-4">
               <h2 className="text-xl font-bold text-white group-hover:text-[#dc2626] transition-colors">Historie sledování</h2>
@@ -276,8 +278,8 @@ export function PlaylistsView() {
           </div>
 
           <div
-            onClick={() => setActivePlaylistId('__watchlist__')}
-            className="bg-[#111116] border border-[#27272a] rounded-xl p-6 hover:border-[#3f3f46] transition-all cursor-pointer group flex flex-col shadow-sm hover:shadow-xl"
+            onClick={() => handlePlaylistClick('__watchlist__')}
+            className="panel-container-dark hover:border-[#3f3f46] transition-all cursor-pointer group flex flex-col shadow-sm hover:shadow-xl"
           >
             <div className="flex justify-between items-start mb-4">
               <h2 className="text-xl font-bold text-white group-hover:text-[#dc2626] transition-colors">Přehrát později</h2>
@@ -293,8 +295,8 @@ export function PlaylistsView() {
           {playlists.map(pl => (
             <div
               key={pl.id}
-              onClick={() => setActivePlaylistId(pl.id)}
-              className="bg-[#111116] border border-[#27272a] rounded-xl p-6 hover:border-[#3f3f46] transition-all cursor-pointer group flex flex-col relative shadow-sm hover:shadow-xl"
+              onClick={() => handlePlaylistClick(pl.id)}
+              className="panel-container-dark hover:border-[#3f3f46] transition-all cursor-pointer group flex flex-col relative shadow-sm hover:shadow-xl"
             >
               <div className="flex justify-between items-start mb-4">
                 <h2 className="text-xl font-bold text-white group-hover:text-[#dc2626] transition-colors truncate pr-8">{pl.name}</h2>
@@ -413,7 +415,7 @@ export function PlaylistsView() {
                 value={shareMessage}
                 onChange={e => setShareMessage(e.target.value)}
                 placeholder="Podívej se na tohle. Je to opravdu hustý!"
-                className="w-full bg-[#1c1c24] border border-[#27272a] text-white rounded-xl px-4 py-3 focus:outline-none focus:border-[#dc2626] h-24 resize-none"
+                className="w-full form-input-dark h-24 resize-none"
               ></textarea>
             </div>
 
@@ -428,7 +430,7 @@ export function PlaylistsView() {
                 }
               }}
               disabled={!shareSelectedFriendId}
-              className="w-full flex items-center justify-center gap-2 bg-[#dc2626] hover:bg-[#b91c1c] disabled:opacity-50 disabled:cursor-not-allowed text-white py-3 rounded-xl font-semibold transition-colors mt-2"
+              className="w-full flex items-center justify-center gap-2 btn-action-primary mt-2"
             >
               <Share2 size={18} /> Sdílet s přítelem
             </button>

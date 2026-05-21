@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { useAppStore, Playlist, ChatMessage } from '../../store/useAppStore';
+import { useAppStore, Playlist } from '../../store/useAppStore';
 import { usersDb } from '../../data/usersDb';
 import { catalog, Title } from '../../data/catalog';
-import { Search, UserPlus, Check, X, Share2, Film, Trash2, Play, Download, ListVideo, MessageSquare, Eye, History, Plus, Clock } from 'lucide-react';
+import { Search, UserPlus, Check, X, Share2, Film, Trash2, Play, Download, Eye, MessageSquare } from 'lucide-react';
 import { TitleDetail } from '../catalog/TitleDetail';
 import { SharePlaylistModal } from './modals/SharePlaylistModal';
 import { RecommendMovieModal } from './modals/RecommendMovieModal';
@@ -91,7 +91,7 @@ export function FriendsView() {
         <div className="lg:col-span-1 space-y-8">
 
           {/* Přidat přítele */}
-          <div className="bg-[#111116] border border-[#27272a] rounded-xl p-6">
+          <div className="panel-container-dark">
             <h2 className="text-xl font-bold text-white mb-4">Přidat přítele</h2>
             <form onSubmit={handleAddFriend} className="flex flex-col gap-3">
               <div className="relative">
@@ -111,7 +111,7 @@ export function FriendsView() {
               <button
                 type="submit"
                 disabled={!addUsername.trim()}
-                className="w-full flex items-center justify-center gap-2 bg-[#dc2626] hover:bg-[#b91c1c] disabled:opacity-50 disabled:cursor-not-allowed text-white py-3 rounded-xl font-semibold transition-colors"
+                className="w-full flex items-center justify-center gap-2 btn-action-primary"
               >
                 <UserPlus size={18} />
                 Odeslat žádost
@@ -120,7 +120,7 @@ export function FriendsView() {
           </div>
 
           {/* Notifikace */}
-          <div className="bg-[#111116] border border-[#27272a] rounded-xl p-6">
+          <div className="panel-container-dark">
             <h2 className="text-xl font-bold text-white mb-4">Oznámení</h2>
             {myNotifications.length === 0 ? (
               <p className="text-gray-500 text-sm text-center py-4">Nemáte žádná nová oznámení.</p>
@@ -232,7 +232,7 @@ export function FriendsView() {
 
         {/* Pravý sloupec: Seznam přátel */}
         <div className="lg:col-span-2">
-          <div className="bg-[#111116] border border-[#27272a] rounded-xl p-6 min-h-[500px]">
+          <div className="panel-container-dark min-h-[500px]">
             <h2 className="text-xl font-bold text-white mb-6">Moji přátelé</h2>
 
             {myFriends.length === 0 ? (

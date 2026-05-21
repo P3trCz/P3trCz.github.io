@@ -3,9 +3,10 @@ import { History, ListVideo, Plus } from 'lucide-react';
 import { ChatMessage, Playlist } from '../../../store/useAppStore';
 import { catalog, Title } from '../../../data/catalog';
 import { Modal } from '../../common/Modal';
+import { User } from '../../../data/usersDb';
 
 type MessageHistoryModalProps = {
-  friend: any;
+  friend: User;
   history: ChatMessage[];
   onClose: () => void;
   onViewMovie: (title: Title) => void;

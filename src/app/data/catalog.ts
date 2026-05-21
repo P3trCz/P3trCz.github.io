@@ -38,6 +38,7 @@ export const serviceColors: Record<ServiceType, string> = {
   'Oneplay': '#F2B705'
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const rawData = tmdbData as any[];
 const uniqueDataMap = new Map<string, Title>();
 

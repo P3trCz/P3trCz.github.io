@@ -15,15 +15,18 @@ export function LoginForm({ onNavigate }: Props) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
+    setTimeout(() => {
+      setError('');
 
-    const user = usersDb.findUserByEmail(email);
-    if (user && user.password === password) {
-      const { password: _, ...userWithoutPassword } = user;
-      login(userWithoutPassword);
-    } else {
-      setError('Neplatný email nebo heslo.');
-    }
+      const user = usersDb.findUserByEmail(email);
+      if (user && user.password === password) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { password: _p, ...userWithoutPassword } = user;
+        login(userWithoutPassword);
+      } else {
+        setError('Neplatný email nebo heslo.');
+      }
+    }, 500);
   };
 
   return (
@@ -77,7 +80,7 @@ export function LoginForm({ onNavigate }: Props) {
 
         <button
           type="submit"
-          className="w-full bg-[#dc2626] hover:bg-[#b91c1c] text-white font-medium py-2.5 rounded-lg transition-colors mt-6"
+          className="w-full btn-action-primary mt-6"
         >
           Přihlásit se
         </button>

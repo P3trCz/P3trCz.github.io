@@ -16,9 +16,10 @@ export function TitleGrid() {
 
   const currentUser = useAppStore(state => state.currentUser);
   const subscriptionsState = useAppStore(state => state.subscriptions);
-  const userSubscriptions = currentUser ? (subscriptionsState[currentUser.id] || []) : [];
+  const EMPTY_ARRAY: string[] = [];
+  const userSubscriptions = currentUser ? (subscriptionsState[currentUser.id] || EMPTY_ARRAY) : EMPTY_ARRAY;
   const watchedTitles = useAppStore(state => state.watchedTitles);
-  const userWatchedTitles = currentUser ? (watchedTitles[currentUser.id] || []) : [];
+  const userWatchedTitles = currentUser ? (watchedTitles[currentUser.id] || EMPTY_ARRAY) : EMPTY_ARRAY;
   const searchQuery = useAppStore(state => state.searchQuery);
   const setSearchQuery = useAppStore(state => state.setSearchQuery);
 
@@ -26,7 +27,8 @@ export function TitleGrid() {
 
   // Reset pagination when filters or search change
   useEffect(() => {
-    setDisplayedCount(25);
+    const timer = setTimeout(() => setDisplayedCount(25), 0);
+    return () => clearTimeout(timer);
   }, [selectedServices, selectedGenres, selectedTypes, selectedWatched, userSubscriptions, searchQuery]);
 
   // Filmy dostupné na uživatelových službách

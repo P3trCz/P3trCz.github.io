@@ -4,7 +4,7 @@ import { Home, ListVideo, BarChart2, Settings, Play, Info, X, Users } from 'luci
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
-export function cn(...inputs: (string | undefined | null | false)[]) {
+function cn(...inputs: (string | undefined | null | false)[]) {
   return twMerge(clsx(inputs));
 }
 

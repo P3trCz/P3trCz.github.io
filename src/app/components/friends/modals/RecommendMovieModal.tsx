@@ -89,13 +89,13 @@ export function RecommendMovieModal({ friendName, onClose, onRecommend }: Recomm
                 value={message}
                 onChange={e => setMessage(e.target.value)}
                 placeholder="Koukni na to, je to pecka!"
-                className="w-full bg-[#1c1c24] border border-[#27272a] text-white rounded-xl px-4 py-3 focus:outline-none focus:border-[#dc2626] h-24 resize-none"
+                className="w-full form-input-dark h-24 resize-none"
               ></textarea>
             </div>
 
             <button
               onClick={() => onRecommend(selectedTitle.id.toString(), message)}
-              className="w-full flex items-center justify-center gap-2 bg-[#dc2626] hover:bg-[#b91c1c] text-white py-3 rounded-xl font-semibold transition-colors mt-4"
+              className="w-full flex items-center justify-center gap-2 btn-action-primary mt-4"
             >
               <Film size={18} /> Odeslat doporučení
             </button>
