@@ -4,7 +4,8 @@
   --color-background: #0a0a0f;
   --color-surface: #111116;
   --color-surface-hover: #1c1c24;
-  --color-primary: #dc2626; /* červená — barva loga */
+  --color-primary: #dc2626;
+  /* červená — barva loga */
   --color-primary-hover: #b91c1c;
   --color-border: #27272a;
 }
@@ -18,21 +19,24 @@
     -moz-osx-font-smoothing: grayscale;
     margin: 0;
   }
-  
+
   /* Povolení scrollbaru s tmavým tématem */
   ::-webkit-scrollbar {
     width: 8px;
     height: 8px;
   }
+
   ::-webkit-scrollbar-track {
-    background: var(--color-background); 
+    background: var(--color-background);
   }
+
   ::-webkit-scrollbar-thumb {
-    background: #3f3f46; 
+    background: #3f3f46;
     border-radius: 4px;
   }
+
   ::-webkit-scrollbar-thumb:hover {
-    background: #52525b; 
+    background: #52525b;
   }
 }
 
@@ -40,15 +44,15 @@
   .btn-action-primary {
     @apply flex items-center justify-center gap-2 bg-[#dc2626] hover:bg-[#b91c1c] text-white py-3 px-4 rounded-xl font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed;
   }
-  
+
   .btn-action-cancel {
     @apply flex items-center justify-center gap-2 bg-[#27272a] hover:bg-[#3f3f46] text-white py-3 px-4 rounded-xl font-medium transition-colors;
   }
-  
+
   .form-input-dark {
     @apply w-full bg-[#1c1c24] border border-[#27272a] text-white rounded-xl px-4 py-3 focus:outline-none focus:border-[#dc2626] transition-colors;
   }
-  
+
   .panel-container-dark {
     @apply bg-[#111116] border border-[#27272a] rounded-xl p-6 shadow-sm;
   }
