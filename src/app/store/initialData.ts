@@ -46,85 +46,85 @@ export const INITIAL_FRIENDS: Record<string, string[]> = {
 export const INITIAL_WATCH_HISTORY: Record<string, WatchHistoryItem[]> = {
   "2": [
     {
-      "titleId": "Film-1439930",
+      "titleId": "1439930",
       "watchedAt": 1777837639470.1094,
       "service": "Netflix",
       "durationMinutes": 103
     },
     {
-      "titleId": "Film-1007757",
+      "titleId": "1007757",
       "watchedAt": 1779028350203.667,
       "service": "HBO Max",
       "durationMinutes": 133
     },
     {
-      "titleId": "Film-350",
+      "titleId": "350",
       "watchedAt": 1779208989742.777,
       "service": "Disney Plus",
       "durationMinutes": 98
     },
     {
-      "titleId": "Film-1318447",
+      "titleId": "1318447",
       "watchedAt": 1778744854624.6113,
       "service": "Netflix",
       "durationMinutes": 144
     },
     {
-      "titleId": "Film-1198994",
+      "titleId": "1198994",
       "watchedAt": 1778100736526.377,
       "service": "HBO Max",
       "durationMinutes": 102
     },
     {
-      "titleId": "Film-1330021",
+      "titleId": "1330021",
       "watchedAt": 1779216188646.4187,
       "service": "Disney Plus",
       "durationMinutes": 120
     },
     {
-      "titleId": "Film-1613798",
+      "titleId": "1613798",
       "watchedAt": 1777351305053.1023,
       "service": "Netflix",
       "durationMinutes": 135
     },
     {
-      "titleId": "Film-755898",
+      "titleId": "755898",
       "watchedAt": 1779075836623.1392,
       "service": "HBO Max",
       "durationMinutes": 146
     },
     {
-      "titleId": "Film-1242898",
+      "titleId": "1242898",
       "watchedAt": 1777027844008.5796,
       "service": "Disney Plus",
       "durationMinutes": 92
     },
     {
-      "titleId": "Film-157336",
+      "titleId": "157336",
       "watchedAt": 1777173029709.1013,
       "service": "Netflix",
       "durationMinutes": 115
     },
     {
-      "titleId": "Seriál-76479",
+      "titleId": "76479",
       "watchedAt": 1777710314980.6016,
       "service": "Netflix",
       "durationMinutes": 56
     },
     {
-      "titleId": "Seriál-124364",
+      "titleId": "124364",
       "watchedAt": 1779266175383.6555,
       "service": "HBO Max",
       "durationMinutes": 43
     },
     {
-      "titleId": "Seriál-79744",
+      "titleId": "79744",
       "watchedAt": 1778266616340.4895,
       "service": "Disney Plus",
       "durationMinutes": 62
     },
     {
-      "titleId": "Seriál-1622",
+      "titleId": "1622",
       "watchedAt": 1779240815622.3313,
       "service": "Netflix",
       "durationMinutes": 62
@@ -132,85 +132,85 @@ export const INITIAL_WATCH_HISTORY: Record<string, WatchHistoryItem[]> = {
   ],
   "3": [
     {
-      "titleId": "Film-1439930",
+      "titleId": "1439930",
       "watchedAt": 1778644223091.8801,
       "service": "Oneplay",
       "durationMinutes": 118
     },
     {
-      "titleId": "Film-1007757",
+      "titleId": "1007757",
       "watchedAt": 1777720129959.746,
       "service": "Prime Video",
       "durationMinutes": 95
     },
     {
-      "titleId": "Film-350",
+      "titleId": "350",
       "watchedAt": 1777597153665.7224,
       "service": "Apple TV",
       "durationMinutes": 145
     },
     {
-      "titleId": "Film-1318447",
+      "titleId": "1318447",
       "watchedAt": 1778952803755.0674,
       "service": "SkyShowtime",
       "durationMinutes": 126
     },
     {
-      "titleId": "Film-1198994",
+      "titleId": "1198994",
       "watchedAt": 1777713091006.528,
       "service": "Oneplay",
       "durationMinutes": 90
     },
     {
-      "titleId": "Film-1330021",
+      "titleId": "1330021",
       "watchedAt": 1778202683906.9956,
       "service": "Prime Video",
       "durationMinutes": 130
     },
     {
-      "titleId": "Film-1613798",
+      "titleId": "1613798",
       "watchedAt": 1779309701316.0342,
       "service": "Apple TV",
       "durationMinutes": 94
     },
     {
-      "titleId": "Film-755898",
+      "titleId": "755898",
       "watchedAt": 1778630195676.2642,
       "service": "SkyShowtime",
       "durationMinutes": 116
     },
     {
-      "titleId": "Film-1242898",
+      "titleId": "1242898",
       "watchedAt": 1779044524481.6091,
       "service": "Oneplay",
       "durationMinutes": 128
     },
     {
-      "titleId": "Film-157336",
+      "titleId": "157336",
       "watchedAt": 1779419124909.412,
       "service": "Prime Video",
       "durationMinutes": 137
     },
     {
-      "titleId": "Seriál-76479",
+      "titleId": "76479",
       "watchedAt": 1778480688054.2412,
       "service": "Oneplay",
       "durationMinutes": 58
     },
     {
-      "titleId": "Seriál-124364",
+      "titleId": "124364",
       "watchedAt": 1777542531303.0566,
       "service": "Prime Video",
       "durationMinutes": 41
     },
     {
-      "titleId": "Seriál-79744",
+      "titleId": "79744",
       "watchedAt": 1779300217886.732,
       "service": "Apple TV",
       "durationMinutes": 58
     },
     {
-      "titleId": "Seriál-1622",
+      "titleId": "1622",
       "watchedAt": 1777451999507.3276,
       "service": "SkyShowtime",
       "durationMinutes": 69
@@ -218,85 +218,85 @@ export const INITIAL_WATCH_HISTORY: Record<string, WatchHistoryItem[]> = {
   ],
   "4": [
     {
-      "titleId": "Film-1439930",
+      "titleId": "1439930",
       "watchedAt": 1777397560150.9868,
       "service": "Netflix",
       "durationMinutes": 120
     },
     {
-      "titleId": "Film-1007757",
+      "titleId": "1007757",
       "watchedAt": 1778882220751.9553,
       "service": "HBO Max",
       "durationMinutes": 134
     },
     {
-      "titleId": "Film-350",
+      "titleId": "350",
       "watchedAt": 1778763716525.674,
       "service": "Prime Video",
       "durationMinutes": 125
     },
     {
-      "titleId": "Film-1318447",
+      "titleId": "1318447",
       "watchedAt": 1777462886903.624,
       "service": "Disney Plus",
       "durationMinutes": 107
     },
     {
-      "titleId": "Film-1198994",
+      "titleId": "1198994",
       "watchedAt": 1779560140828.8835,
       "service": "Oneplay",
       "durationMinutes": 124
     },
     {
-      "titleId": "Film-1330021",
+      "titleId": "1330021",
       "watchedAt": 1778980232959.399,
       "service": "Netflix",
       "durationMinutes": 139
     },
     {
-      "titleId": "Film-1613798",
+      "titleId": "1613798",
       "watchedAt": 1778960440529.4453,
       "service": "HBO Max",
       "durationMinutes": 143
     },
     {
-      "titleId": "Film-755898",
+      "titleId": "755898",
       "watchedAt": 1777942673276.167,
       "service": "Prime Video",
       "durationMinutes": 111
     },
     {
-      "titleId": "Film-1242898",
+      "titleId": "1242898",
       "watchedAt": 1779118072336.472,
       "service": "Disney Plus",
       "durationMinutes": 91
     },
     {
-      "titleId": "Film-157336",
+      "titleId": "157336",
       "watchedAt": 1779028705090.8972,
       "service": "Oneplay",
       "durationMinutes": 108
     },
     {
-      "titleId": "Seriál-76479",
+      "titleId": "76479",
       "watchedAt": 1778275585028.1904,
       "service": "Netflix",
       "durationMinutes": 62
     },
     {
-      "titleId": "Seriál-124364",
+      "titleId": "124364",
       "watchedAt": 1777736711639.7153,
       "service": "HBO Max",
       "durationMinutes": 57
     },
     {
-      "titleId": "Seriál-79744",
+      "titleId": "79744",
       "watchedAt": 1778887916584.683,
       "service": "Prime Video",
       "durationMinutes": 51
     },
     {
-      "titleId": "Seriál-1622",
+      "titleId": "1622",
       "watchedAt": 1778748698745.4736,
       "service": "Disney Plus",
       "durationMinutes": 65
@@ -304,85 +304,85 @@ export const INITIAL_WATCH_HISTORY: Record<string, WatchHistoryItem[]> = {
   ],
   "5": [
     {
-      "titleId": "Film-1439930",
+      "titleId": "1439930",
       "watchedAt": 1778214648685.0955,
       "service": "Netflix",
       "durationMinutes": 142
     },
     {
-      "titleId": "Film-1007757",
+      "titleId": "1007757",
       "watchedAt": 1778580150682.3506,
       "service": "SkyShowtime",
       "durationMinutes": 109
     },
     {
-      "titleId": "Film-350",
+      "titleId": "350",
       "watchedAt": 1776984252689.9624,
       "service": "Apple TV",
       "durationMinutes": 106
     },
     {
-      "titleId": "Film-1318447",
+      "titleId": "1318447",
       "watchedAt": 1777560855282.813,
       "service": "Netflix",
       "durationMinutes": 102
     },
     {
-      "titleId": "Film-1198994",
+      "titleId": "1198994",
       "watchedAt": 1779446073709.2952,
       "service": "SkyShowtime",
       "durationMinutes": 118
     },
     {
-      "titleId": "Film-1330021",
+      "titleId": "1330021",
       "watchedAt": 1777385344310.752,
       "service": "Apple TV",
       "durationMinutes": 102
     },
     {
-      "titleId": "Film-1613798",
+      "titleId": "1613798",
       "watchedAt": 1779518490592.6145,
       "service": "Netflix",
       "durationMinutes": 148
     },
     {
-      "titleId": "Film-755898",
+      "titleId": "755898",
       "watchedAt": 1777092737012.9414,
       "service": "SkyShowtime",
       "durationMinutes": 112
     },
     {
-      "titleId": "Film-1242898",
+      "titleId": "1242898",
       "watchedAt": 1778764409855.3533,
       "service": "Apple TV",
       "durationMinutes": 126
     },
     {
-      "titleId": "Film-157336",
+      "titleId": "157336",
       "watchedAt": 1777039816794.4539,
       "service": "Netflix",
       "durationMinutes": 112
     },
     {
-      "titleId": "Seriál-76479",
+      "titleId": "76479",
       "watchedAt": 1778060576141.1287,
       "service": "Netflix",
       "durationMinutes": 66
     },
     {
-      "titleId": "Seriál-124364",
+      "titleId": "124364",
       "watchedAt": 1777779178599.902,
       "service": "SkyShowtime",
       "durationMinutes": 65
     },
     {
-      "titleId": "Seriál-79744",
+      "titleId": "79744",
       "watchedAt": 1778835507848.3616,
       "service": "Apple TV",
       "durationMinutes": 59
     },
     {
-      "titleId": "Seriál-1622",
+      "titleId": "1622",
       "watchedAt": 1779353340420.633,
       "service": "Netflix",
       "durationMinutes": 43
@@ -395,17 +395,17 @@ export const INITIAL_PLAYLISTS: Record<string, Playlist[]> = {
       "id": "pl-2-1",
       "name": "Akčňáky",
       "titleIds": [
-        "Film-1439930",
-        "Film-1318447",
-        "Film-1613798"
+        "1439930",
+        "1318447",
+        "1613798"
       ]
     },
     {
       "id": "pl-2-2",
       "name": "Rodinné",
       "titleIds": [
-        "Film-1007757",
-        "Film-1198994"
+        "1007757",
+        "1198994"
       ]
     }
   ],
@@ -414,16 +414,16 @@ export const INITIAL_PLAYLISTS: Record<string, Playlist[]> = {
       "id": "pl-3-1",
       "name": "Romantika",
       "titleIds": [
-        "Film-350",
-        "Film-1330021"
+        "350",
+        "1330021"
       ]
     },
     {
       "id": "pl-3-2",
       "name": "Na odreagování",
       "titleIds": [
-        "Film-755898",
-        "Film-1242898"
+        "755898",
+        "1242898"
       ]
     }
   ],
@@ -432,16 +432,16 @@ export const INITIAL_PLAYLISTS: Record<string, Playlist[]> = {
       "id": "pl-4-1",
       "name": "K zamyšlení",
       "titleIds": [
-        "Film-157336",
-        "Film-7451"
+        "157336",
+        "7451"
       ]
     },
     {
       "id": "pl-4-2",
       "name": "Sci-fi a Fantasy",
       "titleIds": [
-        "Film-1171145",
-        "Film-318256"
+        "1171145",
+        "318256"
       ]
     }
   ],
@@ -450,40 +450,40 @@ export const INITIAL_PLAYLISTS: Record<string, Playlist[]> = {
       "id": "pl-5-1",
       "name": "Stará klasika",
       "titleIds": [
-        "Film-278",
-        "Film-24428"
+        "278",
+        "24428"
       ]
     },
     {
       "id": "pl-5-2",
       "name": "Nové filmy",
       "titleIds": [
-        "Film-1439930",
-        "Film-1007757"
+        "1439930",
+        "1007757"
       ]
     }
   ]
 };
 export const INITIAL_WATCHLISTS: Record<string, string[]> = {
   "2": [
-    "Film-350",
-    "Film-755898",
-    "Seriál-1622"
+    "350",
+    "755898",
+    "1622"
   ],
   "3": [
-    "Film-350",
-    "Film-755898",
-    "Seriál-1622"
+    "350",
+    "755898",
+    "1622"
   ],
   "4": [
-    "Film-350",
-    "Film-755898",
-    "Seriál-1622"
+    "350",
+    "755898",
+    "1622"
   ],
   "5": [
-    "Film-350",
-    "Film-755898",
-    "Seriál-1622"
+    "350",
+    "755898",
+    "1622"
   ]
 };
 export const INITIAL_MESSAGE_HISTORY: Record<string, ChatMessage[]> = {
@@ -496,7 +496,7 @@ export const INITIAL_MESSAGE_HISTORY: Record<string, ChatMessage[]> = {
       "timestamp": 1779114291674.743,
       "type": "RECOMMENDED_TITLE",
       "message": "Tohle musíš vidět!",
-      "titleId": "Film-1439930"
+      "titleId": "1439930"
     },
     {
       "id": "fbfpd6ygl",
@@ -506,7 +506,7 @@ export const INITIAL_MESSAGE_HISTORY: Record<string, ChatMessage[]> = {
       "timestamp": 1779084630469.6191,
       "type": "RECOMMENDED_TITLE",
       "message": "Pecka na večer",
-      "titleId": "Film-1007757"
+      "titleId": "1007757"
     },
     {
       "id": "gej0yk86c",
@@ -516,7 +516,7 @@ export const INITIAL_MESSAGE_HISTORY: Record<string, ChatMessage[]> = {
       "timestamp": 1779159674184.2866,
       "type": "RECOMMENDED_TITLE",
       "message": "Tohle by se ti mohlo líbit",
-      "titleId": "Film-350"
+      "titleId": "350"
     },
     {
       "id": "nx3vsloqt",
@@ -526,7 +526,7 @@ export const INITIAL_MESSAGE_HISTORY: Record<string, ChatMessage[]> = {
       "timestamp": 1779139500027.9846,
       "type": "RECOMMENDED_TITLE",
       "message": "Klasika",
-      "titleId": "Film-1318447"
+      "titleId": "1318447"
     },
     {
       "id": "fs03r2e8y",
@@ -536,7 +536,7 @@ export const INITIAL_MESSAGE_HISTORY: Record<string, ChatMessage[]> = {
       "timestamp": 1778973350299.327,
       "type": "RECOMMENDED_TITLE",
       "message": "Něco na víkend",
-      "titleId": "Film-1198994"
+      "titleId": "1198994"
     },
     {
       "id": "8hq5tu0aa",
@@ -546,7 +546,7 @@ export const INITIAL_MESSAGE_HISTORY: Record<string, ChatMessage[]> = {
       "timestamp": 1779415743112.35,
       "type": "RECOMMENDED_TITLE",
       "message": "Super film",
-      "titleId": "Film-1330021"
+      "titleId": "1330021"
     },
     {
       "id": "kqgcwdk5z",
@@ -560,9 +560,9 @@ export const INITIAL_MESSAGE_HISTORY: Record<string, ChatMessage[]> = {
         "id": "pl-2-1",
         "name": "Akčňáky",
         "titleIds": [
-          "Film-1439930",
-          "Film-1318447",
-          "Film-1613798"
+          "1439930",
+          "1318447",
+          "1613798"
         ]
       }
     },
@@ -578,8 +578,8 @@ export const INITIAL_MESSAGE_HISTORY: Record<string, ChatMessage[]> = {
         "id": "pl-3-1",
         "name": "Romantika",
         "titleIds": [
-          "Film-350",
-          "Film-1330021"
+          "350",
+          "1330021"
         ]
       }
     },
@@ -595,8 +595,8 @@ export const INITIAL_MESSAGE_HISTORY: Record<string, ChatMessage[]> = {
         "id": "pl-4-1",
         "name": "K zamyšlení",
         "titleIds": [
-          "Film-157336",
-          "Film-7451"
+          "157336",
+          "7451"
         ]
       }
     },
@@ -612,8 +612,8 @@ export const INITIAL_MESSAGE_HISTORY: Record<string, ChatMessage[]> = {
         "id": "pl-5-1",
         "name": "Stará klasika",
         "titleIds": [
-          "Film-278",
-          "Film-24428"
+          "278",
+          "24428"
         ]
       }
     }
@@ -627,7 +627,7 @@ export const INITIAL_MESSAGE_HISTORY: Record<string, ChatMessage[]> = {
       "timestamp": 1779114291674.743,
       "type": "RECOMMENDED_TITLE",
       "message": "Tohle musíš vidět!",
-      "titleId": "Film-1439930"
+      "titleId": "1439930"
     },
     {
       "id": "fbfpd6ygl",
@@ -637,7 +637,7 @@ export const INITIAL_MESSAGE_HISTORY: Record<string, ChatMessage[]> = {
       "timestamp": 1779084630469.6191,
       "type": "RECOMMENDED_TITLE",
       "message": "Pecka na večer",
-      "titleId": "Film-1007757"
+      "titleId": "1007757"
     },
     {
       "id": "kqgcwdk5z",
@@ -651,9 +651,9 @@ export const INITIAL_MESSAGE_HISTORY: Record<string, ChatMessage[]> = {
         "id": "pl-2-1",
         "name": "Akčňáky",
         "titleIds": [
-          "Film-1439930",
-          "Film-1318447",
-          "Film-1613798"
+          "1439930",
+          "1318447",
+          "1613798"
         ]
       }
     },
@@ -669,8 +669,8 @@ export const INITIAL_MESSAGE_HISTORY: Record<string, ChatMessage[]> = {
         "id": "pl-3-1",
         "name": "Romantika",
         "titleIds": [
-          "Film-350",
-          "Film-1330021"
+          "350",
+          "1330021"
         ]
       }
     }
@@ -684,7 +684,7 @@ export const INITIAL_MESSAGE_HISTORY: Record<string, ChatMessage[]> = {
       "timestamp": 1779159674184.2866,
       "type": "RECOMMENDED_TITLE",
       "message": "Tohle by se ti mohlo líbit",
-      "titleId": "Film-350"
+      "titleId": "350"
     },
     {
       "id": "nx3vsloqt",
@@ -694,7 +694,7 @@ export const INITIAL_MESSAGE_HISTORY: Record<string, ChatMessage[]> = {
       "timestamp": 1779139500027.9846,
       "type": "RECOMMENDED_TITLE",
       "message": "Klasika",
-      "titleId": "Film-1318447"
+      "titleId": "1318447"
     },
     {
       "id": "2hc2k85mg",
@@ -708,8 +708,8 @@ export const INITIAL_MESSAGE_HISTORY: Record<string, ChatMessage[]> = {
         "id": "pl-4-1",
         "name": "K zamyšlení",
         "titleIds": [
-          "Film-157336",
-          "Film-7451"
+          "157336",
+          "7451"
         ]
       }
     }
@@ -723,7 +723,7 @@ export const INITIAL_MESSAGE_HISTORY: Record<string, ChatMessage[]> = {
       "timestamp": 1778973350299.327,
       "type": "RECOMMENDED_TITLE",
       "message": "Něco na víkend",
-      "titleId": "Film-1198994"
+      "titleId": "1198994"
     },
     {
       "id": "8hq5tu0aa",
@@ -733,7 +733,7 @@ export const INITIAL_MESSAGE_HISTORY: Record<string, ChatMessage[]> = {
       "timestamp": 1779415743112.35,
       "type": "RECOMMENDED_TITLE",
       "message": "Super film",
-      "titleId": "Film-1330021"
+      "titleId": "1330021"
     },
     {
       "id": "e7acg8twx",
@@ -747,8 +747,8 @@ export const INITIAL_MESSAGE_HISTORY: Record<string, ChatMessage[]> = {
         "id": "pl-5-1",
         "name": "Stará klasika",
         "titleIds": [
-          "Film-278",
-          "Film-24428"
+          "278",
+          "24428"
         ]
       }
     }
