@@ -117,8 +117,8 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
               <div className="border-t border-[#27272a] pt-4 mt-2 flex flex-col sm:flex-row items-center gap-4 text-xs text-gray-400 text-center sm:text-left">
                 <img src={tmdbLogo} alt="TMDB" className="w-16 h-auto shrink-0 opacity-80" />
                 <p>
-                  This product uses the TMDB API but is not endorsed or certified by TMDB.<br/>
-                  Veškerá data o filmech, seriálech a plakáty pocházejí z databáze TMDB.
+                  This product uses the TMDB API but is not endorsed or certified by TMDB.<br />
+                  Veškerá data a obrázky o filmech a seriálech pocházejí z databáze TMDB.
                 </p>
               </div>
             </div>
