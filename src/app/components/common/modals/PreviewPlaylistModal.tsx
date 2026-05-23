@@ -2,7 +2,7 @@ import React from 'react';
 import { Download } from 'lucide-react';
 import { Playlist } from '../../../store/useAppStore';
 import { catalog, Title } from '../../../data/catalog';
-import { Modal } from '../../common/Modal';
+import { Modal } from '../Modal';
 
 type PreviewPlaylistModalProps = {
   playlist: Playlist;

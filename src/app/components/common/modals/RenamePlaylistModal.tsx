@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Modal } from '../../common/Modal';
+import { Modal } from '../Modal';
 
 type RenamePlaylistModalProps = {
   playlistId: string;

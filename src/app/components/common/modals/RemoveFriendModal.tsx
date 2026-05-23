@@ -1,5 +1,5 @@
 import React from 'react';
-import { Modal } from '../../common/Modal';
+import { Modal } from '../Modal';
 
 type RemoveFriendModalProps = {
   friendToRemove: { id: string; name: string } | null;

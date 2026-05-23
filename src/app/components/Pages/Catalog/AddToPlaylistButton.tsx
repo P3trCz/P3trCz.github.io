@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Plus } from 'lucide-react';
-import { AddTitleToPlaylistModal } from '../friends/modals/AddTitleToPlaylistModal';
+import { AddTitleToPlaylistModal } from '../../Common/modals/AddTitleToPlaylistModal';
 
 type Props = {
   movieId: string;

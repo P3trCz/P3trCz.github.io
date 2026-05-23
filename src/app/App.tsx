@@ -1,19 +1,19 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { useAppStore } from './store/useAppStore';
-import { AuthView } from './components/auth/AuthView';
-import { Layout } from './components/layout/Layout';
-import { TitleGrid } from './components/catalog/TitleGrid';
-import { PlaylistsView } from './components/lists/PlaylistsView';
-import { StatsView } from './components/stats/StatsView';
-import { SettingsView } from './components/settings/SettingsView';
-import { FriendsView } from './components/friends/FriendsView';
+import { Auth } from './components/Pages/Auth/Auth';
+import { Layout } from './components/Layout/Layout';
+import { TitleGrid } from './components/Pages/Catalog/TitleGrid';
+import { Playlists } from './components/Pages/Playlists';
+import { Stats } from './components/Pages/Stats';
+import { Settings } from './components/Pages/Settings';
+import { Friends } from './components/Pages/Friends';
 
 export default function App() {
   const currentUser = useAppStore(state => state.currentUser);
 
   if (!currentUser) {
-    return <AuthView />;
+    return <Auth />;
   }
 
   return (
@@ -21,10 +21,10 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<TitleGrid />} />
-          <Route path="lists" element={<PlaylistsView />} />
-          <Route path="stats" element={<StatsView />} />
-          <Route path="friends" element={<FriendsView />} />
-          <Route path="settings" element={<SettingsView />} />
+          <Route path="lists" element={<Playlists />} />
+          <Route path="stats" element={<Stats />} />
+          <Route path="friends" element={<Friends />} />
+          <Route path="settings" element={<Settings />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
       </Routes>

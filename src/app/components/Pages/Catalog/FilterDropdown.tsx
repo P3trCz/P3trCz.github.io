@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { ChevronDown, Check } from 'lucide-react';
-import { useOnClickOutside } from '../../hooks/useOnClickOutside';
+import { useOnClickOutside } from '../../../hooks/useOnClickOutside';
 
 type Props = {
   label: string;
@@ -9,7 +9,7 @@ type Props = {
   onChange: (selected: string[]) => void;
 };
 
-export function Dropdown({ label, options, selected, onChange }: Props) {
+export function FilterDropdown({ label, options, selected, onChange }: Props) {
   const [isOpen, setIsOpen] = useState(false);
   const popoverRef = useRef<HTMLDivElement>(null);
 

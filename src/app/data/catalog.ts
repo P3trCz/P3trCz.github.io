@@ -19,13 +19,13 @@ export type Title = {
 };
 
 export const serviceLogos: Record<ServiceType, string> = {
-  'Netflix': '/src/app/images/netflix_logo.svg',
-  'HBO Max': '/src/app/images/hbo_max_logo.png',
-  'Disney Plus': '/src/app/images/Disney_plus_logo.png',
-  'Prime Video': '/src/app/images/prime_video_logo.png',
-  'Apple TV': '/src/app/images/apple_tv_logo.png',
-  'SkyShowtime': '/src/app/images/skyshowtime_logo.png',
-  'Oneplay': '/src/app/images/oneplay_logo.png'
+  'Netflix': '/src/app/Logos/netflix_logo.svg',
+  'HBO Max': '/src/app/Logos/hbo_max_logo.png',
+  'Disney Plus': '/src/app/Logos/Disney_plus_logo.png',
+  'Prime Video': '/src/app/Logos/prime_video_logo.png',
+  'Apple TV': '/src/app/Logos/apple_tv_logo.png',
+  'SkyShowtime': '/src/app/Logos/skyshowtime_logo.png',
+  'Oneplay': '/src/app/Logos/oneplay_logo.png'
 };
 
 export const serviceColors: Record<ServiceType, string> = {

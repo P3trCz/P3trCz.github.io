@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { ListVideo, Check, Share2 } from 'lucide-react';
 import { Playlist } from '../../../store/useAppStore';
-import { Modal } from '../../common/Modal';
+import { Modal } from '../Modal';
 
 type SharePlaylistModalProps = {
   friendName: string;

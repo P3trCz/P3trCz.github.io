@@ -5,7 +5,7 @@ import { catalog, ServiceType, serviceLogos, serviceColors } from '../../data/ca
 
 const timeRanges = ['10 minut', 'Týden', 'Měsíc', '3 měsíce', '6 měsíců', 'Rok', 'Celá doba'];
 
-export function StatsView() {
+export function Stats() {
   const [range, setRange] = useState('Měsíc');
   const currentUser = useAppStore(state => state.currentUser);
   const watchHistoryState = useAppStore(state => state.watchHistory);

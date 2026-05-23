@@ -2,15 +2,15 @@ import React, { useState, useRef } from 'react';
 import { useAppStore } from '../../store/useAppStore';
 import { catalog, Title } from '../../data/catalog';
 import { usersDb } from '../../data/usersDb';
-import { Modal } from '../common/Modal';
+import { Modal } from '../Common/Modal';
 import { MoreHorizontal, ArrowLeft, Edit2, Trash2, Share2, Check, Plus } from 'lucide-react';
 import { useOnClickOutside } from '../../hooks/useOnClickOutside';
-import { TitleCard } from '../catalog/TitleCard';
-import { TitleDetail } from '../catalog/TitleDetail';
-import { RenamePlaylistModal } from '../friends/modals/RenamePlaylistModal';
-import { Snackbar } from '../common/Snackbar';
+import { TitleCard } from './Catalog/TitleCard';
+import { TitleDetail } from './Catalog/TitleDetail';
+import { RenamePlaylistModal } from '../Common/modals/RenamePlaylistModal';
+import { Snackbar } from '../Common/Snackbar';
 
-export function PlaylistsView() {
+export function Playlists() {
   const currentUser = useAppStore(state => state.currentUser);
   const playlistsState = useAppStore(state => state.playlists);
   const watchlistsState = useAppStore(state => state.watchlists);

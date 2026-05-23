@@ -5,7 +5,7 @@ import { ForgotPasswordForm } from './ForgotPasswordForm';
 
 type AuthState = 'login' | 'register' | 'forgot-password';
 
-export function AuthView() {
+export function Auth() {
   const [currentView, setCurrentView] = useState<AuthState>('login');
 
   return (

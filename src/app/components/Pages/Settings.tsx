@@ -3,8 +3,8 @@ import { useAppStore } from '../../store/useAppStore';
 import { ServiceType, serviceLogos } from '../../data/catalog';
 import { usersDb } from '../../data/usersDb';
 import { User, LogOut, Key, Edit2 } from 'lucide-react';
-import { Modal } from '../common/Modal';
-import { Snackbar } from '../common/Snackbar';
+import { Modal } from '../Common/Modal';
+import { Snackbar } from '../Common/Snackbar';
 
 const availableServices: { id: ServiceType; name: string }[] = [
   { id: 'Netflix', name: 'Netflix' },
@@ -16,7 +16,7 @@ const availableServices: { id: ServiceType; name: string }[] = [
   { id: 'Oneplay', name: 'Oneplay' }
 ];
 
-export function SettingsView() {
+export function Settings() {
   const currentUser = useAppStore(state => state.currentUser);
   const logout = useAppStore(state => state.logout);
   const subscriptionsState = useAppStore(state => state.subscriptions);

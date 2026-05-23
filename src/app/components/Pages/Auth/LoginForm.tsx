@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
-import { useAppStore } from '../../store/useAppStore';
-import { usersDb } from '../../data/usersDb';
+import { useAppStore } from '../../../store/useAppStore';
+import { usersDb } from '../../../data/usersDb';
 import { Play } from 'lucide-react';
 
 type Props = {
-  onNavigate: (view: 'login') => void;
+  onNavigate: (view: 'register' | 'forgot-password') => void;
 };
 
-export function RegisterForm({ onNavigate }: Props) {
-  const [username, setUsername] = useState('');
+export function LoginForm({ onNavigate }: Props) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -17,20 +16,16 @@ export function RegisterForm({ onNavigate }: Props) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setTimeout(() => {
-      if (usersDb.findUserByEmail(email)) {
-      setError('Uživatel s tímto emailem již existuje.');
-      return;
-    }
-    
-    if (usersDb.findUserByUsername(username)) {
-      setError('Toto uživatelské jméno je již zabrané.');
-      return;
-    }
+      setError('');
 
-    const newUser = usersDb.createUser({ username, email, password });
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { password: _p, ...userWithoutPassword } = newUser;
-    login(userWithoutPassword);
+      const user = usersDb.findUserByEmail(email);
+      if (user && user.password === password) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { password: _p, ...userWithoutPassword } = user;
+        login(userWithoutPassword);
+      } else {
+        setError('Neplatný email nebo heslo.');
+      }
     }, 500);
   };
 
@@ -40,7 +35,7 @@ export function RegisterForm({ onNavigate }: Props) {
         <div className="border-2 border-red-600 rounded-lg p-2 mb-4">
           <Play size={32} className="fill-red-600 text-red-600" />
         </div>
-        <h2 className="text-2xl font-bold text-white">Vytvořit účet</h2>
+        <h2 className="text-2xl font-bold text-white">Přihlášení do StreamHub</h2>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
@@ -51,22 +46,6 @@ export function RegisterForm({ onNavigate }: Props) {
         )}
 
         <div>
-          <label className="block text-sm font-medium text-gray-400 mb-1">Uživatelské jméno</label>
-          <input
-            type="text"
-            required
-            value={username}
-            onChange={e => setUsername(e.target.value)}
-            className="w-full bg-[#0a0a0f] border border-[#27272a] rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-[#dc2626] transition-colors"
-            placeholder="Vaše přezdívka"
-            maxLength={24}
-          />
-          <div className={`text-xs mt-1 text-right ${username.length >= 24 ? 'text-[#dc2626]' : 'text-gray-500'}`}>
-            {username.length} / 24 {username.length >= 24 ? '(Dosažen limit)' : ''}
-          </div>
-        </div>
-
-        <div>
           <label className="block text-sm font-medium text-gray-400 mb-1">Email</label>
           <input
             type="email"
@@ -74,20 +53,28 @@ export function RegisterForm({ onNavigate }: Props) {
             value={email}
             onChange={e => setEmail(e.target.value)}
             className="w-full bg-[#0a0a0f] border border-[#27272a] rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-[#dc2626] transition-colors"
-            placeholder="Zadejte svůj email"
+            placeholder="např. admin@streamhub.cz"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-400 mb-1">Heslo</label>
+          <div className="flex justify-between items-center mb-1">
+            <label className="block text-sm font-medium text-gray-400">Heslo</label>
+            <button
+              type="button"
+              onClick={() => onNavigate('forgot-password')}
+              className="text-xs text-[#dc2626] hover:text-[#b91c1c]"
+            >
+              Zapomenuté heslo
+            </button>
+          </div>
           <input
             type="password"
             required
             value={password}
             onChange={e => setPassword(e.target.value)}
             className="w-full bg-[#0a0a0f] border border-[#27272a] rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-[#dc2626] transition-colors"
-            placeholder="Zvolte si bezpečné heslo"
-            minLength={6}
+            placeholder="Zadejte své heslo"
           />
         </div>
 
@@ -95,17 +82,17 @@ export function RegisterForm({ onNavigate }: Props) {
           type="submit"
           className="w-full btn-action-primary mt-6"
         >
-          Zaregistrovat se
+          Přihlásit se
         </button>
       </form>
 
       <div className="mt-6 text-center text-sm text-gray-400">
-        Již máte účet?{' '}
+        Nemáte ještě účet?{' '}
         <button
-          onClick={() => onNavigate('login')}
+          onClick={() => onNavigate('register')}
           className="text-[#dc2626] hover:text-[#b91c1c] font-medium"
         >
-          Přihlaste se
+          Zaregistrujte se
         </button>
       </div>
     </div>

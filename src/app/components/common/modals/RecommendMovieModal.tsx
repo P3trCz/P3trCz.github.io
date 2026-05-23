@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Search, Film, ArrowLeft } from 'lucide-react';
 import { catalog } from '../../../data/catalog';
-import { Modal } from '../../common/Modal';
+import { Modal } from '../Modal';
 
 type RecommendMovieModalProps = {
   friendName: string;

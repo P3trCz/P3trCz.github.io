@@ -1,10 +1,10 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { catalog, Title, ServiceType } from '../../data/catalog';
+import { catalog, Title, ServiceType } from '../../../data/catalog';
 import { TitleCard } from './TitleCard';
 import { TitleDetail } from './TitleDetail';
 import { Filter, RefreshCw, Search, X } from 'lucide-react';
-import { Dropdown } from './Dropdown';
-import { useAppStore } from '../../store/useAppStore';
+import { FilterDropdown } from './FilterDropdown';
+import { useAppStore } from '../../../store/useAppStore';
 
 export function TitleGrid() {
   const [selectedTitle, setSelectedTitle] = useState<Title | null>(null);
@@ -130,25 +130,25 @@ export function TitleGrid() {
             <Filter size={16} />
             <span>Filtrovat:</span>
           </div>
-          <Dropdown
+          <FilterDropdown
             label="Typ"
             options={allTypes}
             selected={selectedTypes}
             onChange={setSelectedTypes}
           />
-          <Dropdown
+          <FilterDropdown
             label="Zhlédnuto"
             options={['Zhlédnuté', 'Nezhlédnuté']}
             selected={selectedWatched}
             onChange={setSelectedWatched}
           />
-          <Dropdown
+          <FilterDropdown
             label="Služby"
             options={allServices}
             selected={selectedServices}
             onChange={setSelectedServices}
           />
-          <Dropdown
+          <FilterDropdown
             label="Žánry"
             options={allGenres}
             selected={selectedGenres}

@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { Title, ServiceType, serviceColors } from '../../data/catalog';
+import { Title, ServiceType, serviceColors } from '../../../data/catalog';
 import { X, Star, Play, Share2, Check, Eye } from 'lucide-react';
-import { useAppStore } from '../../store/useAppStore';
-import { usersDb } from '../../data/usersDb';
-import { Snackbar } from '../common/Snackbar';
+import { useAppStore } from '../../../store/useAppStore';
+import { usersDb } from '../../../data/usersDb';
+import { Snackbar } from '../../Common/Snackbar';
 
 type Props = {
   title: Title;

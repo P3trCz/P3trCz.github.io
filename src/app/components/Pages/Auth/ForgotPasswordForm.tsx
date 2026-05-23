@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { usersDb } from '../../data/usersDb';
+import { usersDb } from '../../../data/usersDb';
 import { Play, ArrowLeft } from 'lucide-react';
 
 type Props = {

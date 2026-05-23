@@ -3,16 +3,16 @@ import { useAppStore, Playlist } from '../../store/useAppStore';
 import { usersDb } from '../../data/usersDb';
 import { catalog, Title } from '../../data/catalog';
 import { Search, UserPlus, Check, X, Share2, Film, Trash2, Play, Download, Eye, MessageSquare } from 'lucide-react';
-import { TitleDetail } from '../catalog/TitleDetail';
-import { SharePlaylistModal } from './modals/SharePlaylistModal';
-import { RecommendMovieModal } from './modals/RecommendMovieModal';
-import { MessageHistoryModal } from './modals/MessageHistoryModal';
-import { PreviewPlaylistModal } from './modals/PreviewPlaylistModal';
-import { AddTitleToPlaylistModal } from './modals/AddTitleToPlaylistModal';
-import { RemoveFriendModal } from './modals/RemoveFriendModal';
-import { Snackbar } from '../common/Snackbar';
+import { TitleDetail } from './Catalog/TitleDetail';
+import { SharePlaylistModal } from '../Common/modals/SharePlaylistModal';
+import { RecommendMovieModal } from '../Common/modals/RecommendMovieModal';
+import { MessageHistoryModal } from '../Common/modals/MessageHistoryModal';
+import { PreviewPlaylistModal } from '../Common/modals/PreviewPlaylistModal';
+import { AddTitleToPlaylistModal } from '../Common/modals/AddTitleToPlaylistModal';
+import { RemoveFriendModal } from '../Common/modals/RemoveFriendModal';
+import { Snackbar } from '../Common/Snackbar';
 
-export function FriendsView() {
+export function Friends() {
   const currentUser = useAppStore(state => state.currentUser);
   const friends = useAppStore(state => state.friends);
   const notifications = useAppStore(state => state.notifications);

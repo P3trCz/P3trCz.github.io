@@ -2,7 +2,7 @@ import React from 'react';
 import { History, ListVideo, Plus } from 'lucide-react';
 import { ChatMessage, Playlist } from '../../../store/useAppStore';
 import { catalog, Title } from '../../../data/catalog';
-import { Modal } from '../../common/Modal';
+import { Modal } from '../Modal';
 import { User } from '../../../data/usersDb';
 
 type MessageHistoryModalProps = {

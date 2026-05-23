@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Clock, Check, ListVideo, Plus } from 'lucide-react';
 import { useAppStore } from '../../../store/useAppStore';
 import { catalog } from '../../../data/catalog';
-import { Modal } from '../../common/Modal';
+import { Modal } from '../Modal';
 
 type AddTitleToPlaylistModalProps = {
   movieId: string;
