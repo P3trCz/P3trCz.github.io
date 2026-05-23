@@ -36,7 +36,7 @@ export function RecommendMovieModal({ friendName, onClose, onRecommend }: Recomm
               </div>
               <input
                 type="text"
-                placeholder="Hledat film nebo seriál..."
+                placeholder="Hledat..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 className="w-full pl-10 pr-4 py-3 bg-[#1c1c24] border border-[#27272a] rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-[#dc2626] transition-colors"
