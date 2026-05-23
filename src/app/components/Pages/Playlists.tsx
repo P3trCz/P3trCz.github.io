@@ -399,13 +399,13 @@ export function Playlists() {
                       key={friend.id}
                       onClick={() => setShareSelectedFriendId(shareSelectedFriendId === friend.id ? '' : friend.id)}
                       className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer border transition-all ${isSelected
-                          ? 'bg-[#dc2626]/10 border-[#dc2626] text-white'
-                          : 'bg-[#1c1c24] border-[#27272a] text-gray-400 hover:border-[#3f3f46] hover:text-white'
+                        ? 'bg-[#dc2626]/10 border-[#dc2626] text-white'
+                        : 'bg-[#1c1c24] border-[#27272a] text-gray-400 hover:border-[#3f3f46] hover:text-white'
                         }`}
                     >
                       <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs ${isSelected
-                          ? 'bg-[#dc2626] text-white'
-                          : 'bg-[#0a0a0f] text-gray-400'
+                        ? 'bg-[#dc2626] text-white'
+                        : 'bg-[#0a0a0f] text-gray-400'
                         }`}>
                         {friend.username.charAt(0).toUpperCase()}
                       </div>

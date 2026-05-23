@@ -3,7 +3,7 @@ import { useAppStore } from '../../store/useAppStore';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 import { catalog, ServiceType, serviceLogos, serviceColors } from '../../data/catalog';
 
-const timeRanges = ['10 minut', 'Týden', 'Měsíc', '3 měsíce', '6 měsíců', 'Rok', 'Celá doba'];
+const timeRanges = ['5 minut', '10 minut', '1 hodina', 'Týden', 'Měsíc', '3 měsíce', '6 měsíců', 'Rok', 'Celá doba'];
 
 export function Stats() {
   const [range, setRange] = useState('Měsíc');
@@ -19,7 +19,9 @@ export function Stats() {
 
   const formatRangeForSentence = (r: string) => {
     switch (r) {
+      case '5 minut': return 'posledních 5 minut';
       case '10 minut': return 'posledních 10 minut';
+      case '1 hodina': return 'poslední hodinu';
       case 'Týden': return 'poslední týden';
       case 'Měsíc': return 'poslední měsíc';
       case '3 měsíce': return 'poslední 3 měsíce';
@@ -43,8 +45,12 @@ export function Stats() {
       const diff = now - item.watchedAt;
 
       switch (range) {
+        case '5 minut':
+          return diff <= 5 * 60 * 1000;
         case '10 minut':
           return diff <= 10 * 60 * 1000;
+        case '1 hodina':
+          return diff <= 60 * 60 * 1000;
         case 'Týden':
           return diff <= 7 * 24 * 60 * 60 * 1000;
         case 'Měsíc':
@@ -171,7 +177,7 @@ export function Stats() {
                   <Tooltip
                     contentStyle={{ backgroundColor: '#1c1c24', borderColor: '#27272a', color: 'white', borderRadius: '8px' }}
                     itemStyle={{ color: 'white' }}
-                    formatter={(value: unknown) => [formatTime(Number(value)), 'Čas']}
+                    formatter={(value: unknown, name: any) => [formatTime(Number(value)), String(name)]}
                   />
                 </PieChart>
               </ResponsiveContainer>

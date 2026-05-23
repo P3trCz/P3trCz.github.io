@@ -13,7 +13,8 @@ const availableServices: { id: ServiceType; name: string }[] = [
   { id: 'Prime Video', name: 'Prime Video' },
   { id: 'Apple TV', name: 'Apple TV' },
   { id: 'SkyShowtime', name: 'SkyShowtime' },
-  { id: 'Oneplay', name: 'Oneplay' }
+  { id: 'Oneplay', name: 'Oneplay' },
+  { id: 'Prima+', name: 'Prima+' }
 ];
 
 export function Settings() {

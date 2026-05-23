@@ -43,20 +43,22 @@ export function SharePlaylistModal({ friendName, playlists, onClose, onShare }: 
                   <div className={`p-2 rounded-lg ${selectedList === pl.id ? 'bg-[#dc2626] text-white' : 'bg-[#0a0a0f] text-gray-500'}`}>
                     <ListVideo size={20} />
                   </div>
-                  <div className="flex-1 min-w-0">
+                  <div className="flex-1 min-w-0 pr-2">
                     <div className="font-bold truncate flex items-center gap-2">
                       <span className="truncate">{pl.name}</span>
-                      {pl.fromUsername && (
-                        <span className="text-[10px] bg-[#dc2626]/20 text-[#dc2626] px-1.5 py-0.5 rounded uppercase tracking-wider font-normal shrink-0 truncate max-w-[100px]" title={`Od: ${pl.fromUsername}`}>
-                          Od: {pl.fromUsername}
-                        </span>
-                      )}
                     </div>
-                    <div className="text-xs opacity-60">
+                    <div className="text-xs opacity-60 mt-0.5">
                       {pl.movieIds.length} {pl.movieIds.length === 1 ? 'položka' : pl.movieIds.length >= 2 && pl.movieIds.length <= 4 ? 'položky' : 'položek'}
                     </div>
                   </div>
-                  {selectedList === pl.id && <Check size={18} className="text-[#dc2626]" />}
+                  <div className="flex items-center gap-2 shrink-0">
+                    {pl.fromUsername && (
+                      <span className="text-[10px] bg-[#dc2626]/20 text-[#dc2626] px-1.5 py-0.5 rounded uppercase tracking-wider font-normal truncate max-w-[100px]" title={`Od: ${pl.fromUsername}`}>
+                        Od: {pl.fromUsername}
+                      </span>
+                    )}
+                    {selectedList === pl.id && <Check size={18} className="text-[#dc2626]" />}
+                  </div>
                 </div>
               ))}
             </div>

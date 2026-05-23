@@ -102,7 +102,7 @@ export function TitleDetail({ title, onClose }: Props) {
 
         {/* Content */}
         <div className="w-full lg:w-3/5 p-6 lg:p-8 flex flex-col overflow-y-auto">
-          <h2 className="text-2xl lg:text-3xl font-bold text-white leading-tight mb-2 pr-24">{title.title}</h2>
+          <h2 className="text-2xl lg:text-3xl font-bold text-white leading-tight mb-2 pr-40">{title.title}</h2>
 
           <div className="flex items-center flex-wrap gap-4 text-sm text-gray-400 mb-8">
             <span>{title.type}</span>
@@ -140,24 +140,33 @@ export function TitleDetail({ title, onClose }: Props) {
           <div className="mt-8 pt-6 border-t border-[#27272a]">
             <h3 className="text-xs font-semibold tracking-wider text-gray-500 mb-4 uppercase">Dostupnost</h3>
             <div className="flex flex-wrap gap-3">
-              {title.streaming_services.map(service => {
-                const isOwned = userSubscriptions.includes(service);
-                const color = serviceColors[service];
-                return (
-                  <button
-                    key={service}
-                    onClick={() => isOwned ? handlePlay(service) : null}
-                    style={isOwned ? { backgroundColor: color } : {}}
-                    className={`flex items-center justify-center gap-3 flex-1 min-w-[200px] px-5 py-4 rounded-xl font-semibold transition-all group ${isOwned
-                      ? 'text-white hover:scale-[1.02] active:scale-100 shadow-lg'
-                      : 'bg-[#1c1c24] text-gray-500 cursor-not-allowed border border-[#27272a]'
-                      }`}
-                  >
-                    <Play size={18} className={isOwned ? "fill-white shrink-0 group-hover:translate-x-0.5 transition-transform" : "fill-gray-500 shrink-0"} />
-                    <span className="text-sm">Přehrát na {service}</span>
-                  </button>
-                );
-              })}
+              {!title.streaming_services ? (
+                <button
+                  disabled
+                  className="flex items-center justify-center gap-3 flex-1 min-w-[200px] px-5 py-4 rounded-xl font-semibold bg-[#1c1c24] text-gray-500 cursor-not-allowed border border-[#27272a]"
+                >
+                  <span className="text-sm">Nedostupné</span>
+                </button>
+              ) : (
+                title.streaming_services.map(service => {
+                  const isOwned = userSubscriptions.includes(service);
+                  const color = serviceColors[service];
+                  return (
+                    <button
+                      key={service}
+                      onClick={() => isOwned ? handlePlay(service) : null}
+                      style={isOwned ? { backgroundColor: color } : {}}
+                      className={`flex items-center justify-center gap-3 flex-1 min-w-[200px] px-5 py-4 rounded-xl font-semibold transition-all group ${isOwned
+                        ? 'text-white hover:scale-[1.02] active:scale-100 shadow-lg'
+                        : 'bg-[#1c1c24] text-gray-500 cursor-not-allowed border border-[#27272a]'
+                        }`}
+                    >
+                      <Play size={18} className={isOwned ? "fill-white shrink-0 group-hover:translate-x-0.5 transition-transform" : "fill-gray-500 shrink-0"} />
+                      <span className="text-sm">Přehrát na {service}</span>
+                    </button>
+                  );
+                })
+              )}
             </div>
           </div>
         </div>

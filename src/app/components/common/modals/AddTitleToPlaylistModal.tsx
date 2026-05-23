@@ -84,16 +84,18 @@ export function AddTitleToPlaylistModal({ movieId, onClose }: AddTitleToPlaylist
                   : 'bg-[#1c1c24] border-[#27272a] text-gray-400 hover:border-[#3f3f46] hover:text-white'
                   }`}
               >
-                <div className="flex items-center gap-3 truncate">
-                  <ListVideo size={16} />
+                <div className="flex items-center gap-3 truncate pr-2">
+                  <ListVideo size={16} className="shrink-0" />
                   <span className="text-sm font-medium truncate">{pl.name}</span>
+                </div>
+                <div className="flex items-center gap-2 shrink-0">
                   {pl.fromUsername && (
-                    <span className="text-[10px] bg-[#dc2626]/20 text-[#dc2626] px-1.5 py-0.5 rounded uppercase tracking-wider ml-2 shrink-0 truncate max-w-[100px]" title={`Od: ${pl.fromUsername}`}>
+                    <span className="text-[10px] bg-[#dc2626]/20 text-[#dc2626] px-1.5 py-0.5 rounded uppercase tracking-wider truncate max-w-[100px]" title={`Od: ${pl.fromUsername}`}>
                       Od: {pl.fromUsername}
                     </span>
                   )}
+                  {isAdded && <Check size={16} className="text-[#dc2626]" />}
                 </div>
-                {isAdded && <Check size={16} className="text-[#dc2626]" />}
               </button>
             );
           })}

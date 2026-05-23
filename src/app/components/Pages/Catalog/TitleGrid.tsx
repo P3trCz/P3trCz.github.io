@@ -33,12 +33,12 @@ export function TitleGrid() {
 
   // Filmy dostupné na uživatelových službách
   const availableTitles = useMemo(() => {
-    return catalog.filter(title => title.streaming_services.some(s => userSubscriptions.includes(s)));
+    return catalog.filter(title => title.streaming_services && title.streaming_services.some(s => userSubscriptions.includes(s)));
   }, [userSubscriptions]);
 
   // Filtry nabízejí pouze vlastněné služby a žánry z dostupných filmů
   const allServices = useMemo(() => {
-    const validServices = new Set(availableTitles.flatMap(m => m.streaming_services));
+    const validServices = new Set(availableTitles.flatMap(m => m.streaming_services || []));
     return userSubscriptions.filter(s => validServices.has(s as ServiceType)).sort();
   }, [availableTitles, userSubscriptions]);
 
@@ -48,19 +48,21 @@ export function TitleGrid() {
   const filteredCatalog = useMemo(() => {
     return catalog.filter(title => {
       // 1. Základní filtr - film musí být dostupný na některé ze služeb, které uživatel vlastní
-      const hasSubscribedService = title.streaming_services.some(service => userSubscriptions.includes(service));
+      const hasSubscribedService = title.streaming_services && title.streaming_services.some(service => userSubscriptions.includes(service));
       if (!hasSubscribedService) return false;
 
-      // 2. Fulltextové vyhledávání v názvu (od 3 znaků)
+      // 2. Fulltextové vyhledávání v názvu (od 3 znaků) (český i anglický název)
       if (isSearchActive) {
-        const query = searchQuery.toLowerCase();
-        const matchesSearch = title.title.toLowerCase().includes(query);
+        const normalizeText = (text: string) => text.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        const query = normalizeText(searchQuery);
+        const matchesSearch = normalizeText(title.title).includes(query) ||
+          (title.title_en && normalizeText(title.title_en).includes(query));
         if (!matchesSearch) return false;
       }
 
       // 3. Filtr podle služeb (OR logiky)
       if (selectedServices.length > 0) {
-        const matchesService = title.streaming_services.some(service => selectedServices.includes(service));
+        const matchesService = title.streaming_services && title.streaming_services.some(service => selectedServices.includes(service));
         if (!matchesService) return false;
       }
 

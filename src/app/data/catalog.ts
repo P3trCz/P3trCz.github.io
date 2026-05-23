@@ -1,18 +1,19 @@
 import tmdbData from './complete_tmdb_data.json';
 
-export type ServiceType = 'Netflix' | 'HBO Max' | 'Disney Plus' | 'Prime Video' | 'Apple TV' | 'SkyShowtime' | 'Oneplay';
+export type ServiceType = 'Netflix' | 'HBO Max' | 'Disney Plus' | 'Prime Video' | 'Apple TV' | 'SkyShowtime' | 'Oneplay' | 'Prima+';
 
 export type Title = {
   id: number;
   type: "Film" | "Seriál";
   title: string;
-  rating: number; // 0-100
+  title_en: string;
+  rating: number;
   overview: string;
   cast: string[];
-  runtime: number; // in minutes
+  runtime: number;
   release_year: string;
   genres: string[];
-  streaming_services: ServiceType[];
+  streaming_services: ServiceType[] | null;
   watch_link: string;
   poster_url: string;
   backdrop_url: string;
@@ -25,7 +26,8 @@ export const serviceLogos: Record<ServiceType, string> = {
   'Prime Video': '/src/app/Logos/prime_video_logo.png',
   'Apple TV': '/src/app/Logos/apple_tv_logo.png',
   'SkyShowtime': '/src/app/Logos/skyshowtime_logo.png',
-  'Oneplay': '/src/app/Logos/oneplay_logo.png'
+  'Oneplay': '/src/app/Logos/oneplay_logo.png',
+  'Prima+': '/src/app/Logos/prima_plus.png'
 };
 
 export const serviceColors: Record<ServiceType, string> = {
@@ -35,7 +37,8 @@ export const serviceColors: Record<ServiceType, string> = {
   'Prime Video': '#00a8e1',
   'Apple TV': '#444444',
   'SkyShowtime': '#4f46e5',
-  'Oneplay': '#F2B705'
+  'Oneplay': '#F2B705',
+  'Prima+': '#04BFAD'
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -43,13 +46,18 @@ const rawData = tmdbData as any[];
 const uniqueDataMap = new Map<string, Title>();
 
 rawData.forEach(m => {
-  // Normalizace názvu Prime Video
-  const services = (m.streaming_services as string[]).map(s => 
-    s === 'Amazon Prime Video' ? 'Prime Video' : s
-  ) as ServiceType[];
+  // Normalizace názvů a ošetření null
+  const services = m.streaming_services
+    ? (m.streaming_services as string[]).map(s => {
+      if (s === 'Amazon Prime Video') return 'Prime Video';
+      if (s === 'Prima Plus') return 'Prima+';
+      return s;
+    }) as ServiceType[]
+    : null;
 
   const title: Title = {
     ...m,
+    title_en: m.title_en || "",
     streaming_services: services
   };
 
