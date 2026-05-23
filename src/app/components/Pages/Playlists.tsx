@@ -8,6 +8,7 @@ import { useOnClickOutside } from '../../hooks/useOnClickOutside';
 import { TitleCard } from './Catalog/TitleCard';
 import { TitleDetail } from './Catalog/TitleDetail';
 import { RenamePlaylistModal } from '../Common/modals/RenamePlaylistModal';
+import { DeletePlaylistModal } from '../Common/modals/DeletePlaylistModal';
 import { Snackbar } from '../Common/Snackbar';
 
 export function Playlists() {
@@ -46,6 +47,7 @@ export function Playlists() {
   const [shareMessage, setShareMessage] = useState('');
   const [shareSelectedFriendId, setShareSelectedFriendId] = useState('');
   const [renameModalPlaylistId, setRenameModalPlaylistId] = useState<string | null>(null);
+  const [deleteModalPlaylistId, setDeleteModalPlaylistId] = useState<string | null>(null);
   const [renamePlaylistName, setRenamePlaylistName] = useState('');
   const [snackbarMsg, setSnackbarMsg] = useState('');
 
@@ -64,9 +66,7 @@ export function Playlists() {
   };
 
   const handleDelete = (id: string) => {
-    if (window.confirm('Opravdu chcete tento seznam smazat?')) {
-      deletePlaylist(id);
-    }
+    setDeleteModalPlaylistId(id);
     setOpenMenuId(null);
   };
 
@@ -456,6 +456,21 @@ export function Playlists() {
           currentName={renamePlaylistName}
           onClose={() => setRenameModalPlaylistId(null)}
           onRename={(id, name) => renamePlaylist(id, name)}
+        />
+      )}
+
+      {/* SMAZAT MODAL */}
+      {deleteModalPlaylistId && (
+        <DeletePlaylistModal
+          playlistName={playlists.find(p => p.id === deleteModalPlaylistId)?.name}
+          onClose={() => setDeleteModalPlaylistId(null)}
+          onConfirm={() => {
+            deletePlaylist(deleteModalPlaylistId);
+            setDeleteModalPlaylistId(null);
+            if (activePlaylistId === deleteModalPlaylistId) {
+              setActivePlaylistId(null);
+            }
+          }}
         />
       )}
 
