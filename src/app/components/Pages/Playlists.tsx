@@ -25,8 +25,8 @@ export function Playlists() {
   const watchlist = currentUser ? (watchlistsState[currentUser.id] || []) : [];
   const watchHistoryState = useAppStore(state => state.watchHistory);
   const watchHistory = currentUser ? (watchHistoryState[currentUser.id] || []) : [];
-  // Unikátní movieIds pro historii, seřazené od nejnovějších
-  const historyMovieIds = Array.from(new Set([...watchHistory].reverse().map(h => h.movieId)));
+  // Unikátní titleIds pro historii, seřazené od nejnovějších
+  const historytitleIds = Array.from(new Set([...watchHistory].reverse().map(h => h.titleId)));
 
   const [activePlaylistId, setActivePlaylistId] = useState<string | null>(null);
   const [displayedCount, setDisplayedCount] = useState(25);
@@ -55,8 +55,8 @@ export function Playlists() {
 
   useOnClickOutside(menuRef, () => setOpenMenuId(null), !!openMenuId);
 
-  const getMovies = (movieIds: string[]) => {
-    return movieIds.map(id => catalog.find(m => m.id.toString() === id.toString())).filter(Boolean) as typeof catalog;
+  const getMovies = (titleIds: string[]) => {
+    return titleIds.map(id => catalog.find(m => m.id.toString() === id.toString())).filter(Boolean) as typeof catalog;
   };
 
   const handleRename = (id: string, currentName: string) => {
@@ -83,7 +83,7 @@ export function Playlists() {
     }
 
     const title = isWatchlist ? 'Přehrát později' : isHistory ? 'Historie sledování' : playlist!.name;
-    const allTitles = getMovies(isWatchlist ? watchlist : isHistory ? historyMovieIds : playlist!.movieIds);
+    const allTitles = getMovies(isWatchlist ? watchlist : isHistory ? historytitleIds : playlist!.titleIds);
     const displayedTitles = allTitles.slice(0, displayedCount);
     const hasMore = displayedCount < allTitles.length;
 
@@ -112,9 +112,9 @@ export function Playlists() {
           </div>
           {!isWatchlist && !isHistory && playlist && (
             <button
-              onClick={() => playlist.movieIds.length > 0 ? setShareModalPlaylistId(playlist.id) : setSnackbarMsg('Prázdný seznam nelze sdílet!')}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors ${playlist.movieIds.length > 0 ? 'bg-[#27272a] hover:bg-[#3f3f46] text-white' : 'bg-[#27272a]/50 text-gray-500 cursor-not-allowed'}`}
-              title={playlist.movieIds.length === 0 ? "Prázdný seznam nelze sdílet" : ""}
+              onClick={() => playlist.titleIds.length > 0 ? setShareModalPlaylistId(playlist.id) : setSnackbarMsg('Prázdný seznam nelze sdílet!')}
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors ${playlist.titleIds.length > 0 ? 'bg-[#27272a] hover:bg-[#3f3f46] text-white' : 'bg-[#27272a]/50 text-gray-500 cursor-not-allowed'}`}
+              title={playlist.titleIds.length === 0 ? "Prázdný seznam nelze sdílet" : ""}
             >
               <Share2 size={18} /> Sdílet
             </button>
@@ -169,8 +169,8 @@ export function Playlists() {
     );
   };
 
-  const renderPreview = (movieIds: string[]) => {
-    const previewTitles = getMovies(movieIds.slice(0, 4));
+  const renderPreview = (titleIds: string[]) => {
+    const previewTitles = getMovies(titleIds.slice(0, 4));
 
     if (previewTitles.length === 0) {
       return (
@@ -280,10 +280,10 @@ export function Playlists() {
               <h2 className="text-xl font-bold text-white group-hover:text-[#dc2626] transition-colors">Historie sledování</h2>
             </div>
 
-            {renderPreview(historyMovieIds)}
+            {renderPreview(historytitleIds)}
 
             <div className="text-sm text-gray-500 mt-auto pt-2 border-t border-[#27272a]/50">
-              {historyMovieIds.length} {historyMovieIds.length === 1 ? 'položka' : historyMovieIds.length >= 2 && historyMovieIds.length <= 4 ? 'položky' : 'položek'}
+              {historytitleIds.length} {historytitleIds.length === 1 ? 'položka' : historytitleIds.length >= 2 && historytitleIds.length <= 4 ? 'položky' : 'položek'}
             </div>
           </div>
 
@@ -335,15 +335,15 @@ export function Playlists() {
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        if (pl.movieIds.length === 0) {
+                        if (pl.titleIds.length === 0) {
                           setSnackbarMsg('Prázdný seznam nelze sdílet!');
                         } else {
                           setShareModalPlaylistId(pl.id);
                         }
                         setOpenMenuId(null);
                       }}
-                      className={`w-full flex items-center gap-3 px-4 py-3 text-sm transition-colors ${pl.movieIds.length > 0 ? 'text-gray-300 hover:text-white hover:bg-[#27272a]' : 'text-gray-600 cursor-not-allowed'}`}
-                      title={pl.movieIds.length === 0 ? "Prázdný seznam nelze sdílet" : ""}
+                      className={`w-full flex items-center gap-3 px-4 py-3 text-sm transition-colors ${pl.titleIds.length > 0 ? 'text-gray-300 hover:text-white hover:bg-[#27272a]' : 'text-gray-600 cursor-not-allowed'}`}
+                      title={pl.titleIds.length === 0 ? "Prázdný seznam nelze sdílet" : ""}
                     >
                       <Share2 size={16} /> Sdílet
                     </button>
@@ -357,10 +357,10 @@ export function Playlists() {
                 )}
               </div>
 
-              {renderPreview(pl.movieIds)}
+              {renderPreview(pl.titleIds)}
 
               <div className="text-sm text-gray-500 mt-auto pt-2 border-t border-[#27272a]/50 flex justify-between items-center gap-2">
-                <span className="whitespace-nowrap shrink-0">{pl.movieIds.length} {pl.movieIds.length === 1 ? 'položka' : pl.movieIds.length >= 2 && pl.movieIds.length <= 4 ? 'položky' : 'položek'}</span>
+                <span className="whitespace-nowrap shrink-0">{pl.titleIds.length} {pl.titleIds.length === 1 ? 'položka' : pl.titleIds.length >= 2 && pl.titleIds.length <= 4 ? 'položky' : 'položek'}</span>
                 {pl.fromUsername && (
                   <span className="text-[10px] bg-[#dc2626]/20 text-[#dc2626] px-1.5 py-0.5 rounded uppercase tracking-wider truncate min-w-0" title={`Od: ${pl.fromUsername}`}>
                     Od: {pl.fromUsername}
@@ -478,4 +478,6 @@ export function Playlists() {
     </>
   );
 }
+
+
 

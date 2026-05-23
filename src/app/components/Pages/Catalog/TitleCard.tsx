@@ -15,7 +15,7 @@ export function TitleCard({ title, onClick, className = '' }: Props) {
   const watchHistory = useAppStore(state => state.watchHistory);
   const toggleWatchedTitle = useAppStore(state => state.toggleWatchedTitle);
   
-  const isWatched = currentUser && (watchHistory[currentUser.id] || []).some(h => h.movieId === title.id.toString());
+  const isWatched = currentUser && (watchHistory[currentUser.id] || []).some(h => h.titleId === title.id.toString());
 
   const renderStars = (rating: number) => {
     const stars = Math.round(rating / 20); // 1-5
@@ -58,7 +58,7 @@ export function TitleCard({ title, onClick, className = '' }: Props) {
           >
             <Eye size={16} />
           </button>
-          <AddToPlaylistButton movieId={title.id.toString()} />
+          <AddToPlaylistButton titleId={title.id.toString()} />
         </div>
       </div>
 
@@ -94,4 +94,5 @@ export function TitleCard({ title, onClick, className = '' }: Props) {
     </div>
   );
 }
+
 

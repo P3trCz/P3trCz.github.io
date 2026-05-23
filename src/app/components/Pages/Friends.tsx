@@ -38,7 +38,7 @@ export function Friends() {
   const [historyFriendId, setHistoryFriendId] = useState<string | null>(null);
   const [previewPlaylist, setPreviewPlaylist] = useState<Playlist | null>(null);
   const [previewFromUsername, setPreviewFromUsername] = useState<string>('');
-  const [addingMovieId, setAddingMovieId] = useState<string | null>(null);
+  const [addingtitleId, setAddingtitleId] = useState<string | null>(null);
   const [selectedTitleForDetail, setSelectedTitleForDetail] = useState<Title | null>(null);
   const [friendToRemove, setFriendToRemove] = useState<{id: string, name: string} | null>(null);
 
@@ -210,7 +210,7 @@ export function Friends() {
                         </div>
 
                         {(() => {
-                          const title = getMovieById(notif.movieId || '');
+                          const title = getMovieById(notif.titleId || '');
                           if (!title) return <p className="text-red-500 text-xs">Titul nebyl nalezen.</p>;
 
                           return (
@@ -315,8 +315,8 @@ export function Friends() {
         <RecommendMovieModal
           friendName={myFriends.find(f => f?.id === recommendTitleFriendId)?.username || ''}
           onClose={() => setRecommendMovieFriendId(null)}
-          onRecommend={(movieId, message) => {
-            recommendTitle(recommendTitleFriendId, movieId, message);
+          onRecommend={(titleId, message) => {
+            recommendTitle(recommendTitleFriendId, titleId, message);
             setRecommendMovieFriendId(null);
             setAddSuccess('Titul byl úspěšně doporučen!');
           }}
@@ -330,7 +330,7 @@ export function Friends() {
           history={messageHistory[currentUser?.id || ''] || []}
           onClose={() => setHistoryFriendId(null)}
           onViewMovie={(title) => setSelectedTitleForDetail(title)}
-          onAddMovieToPlaylist={(movieId) => setAddingMovieId(movieId)}
+          onAddMovieToPlaylist={(titleId) => setAddingtitleId(titleId)}
           onViewPlaylist={(playlist, fromUsername) => {
             setPreviewPlaylist(playlist);
             setPreviewFromUsername(fromUsername);
@@ -362,10 +362,10 @@ export function Friends() {
       )}
 
       {/* MODAL: Přidat film do seznamu */}
-      {addingMovieId && (
+      {addingtitleId && (
         <AddTitleToPlaylistModal
-          movieId={addingMovieId}
-          onClose={() => setAddingMovieId(null)}
+          titleId={addingtitleId}
+          onClose={() => setAddingtitleId(null)}
         />
       )}
 
@@ -386,3 +386,4 @@ export function Friends() {
     </div>
   );
 }
+

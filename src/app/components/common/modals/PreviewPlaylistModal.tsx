@@ -13,8 +13,8 @@ type PreviewPlaylistModalProps = {
 };
 
 export function PreviewPlaylistModal({ playlist, fromUsername, onClose, onViewMovie, onSave }: PreviewPlaylistModalProps) {
-  const movieIds = playlist.movieIds;
-  const titles = movieIds.map(id => catalog.find(m => m.id.toString() === id.toString())).filter(Boolean) as Title[];
+  const titleIds = playlist.titleIds;
+  const titles = titleIds.map(id => catalog.find(m => m.id.toString() === id.toString())).filter(Boolean) as Title[];
 
   return (
     <Modal
@@ -66,3 +66,4 @@ export function PreviewPlaylistModal({ playlist, fromUsername, onClose, onViewMo
     </Modal>
   );
 }
+

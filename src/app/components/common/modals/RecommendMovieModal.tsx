@@ -6,7 +6,7 @@ import { Modal } from '../Modal';
 type RecommendMovieModalProps = {
   friendName: string;
   onClose: () => void;
-  onRecommend: (movieId: string, message: string) => void;
+  onRecommend: (titleId: string, message: string) => void;
 };
 
 export function RecommendMovieModal({ friendName, onClose, onRecommend }: RecommendMovieModalProps) {
@@ -107,3 +107,4 @@ export function RecommendMovieModal({ friendName, onClose, onRecommend }: Recomm
     </Modal>
   );
 }
+

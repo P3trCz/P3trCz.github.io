@@ -17,7 +17,7 @@ export function TitleDetail({ title, onClose }: Props) {
   const subscriptionsState = useAppStore(state => state.subscriptions);
   const userSubscriptions = currentUser ? (subscriptionsState[currentUser.id] || []) : [];
   const watchHistory = useAppStore(state => state.watchHistory);
-  const isWatched = currentUser && (watchHistory[currentUser.id] || []).some(h => h.movieId === title.id.toString());
+  const isWatched = currentUser && (watchHistory[currentUser.id] || []).some(h => h.titleId === title.id.toString());
 
   const friends = useAppStore(state => state.friends);
   const recommendTitle = useAppStore(state => state.recommendTitle);
@@ -250,3 +250,4 @@ export function TitleDetail({ title, onClose }: Props) {
     </div>
   );
 }
+

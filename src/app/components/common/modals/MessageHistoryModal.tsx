@@ -11,7 +11,7 @@ type MessageHistoryModalProps = {
   onClose: () => void;
   onViewMovie: (title: Title) => void;
   onViewPlaylist: (playlist: Playlist, fromUsername: string) => void;
-  onAddMovieToPlaylist: (movieId: string) => void;
+  onAddMovieToPlaylist: (titleId: string) => void;
 };
 
 export function MessageHistoryModal({
@@ -63,7 +63,7 @@ export function MessageHistoryModal({
                   {msg.type === 'RECOMMENDED_TITLE' && (
                     <div className="bg-black/20 rounded-xl p-3 flex items-center gap-3">
                       {(() => {
-                        const title = catalog.find(m => m.id.toString() === msg.movieId);
+                        const title = catalog.find(m => m.id.toString() === msg.titleId);
                         if (!title) return <span className="text-xs text-red-500">Titul nenalezen</span>;
                         return (
                           <>
@@ -114,3 +114,4 @@ export function MessageHistoryModal({
     </Modal>
   );
 }
+

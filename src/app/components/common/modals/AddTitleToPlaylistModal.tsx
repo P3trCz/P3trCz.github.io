@@ -5,11 +5,11 @@ import { catalog } from '../../../data/catalog';
 import { Modal } from '../Modal';
 
 type AddTitleToPlaylistModalProps = {
-  movieId: string;
+  titleId: string;
   onClose: () => void;
 };
 
-export function AddTitleToPlaylistModal({ movieId, onClose }: AddTitleToPlaylistModalProps) {
+export function AddTitleToPlaylistModal({ titleId, onClose }: AddTitleToPlaylistModalProps) {
   const currentUser = useAppStore(state => state.currentUser);
   const playlists = useAppStore(state => state.playlists);
   const addToPlaylist = useAppStore(state => state.addToPlaylist);
@@ -21,7 +21,7 @@ export function AddTitleToPlaylistModal({ movieId, onClose }: AddTitleToPlaylist
   const [newPlaylistName, setNewPlaylistName] = useState('');
   const userPlaylists = currentUser ? (playlists[currentUser.id] || []) : [];
   const userWatchlist = currentUser ? (watchlists[currentUser.id] || []) : [];
-  const title = catalog.find(m => m.id.toString() === movieId);
+  const title = catalog.find(m => m.id.toString() === titleId);
 
   const handleCreateAndAdd = () => {
     if (!newPlaylistName.trim()) return;
@@ -50,11 +50,11 @@ export function AddTitleToPlaylistModal({ movieId, onClose }: AddTitleToPlaylist
 
         <div className="space-y-2 max-h-[250px] overflow-y-auto pr-2 custom-scrollbar mb-6">
           {(() => {
-            const isAddedToWatchlist = userWatchlist.includes(movieId);
+            const isAddedToWatchlist = userWatchlist.includes(titleId);
             return (
               <button
                 onClick={() => {
-                  toggleWatchlist(movieId);
+                  toggleWatchlist(titleId);
                 }}
                 className={`w-full flex items-center justify-between p-3 rounded-xl border transition-all ${isAddedToWatchlist
                   ? 'bg-[#dc2626]/10 border-[#dc2626] text-white'
@@ -71,13 +71,13 @@ export function AddTitleToPlaylistModal({ movieId, onClose }: AddTitleToPlaylist
           })()}
 
           {userPlaylists.map(pl => {
-            const isAdded = pl.movieIds.includes(movieId);
+            const isAdded = pl.titleIds.includes(titleId);
             return (
               <button
                 key={pl.id}
                 onClick={() => {
-                  if (!isAdded) addToPlaylist(pl.id, movieId);
-                  else removeFromPlaylist(pl.id, movieId);
+                  if (!isAdded) addToPlaylist(pl.id, titleId);
+                  else removeFromPlaylist(pl.id, titleId);
                 }}
                 className={`w-full flex items-center justify-between p-3 rounded-xl border transition-all ${isAdded
                   ? 'bg-[#dc2626]/10 border-[#dc2626] text-white'
@@ -123,3 +123,5 @@ export function AddTitleToPlaylistModal({ movieId, onClose }: AddTitleToPlaylist
     </Modal>
   );
 }
+
+

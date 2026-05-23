@@ -19,7 +19,7 @@ export function TitleGrid() {
   const EMPTY_ARRAY: string[] = [];
   const userSubscriptions = currentUser ? (subscriptionsState[currentUser.id] || EMPTY_ARRAY) : EMPTY_ARRAY;
   const watchHistory = useAppStore(state => state.watchHistory);
-  const userWatchedTitles = currentUser ? (watchHistory[currentUser.id] || []).map(h => h.movieId) : EMPTY_ARRAY;
+  const userWatchedTitles = currentUser ? (watchHistory[currentUser.id] || []).map(h => h.titleId) : EMPTY_ARRAY;
   const searchQuery = useAppStore(state => state.searchQuery);
   const setSearchQuery = useAppStore(state => state.setSearchQuery);
 
@@ -221,3 +221,4 @@ export function TitleGrid() {
     </div>
   );
 }
+

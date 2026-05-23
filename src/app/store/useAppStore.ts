@@ -2,16 +2,25 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { User } from '../data/usersDb';
 import type { ServiceType } from '../data/catalog';
+import {
+  INITIAL_SUBSCRIPTIONS,
+  INITIAL_FRIENDS,
+  INITIAL_WATCH_HISTORY,
+  INITIAL_PLAYLISTS,
+  INITIAL_WATCHLISTS,
+  INITIAL_MESSAGE_HISTORY,
+  INITIAL_NOTIFICATIONS
+} from './initialData';
 
 export type Playlist = {
   id: string;
   name: string;
-  movieIds: string[];
+  titleIds: string[];
   fromUsername?: string; // Informace o tom, od koho seznam je
 };
 
 export type WatchHistoryItem = {
-  movieId: string;
+  titleId: string;
   watchedAt: number; // timestamp
   service: ServiceType | 'Unknown';
   durationMinutes: number;
@@ -31,7 +40,7 @@ export type Notification = {
   timestamp: number;
   message?: string;
   playlist?: Playlist;
-  movieId?: string;
+  titleId?: string;
 };
 
 export type ChatMessage = {
@@ -43,14 +52,14 @@ export type ChatMessage = {
   type: 'SHARED_PLAYLIST' | 'RECOMMENDED_TITLE';
   message?: string;
   playlist?: Playlist;
-  movieId?: string;
+  titleId?: string;
 };
 
 type AppState = {
   currentUser: User | null;
 
   // Data per uživatel, klíčem je userId
-  watchlists: Record<string, string[]>; // Pole movieIds
+  watchlists: Record<string, string[]>; // Pole titleIds
   // Zhlédnuté tituly a historie jsou nyní sjednocené pod watchHistory
   playlists: Record<string, Playlist[]>;
   subscriptions: Record<string, ServiceType[]>;
@@ -72,11 +81,11 @@ type AppState = {
   createPlaylist: (name: string) => void;
   deletePlaylist: (playlistId: string) => void;
   renamePlaylist: (playlistId: string, newName: string) => void;
-  addToPlaylist: (playlistId: string, movieId: string) => void;
-  removeFromPlaylist: (playlistId: string, movieId: string) => void;
+  addToPlaylist: (playlistId: string, titleId: string) => void;
+  removeFromPlaylist: (playlistId: string, titleId: string) => void;
 
   // Watchlist akce
-  toggleWatchlist: (movieId: string) => void;
+  toggleWatchlist: (titleId: string) => void;
   toggleWatchedTitle: (titleId: string) => void;
   markAsWatched: (titleId: string, service?: ServiceType | 'Unknown', durationMinutes?: number) => void;
 
@@ -91,16 +100,16 @@ type AppState = {
   rejectFriendRequest: (notificationId: string) => void;
   removeFriend: (friendId: string) => void;
   sharePlaylist: (friendId: string, playlist: Playlist, message?: string) => void;
-  recommendTitle: (friendId: string, movieId: string, message?: string) => void;
+  recommendTitle: (friendId: string, titleId: string, message?: string) => void;
   importPlaylist: (playlist: Playlist, fromUsername: string) => boolean; // Vrací true při úspěchu
   dismissNotification: (notificationId: string) => void;
   saveSharedPlaylist: (notificationId: string) => void;
 };
 
 const isDuplicatePlaylist = (userPlaylists: Playlist[], playlistToCheck: Playlist, fromUsername?: string) => {
-  const sortedNewIds = JSON.stringify([...playlistToCheck.movieIds].sort());
+  const sortedNewIds = JSON.stringify([...playlistToCheck.titleIds].sort());
   const hasIdenticalContent = userPlaylists.some(p =>
-    JSON.stringify([...p.movieIds].sort()) === sortedNewIds
+    JSON.stringify([...p.titleIds].sort()) === sortedNewIds
   );
 
   const hasSameNameAndAuthor = userPlaylists.some(p =>
@@ -114,13 +123,13 @@ export const useAppStore = create<AppState>()(
   persist(
     (set, get) => ({
       currentUser: null,
-      watchlists: {},
-      playlists: {},
-      subscriptions: {},
-      watchHistory: {},
-      friends: {},
-      notifications: {},
-      messageHistory: {},
+      watchlists: INITIAL_WATCHLISTS,
+      playlists: INITIAL_PLAYLISTS,
+      subscriptions: INITIAL_SUBSCRIPTIONS,
+      watchHistory: INITIAL_WATCH_HISTORY,
+      friends: INITIAL_FRIENDS,
+      notifications: INITIAL_NOTIFICATIONS,
+      messageHistory: INITIAL_MESSAGE_HISTORY,
       searchQuery: '',
 
       setSearchQuery: (query) => set({ searchQuery: query }),
@@ -144,7 +153,7 @@ export const useAppStore = create<AppState>()(
               ...state.playlists,
               [userId]: [
                 ...userPlaylists,
-                { id: Math.random().toString(36).substr(2, 9), name, movieIds: [] }
+                { id: Math.random().toString(36).substr(2, 9), name, titleIds: [] }
               ]
             }
           };
@@ -181,15 +190,15 @@ export const useAppStore = create<AppState>()(
         });
       },
 
-      addToPlaylist: (playlistId, movieId) => {
+      addToPlaylist: (playlistId, titleId) => {
         const userId = get().currentUser?.id;
         if (!userId) return;
 
         set((state) => {
           const userPlaylists = state.playlists[userId] || [];
           const updatedPlaylists = userPlaylists.map(pl => {
-            if (pl.id === playlistId && !pl.movieIds.includes(movieId)) {
-              return { ...pl, movieIds: [...pl.movieIds, movieId] };
+            if (pl.id === playlistId && !pl.titleIds.includes(titleId)) {
+              return { ...pl, titleIds: [...pl.titleIds, titleId] };
             }
             return pl;
           });
@@ -203,7 +212,7 @@ export const useAppStore = create<AppState>()(
         });
       },
 
-      removeFromPlaylist: (playlistId, movieId) => {
+      removeFromPlaylist: (playlistId, titleId) => {
         const userId = get().currentUser?.id;
         if (!userId) return;
 
@@ -211,7 +220,7 @@ export const useAppStore = create<AppState>()(
           const userPlaylists = state.playlists[userId] || [];
           const updatedPlaylists = userPlaylists.map(pl => {
             if (pl.id === playlistId) {
-              return { ...pl, movieIds: pl.movieIds.filter(id => id !== movieId) };
+              return { ...pl, titleIds: pl.titleIds.filter(id => id !== titleId) };
             }
             return pl;
           });
@@ -225,20 +234,20 @@ export const useAppStore = create<AppState>()(
         });
       },
 
-      toggleWatchlist: (movieId) => {
+      toggleWatchlist: (titleId) => {
         const userId = get().currentUser?.id;
         if (!userId) return;
 
         set((state) => {
           const currentList = state.watchlists[userId] || [];
-          const exists = currentList.includes(movieId);
+          const exists = currentList.includes(titleId);
 
           return {
             watchlists: {
               ...state.watchlists,
               [userId]: exists
-                ? currentList.filter(id => id !== movieId)
-                : [...currentList, movieId]
+                ? currentList.filter(id => id !== titleId)
+                : [...currentList, titleId]
             }
           };
         });
@@ -250,14 +259,14 @@ export const useAppStore = create<AppState>()(
 
         set((state) => {
           const currentHistory = state.watchHistory[userId] || [];
-          const exists = currentHistory.some(h => h.movieId === titleId);
+          const exists = currentHistory.some(h => h.titleId === titleId);
 
           if (exists) {
             // Odebrat z historie
             return {
               watchHistory: {
                 ...state.watchHistory,
-                [userId]: currentHistory.filter(h => h.movieId !== titleId)
+                [userId]: currentHistory.filter(h => h.titleId !== titleId)
               }
             };
           } else {
@@ -275,7 +284,7 @@ export const useAppStore = create<AppState>()(
 
         set((state) => {
           const currentHistory = state.watchHistory[userId] || [];
-          const existingIndex = currentHistory.findIndex(h => h.movieId === titleId);
+          const existingIndex = currentHistory.findIndex(h => h.titleId === titleId);
 
           if (existingIndex >= 0) {
             // Pokud záznam už existuje
@@ -294,7 +303,7 @@ export const useAppStore = create<AppState>()(
               ...state.watchHistory,
               [userId]: [
                 ...currentHistory,
-                { movieId: titleId, watchedAt: service === 'Unknown' ? 0 : Date.now(), service, durationMinutes: service === 'Unknown' ? 0 : durationMinutes }
+                { titleId: titleId, watchedAt: service === 'Unknown' ? 0 : Date.now(), service, durationMinutes: service === 'Unknown' ? 0 : durationMinutes }
               ]
             }
           };
@@ -489,7 +498,7 @@ export const useAppStore = create<AppState>()(
         return true;
       },
 
-      recommendTitle: (friendId, movieId, message) => {
+      recommendTitle: (friendId, titleId, message) => {
         const currentUser = get().currentUser;
         if (!currentUser) return;
 
@@ -502,7 +511,7 @@ export const useAppStore = create<AppState>()(
             fromUsername: currentUser.username,
             timestamp: Date.now(),
             message,
-            movieId
+            titleId
           };
 
           const newMessage: ChatMessage = {
@@ -513,7 +522,7 @@ export const useAppStore = create<AppState>()(
             timestamp: newNotif.timestamp,
             type: 'RECOMMENDED_TITLE',
             message,
-            movieId
+            titleId
           };
 
           const currentUserHistory = state.messageHistory[currentUser.id] || [];
@@ -572,7 +581,7 @@ export const useAppStore = create<AppState>()(
           const newPlaylist: Playlist = {
             id: Math.random().toString(36).substr(2, 9),
             name: notif.playlist.name,
-            movieIds: notif.playlist.movieIds,
+            titleIds: notif.playlist.titleIds,
             fromUsername: notif.fromUsername
           };
 
@@ -599,3 +608,5 @@ export const useAppStore = create<AppState>()(
     }
   )
 );
+
+

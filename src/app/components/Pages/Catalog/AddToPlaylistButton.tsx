@@ -3,10 +3,10 @@ import { Plus } from 'lucide-react';
 import { AddTitleToPlaylistModal } from '../../Common/modals/AddTitleToPlaylistModal';
 
 type Props = {
-  movieId: string;
+  titleId: string;
 };
 
-export function AddToPlaylistButton({ movieId }: Props) {
+export function AddToPlaylistButton({ titleId }: Props) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -23,11 +23,12 @@ export function AddToPlaylistButton({ movieId }: Props) {
 
       {isOpen && (
         <AddTitleToPlaylistModal
-          movieId={movieId}
+          titleId={titleId}
           onClose={() => setIsOpen(false)}
         />
       )}
     </>
   );
 }
+
 

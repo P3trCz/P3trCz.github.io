@@ -30,15 +30,15 @@ export function SharePlaylistModal({ friendName, playlists, onClose, onShare }: 
               {playlists.map(pl => (
                 <div
                   key={pl.id}
-                  onClick={() => pl.movieIds.length > 0 && setSelectedList(selectedList === pl.id ? '' : pl.id)}
+                  onClick={() => pl.titleIds.length > 0 && setSelectedList(selectedList === pl.id ? '' : pl.id)}
                   className={`flex items-center gap-4 p-4 rounded-xl border transition-all ${
-                    pl.movieIds.length === 0
+                    pl.titleIds.length === 0
                       ? 'bg-[#0a0a0f] border-[#27272a] opacity-50 cursor-not-allowed'
                       : selectedList === pl.id
                         ? 'bg-[#dc2626]/10 border-[#dc2626] text-white cursor-pointer'
                         : 'bg-[#1c1c24] border-[#27272a] text-gray-400 hover:border-[#3f3f46] hover:text-white cursor-pointer'
                   }`}
-                  title={pl.movieIds.length === 0 ? "Prázdný seznam nelze sdílet" : ""}
+                  title={pl.titleIds.length === 0 ? "Prázdný seznam nelze sdílet" : ""}
                 >
                   <div className={`p-2 rounded-lg ${selectedList === pl.id ? 'bg-[#dc2626] text-white' : 'bg-[#0a0a0f] text-gray-500'}`}>
                     <ListVideo size={20} />
@@ -48,7 +48,7 @@ export function SharePlaylistModal({ friendName, playlists, onClose, onShare }: 
                       <span className="truncate">{pl.name}</span>
                     </div>
                     <div className="text-xs opacity-60 mt-0.5">
-                      {pl.movieIds.length} {pl.movieIds.length === 1 ? 'položka' : pl.movieIds.length >= 2 && pl.movieIds.length <= 4 ? 'položky' : 'položek'}
+                      {pl.titleIds.length} {pl.titleIds.length === 1 ? 'položka' : pl.titleIds.length >= 2 && pl.titleIds.length <= 4 ? 'položky' : 'položek'}
                     </div>
                   </div>
                   <div className="flex items-center gap-2 shrink-0">
@@ -86,3 +86,4 @@ export function SharePlaylistModal({ friendName, playlists, onClose, onShare }: 
     </Modal>
   );
 }
+

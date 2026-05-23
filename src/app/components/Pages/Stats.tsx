@@ -69,7 +69,7 @@ export function Stats() {
     filteredHistory.forEach(item => {
       if (item.service === 'Unknown') return; // Ignorovat u všeho
 
-      const title = catalog.find(m => m.id.toString() === item.movieId);
+      const title = catalog.find(m => m.id.toString() === item.titleId);
 
       if (title) {
         if (title.type === 'Film') {
@@ -234,3 +234,4 @@ export function Stats() {
     </div>
   );
 }
+
