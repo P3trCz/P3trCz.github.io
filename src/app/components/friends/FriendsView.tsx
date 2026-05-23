@@ -9,7 +9,9 @@ import { RecommendMovieModal } from './modals/RecommendMovieModal';
 import { MessageHistoryModal } from './modals/MessageHistoryModal';
 import { PreviewPlaylistModal } from './modals/PreviewPlaylistModal';
 import { AddTitleToPlaylistModal } from './modals/AddTitleToPlaylistModal';
+import { RemoveFriendModal } from './modals/RemoveFriendModal';
 import { Snackbar } from '../common/Snackbar';
+
 export function FriendsView() {
   const currentUser = useAppStore(state => state.currentUser);
   const friends = useAppStore(state => state.friends);
@@ -38,6 +40,7 @@ export function FriendsView() {
   const [previewFromUsername, setPreviewFromUsername] = useState<string>('');
   const [addingMovieId, setAddingMovieId] = useState<string | null>(null);
   const [selectedTitleForDetail, setSelectedTitleForDetail] = useState<Title | null>(null);
+  const [friendToRemove, setFriendToRemove] = useState<{id: string, name: string} | null>(null);
 
   const myFriendsIds = currentUser ? (friends[currentUser.id] || []) : [];
   const myFriends = myFriendsIds.map(id => usersDb.getUsers().find(u => u.id === id)).filter(Boolean);
@@ -49,13 +52,19 @@ export function FriendsView() {
     setAddError('');
     setAddSuccess('');
 
+    const trimmedUsername = addUsername.trim();
+    if (!trimmedUsername) {
+      setAddError('Zadejte uživatelské jméno!');
+      return;
+    }
+
     if (!currentUser) return;
-    if (addUsername.toLowerCase() === currentUser.username.toLowerCase()) {
+    if (trimmedUsername.toLowerCase() === currentUser.username.toLowerCase()) {
       setAddError('Nemůžete přidat sami sebe!');
       return;
     }
 
-    const user = usersDb.findUserByUsername(addUsername);
+    const user = usersDb.findUserByUsername(trimmedUsername);
     if (!user) {
       setAddError('Uživatel nebyl nalezen!');
       return;
@@ -73,9 +82,14 @@ export function FriendsView() {
   };
 
   const handleRemoveFriend = (friendId: string, username: string) => {
-    if (window.confirm(`Opravdu si přejete odebrat uživatele ${username} z přátel?`)) {
-      removeFriend(friendId);
+    setFriendToRemove({ id: friendId, name: username });
+  };
+
+  const confirmRemoveFriend = () => {
+    if (friendToRemove) {
+      removeFriend(friendToRemove.id);
       setAddSuccess('Přítel byl odebrán!');
+      setFriendToRemove(null);
       setTimeout(() => setAddSuccess(''), 3000);
     }
   };
@@ -130,8 +144,8 @@ export function FriendsView() {
 
                     {notif.type === 'FRIEND_REQUEST' && (
                       <div>
-                        <p className="text-sm text-gray-300 mb-3">
-                          <strong className="text-white">{notif.fromUsername}</strong> si vás chce přidat do přátel.
+                        <p className="text-sm text-gray-300 mb-3 break-words min-w-0">
+                          <strong className="text-white break-all">{notif.fromUsername}</strong> si vás chce přidat do přátel.
                         </p>
                         <div className="flex gap-2">
                           <button onClick={() => acceptFriendRequest(notif.id)} className="flex-1 flex items-center justify-center gap-1 bg-[#dc2626] hover:bg-[#b91c1c] text-white py-2 rounded-lg text-xs font-medium transition-colors">
@@ -361,6 +375,12 @@ export function FriendsView() {
       )}
 
       {/* SNACKBARS */}
+      <RemoveFriendModal
+        friendToRemove={friendToRemove}
+        onClose={() => setFriendToRemove(null)}
+        onConfirm={confirmRemoveFriend}
+      />
+
       <Snackbar message={addSuccess} type="success" onClose={() => setAddSuccess('')} />
       <Snackbar message={addError} type="error" onClose={() => setAddError('')} />
     </div>

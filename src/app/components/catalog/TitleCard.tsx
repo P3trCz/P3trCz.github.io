@@ -34,7 +34,7 @@ export function TitleCard({ title, onClick, className = '' }: Props) {
 
   return (
     <div
-      className={`grid grid-cols-[3fr_2fr] lg:grid-cols-[3fr_1fr_2fr_1fr_2fr] gap-4 items-center py-3 border-b border-[#27272a] hover:bg-[#111116] transition-colors cursor-pointer px-4 ${className}`}
+      className={`grid grid-cols-1 lg:grid-cols-[3fr_1fr_2fr_1fr_2fr] gap-4 items-center py-3 border-b border-[#27272a] hover:bg-[#111116] transition-colors cursor-pointer px-4 ${className}`}
       onClick={() => onClick(title)}
     >
       <div className="flex items-center gap-3 min-w-0">
@@ -74,7 +74,7 @@ export function TitleCard({ title, onClick, className = '' }: Props) {
         {renderStars(title.rating)}
       </div>
 
-      <div className={`flex flex-wrap gap-1.5 ${isWatched ? 'opacity-50 grayscale' : ''}`}>
+      <div className={`hidden lg:flex flex-wrap gap-1.5 ${isWatched ? 'opacity-50 grayscale' : ''}`}>
         {title.streaming_services.map(service => (
           <span
             key={service}

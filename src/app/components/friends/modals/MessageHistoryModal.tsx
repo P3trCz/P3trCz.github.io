@@ -57,7 +57,7 @@ export function MessageHistoryModal({
                   </div>
 
                   {msg.message && (
-                    <p className="text-sm mt-1 text-gray-200 break-words whitespace-pre-wrap">{msg.message}</p>
+                    <p className="text-sm mt-1 text-gray-200 break-all whitespace-pre-wrap">{msg.message}</p>
                   )}
 
                   {msg.type === 'RECOMMENDED_TITLE' && (

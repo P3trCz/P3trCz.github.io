@@ -124,7 +124,7 @@ export function TitleGrid() {
         </div>
       )}
 
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between mb-6 gap-4">
         <div className="flex flex-wrap items-center gap-4 text-sm text-gray-400">
           <div className="flex items-center gap-2">
             <Filter size={16} />
@@ -159,7 +159,7 @@ export function TitleGrid() {
         {hasAnyFilter && (
           <button
             onClick={clearFilters}
-            className="flex items-center gap-2 text-sm text-red-400 hover:text-red-300 font-medium transition-colors"
+            className="flex items-center gap-2 text-sm text-red-400 hover:text-red-300 font-medium transition-colors self-start lg:self-auto"
           >
             <RefreshCw size={14} />
             Zrušit filtry
@@ -169,12 +169,12 @@ export function TitleGrid() {
 
       <div className="bg-[#0a0a0f] border border-[#27272a] rounded-xl shadow-sm">
         {/* Table Header */}
-        <div className="grid grid-cols-[3fr_2fr] lg:grid-cols-[3fr_1fr_2fr_1fr_2fr] gap-4 items-center py-4 px-4 border-b border-[#27272a] text-xs font-semibold text-gray-400 tracking-wider bg-[#0a0a0f] rounded-t-xl">
+        <div className="grid grid-cols-1 lg:grid-cols-[3fr_1fr_2fr_1fr_2fr] gap-4 items-center py-4 px-4 border-b border-[#27272a] text-xs font-semibold text-gray-400 tracking-wider bg-[#0a0a0f] rounded-t-xl">
           <div>TITULY</div>
           <div className="hidden lg:block">TYP</div>
           <div className="hidden lg:block">ŽÁNR</div>
           <div className="hidden lg:block">HODNOCENÍ</div>
-          <div>DOSTUPNOST</div>
+          <div className="hidden lg:block">DOSTUPNOST</div>
         </div>
 
         {/* Table Body */}

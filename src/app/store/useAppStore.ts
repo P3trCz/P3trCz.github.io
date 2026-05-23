@@ -17,10 +17,10 @@ export type WatchHistoryItem = {
   durationMinutes: number;
 };
 
-export type NotificationType = 
-  | 'FRIEND_REQUEST' 
-  | 'FRIEND_REQUEST_REJECTED' 
-  | 'SHARED_PLAYLIST' 
+export type NotificationType =
+  | 'FRIEND_REQUEST'
+  | 'FRIEND_REQUEST_REJECTED'
+  | 'SHARED_PLAYLIST'
   | 'RECOMMENDED_TITLE';
 
 export type Notification = {
@@ -48,7 +48,7 @@ export type ChatMessage = {
 
 type AppState = {
   currentUser: User | null;
-  
+
   // Data per uživatel, klíčem je userId
   watchlists: Record<string, string[]>; // Pole movieIds
   // Zhlédnuté tituly a historie jsou nyní sjednocené pod watchHistory
@@ -58,31 +58,31 @@ type AppState = {
   friends: Record<string, string[]>; // Pole ID přátel
   notifications: Record<string, Notification[]>; // Notifikace pro uživatele
   messageHistory: Record<string, ChatMessage[]>; // Historie zpráv (pro oba uživatele)
-  
+
   // Globální vyhledávání
   searchQuery: string;
   setSearchQuery: (query: string) => void;
-  
+
   // Auth akce
   login: (user: User) => void;
   logout: () => void;
   updateUsername: (newUsername: string) => void;
-  
+
   // Akce seznamů
   createPlaylist: (name: string) => void;
   deletePlaylist: (playlistId: string) => void;
   renamePlaylist: (playlistId: string, newName: string) => void;
   addToPlaylist: (playlistId: string, movieId: string) => void;
   removeFromPlaylist: (playlistId: string, movieId: string) => void;
-  
+
   // Watchlist akce
   toggleWatchlist: (movieId: string) => void;
   toggleWatchedTitle: (titleId: string) => void;
   markAsWatched: (titleId: string, service?: ServiceType | 'Unknown', durationMinutes?: number) => void;
-  
+
   // Subscriptions akce
   toggleSubscription: (service: ServiceType) => void;
-  
+
   // History akce sjednocena s markAsWatched
 
   // Přátelé a Sdílení akce
@@ -99,14 +99,14 @@ type AppState = {
 
 const isDuplicatePlaylist = (userPlaylists: Playlist[], playlistToCheck: Playlist, fromUsername?: string) => {
   const sortedNewIds = JSON.stringify([...playlistToCheck.movieIds].sort());
-  const hasIdenticalContent = userPlaylists.some(p => 
+  const hasIdenticalContent = userPlaylists.some(p =>
     JSON.stringify([...p.movieIds].sort()) === sortedNewIds
   );
 
-  const hasSameNameAndAuthor = userPlaylists.some(p => 
+  const hasSameNameAndAuthor = userPlaylists.some(p =>
     p.name === playlistToCheck.name && p.fromUsername === fromUsername
   );
-  
+
   return hasIdenticalContent || hasSameNameAndAuthor;
 };
 
@@ -122,21 +122,21 @@ export const useAppStore = create<AppState>()(
       notifications: {},
       messageHistory: {},
       searchQuery: '',
-      
+
       setSearchQuery: (query) => set({ searchQuery: query }),
-      
+
       login: (user) => set({ currentUser: user }),
-      
+
       logout: () => set({ currentUser: null, searchQuery: '' }),
 
       updateUsername: (newUsername) => set(state => ({
         currentUser: state.currentUser ? { ...state.currentUser, username: newUsername } : null
       })),
-      
+
       createPlaylist: (name) => {
         const userId = get().currentUser?.id;
         if (!userId) return;
-        
+
         set((state) => {
           const userPlaylists = state.playlists[userId] || [];
           return {
@@ -180,11 +180,11 @@ export const useAppStore = create<AppState>()(
           };
         });
       },
-      
+
       addToPlaylist: (playlistId, movieId) => {
         const userId = get().currentUser?.id;
         if (!userId) return;
-        
+
         set((state) => {
           const userPlaylists = state.playlists[userId] || [];
           const updatedPlaylists = userPlaylists.map(pl => {
@@ -193,7 +193,7 @@ export const useAppStore = create<AppState>()(
             }
             return pl;
           });
-          
+
           return {
             playlists: {
               ...state.playlists,
@@ -202,11 +202,11 @@ export const useAppStore = create<AppState>()(
           };
         });
       },
-      
+
       removeFromPlaylist: (playlistId, movieId) => {
         const userId = get().currentUser?.id;
         if (!userId) return;
-        
+
         set((state) => {
           const userPlaylists = state.playlists[userId] || [];
           const updatedPlaylists = userPlaylists.map(pl => {
@@ -215,7 +215,7 @@ export const useAppStore = create<AppState>()(
             }
             return pl;
           });
-          
+
           return {
             playlists: {
               ...state.playlists,
@@ -224,19 +224,19 @@ export const useAppStore = create<AppState>()(
           };
         });
       },
-      
+
       toggleWatchlist: (movieId) => {
         const userId = get().currentUser?.id;
         if (!userId) return;
-        
+
         set((state) => {
           const currentList = state.watchlists[userId] || [];
           const exists = currentList.includes(movieId);
-          
+
           return {
             watchlists: {
               ...state.watchlists,
-              [userId]: exists 
+              [userId]: exists
                 ? currentList.filter(id => id !== movieId)
                 : [...currentList, movieId]
             }
@@ -247,11 +247,11 @@ export const useAppStore = create<AppState>()(
       toggleWatchedTitle: (titleId) => {
         const userId = get().currentUser?.id;
         if (!userId) return;
-        
+
         set((state) => {
           const currentHistory = state.watchHistory[userId] || [];
           const exists = currentHistory.some(h => h.movieId === titleId);
-          
+
           if (exists) {
             // Odebrat z historie
             return {
@@ -300,15 +300,15 @@ export const useAppStore = create<AppState>()(
           };
         });
       },
-      
+
       toggleSubscription: (service) => {
         const userId = get().currentUser?.id;
         if (!userId) return;
-        
+
         set((state) => {
           const currentSubs = state.subscriptions[userId] || [];
           const exists = currentSubs.includes(service);
-          
+
           return {
             subscriptions: {
               ...state.subscriptions,
@@ -322,7 +322,7 @@ export const useAppStore = create<AppState>()(
       sendFriendRequest: (toUser) => {
         const currentUser = get().currentUser;
         if (!currentUser) return;
-        
+
         set(state => {
           const toUserNotifs = state.notifications[toUser.id] || [];
           // Zjistíme, jestli už od nás nemá žádost
@@ -335,7 +335,7 @@ export const useAppStore = create<AppState>()(
             fromUsername: currentUser.username,
             timestamp: Date.now()
           };
-          
+
           return {
             notifications: {
               ...state.notifications,
@@ -383,7 +383,7 @@ export const useAppStore = create<AppState>()(
 
           const friendId = notif.fromUserId;
           const friendNotifs = state.notifications[friendId] || [];
-          
+
           const rejectNotif: Notification = {
             id: Math.random().toString(36).substr(2, 9),
             type: 'FRIEND_REQUEST_REJECTED',
@@ -469,7 +469,7 @@ export const useAppStore = create<AppState>()(
         if (!currentUser) return false;
 
         const userPlaylists = get().playlists[currentUser.id] || [];
-        
+
         if (isDuplicatePlaylist(userPlaylists, playlist, fromUsername)) return false;
 
         set(state => {
@@ -558,7 +558,7 @@ export const useAppStore = create<AppState>()(
           if (!notif || notif.type !== 'SHARED_PLAYLIST' || !notif.playlist) return state;
 
           const userPlaylists = state.playlists[currentUser.id] || [];
-          
+
           if (isDuplicatePlaylist(userPlaylists, notif.playlist, notif.fromUsername)) {
             // Pokud je to duplicita, jen smažeme notifikaci
             return {

@@ -65,7 +65,7 @@ export function LoginForm({ onNavigate }: Props) {
               onClick={() => onNavigate('forgot-password')}
               className="text-xs text-[#dc2626] hover:text-[#b91c1c]"
             >
-              Zapomenuté heslo?
+              Zapomenuté heslo
             </button>
           </div>
           <input
