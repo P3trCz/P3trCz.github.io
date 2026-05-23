@@ -106,7 +106,7 @@ export function Playlists() {
             <h1 className="text-3xl font-bold text-white mb-1">{title}</h1>
             {!isWatchlist && !isHistory && playlist?.fromUsername && (
               <span className="inline-block mt-2 text-[10px] bg-[#dc2626]/20 text-[#dc2626] px-1.5 py-0.5 rounded uppercase tracking-wider">
-                Sdíleno od: {playlist.fromUsername}
+                Od: {playlist.fromUsername}
               </span>
             )}
           </div>
@@ -359,11 +359,11 @@ export function Playlists() {
 
               {renderPreview(pl.movieIds)}
 
-              <div className="text-sm text-gray-500 mt-auto pt-2 border-t border-[#27272a]/50 flex justify-between items-center">
-                <span>{pl.movieIds.length} {pl.movieIds.length === 1 ? 'položka' : pl.movieIds.length >= 2 && pl.movieIds.length <= 4 ? 'položky' : 'položek'}</span>
+              <div className="text-sm text-gray-500 mt-auto pt-2 border-t border-[#27272a]/50 flex justify-between items-center gap-2">
+                <span className="whitespace-nowrap shrink-0">{pl.movieIds.length} {pl.movieIds.length === 1 ? 'položka' : pl.movieIds.length >= 2 && pl.movieIds.length <= 4 ? 'položky' : 'položek'}</span>
                 {pl.fromUsername && (
-                  <span className="text-[10px] bg-[#dc2626]/20 text-[#dc2626] px-1.5 py-0.5 rounded uppercase tracking-wider">
-                    Sdíleno od: {pl.fromUsername}
+                  <span className="text-[10px] bg-[#dc2626]/20 text-[#dc2626] px-1.5 py-0.5 rounded uppercase tracking-wider truncate min-w-0" title={`Od: ${pl.fromUsername}`}>
+                    Od: {pl.fromUsername}
                   </span>
                 )}
               </div>

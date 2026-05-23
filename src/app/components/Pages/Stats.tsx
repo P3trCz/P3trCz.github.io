@@ -171,7 +171,7 @@ export function Stats() {
                   <Tooltip
                     contentStyle={{ backgroundColor: '#1c1c24', borderColor: '#27272a', color: 'white', borderRadius: '8px' }}
                     itemStyle={{ color: 'white' }}
-                    formatter={(value: number) => [formatTime(value), 'Čas']}
+                    formatter={(value: unknown) => [formatTime(Number(value)), 'Čas']}
                   />
                 </PieChart>
               </ResponsiveContainer>

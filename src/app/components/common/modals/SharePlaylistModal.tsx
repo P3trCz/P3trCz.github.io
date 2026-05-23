@@ -47,8 +47,8 @@ export function SharePlaylistModal({ friendName, playlists, onClose, onShare }: 
                     <div className="font-bold truncate flex items-center gap-2">
                       <span className="truncate">{pl.name}</span>
                       {pl.fromUsername && (
-                        <span className="text-[10px] bg-[#dc2626]/20 text-[#dc2626] px-1.5 py-0.5 rounded uppercase tracking-wider font-normal shrink-0">
-                          Sdíleno od: {pl.fromUsername}
+                        <span className="text-[10px] bg-[#dc2626]/20 text-[#dc2626] px-1.5 py-0.5 rounded uppercase tracking-wider font-normal shrink-0 truncate max-w-[100px]" title={`Od: ${pl.fromUsername}`}>
+                          Od: {pl.fromUsername}
                         </span>
                       )}
                     </div>

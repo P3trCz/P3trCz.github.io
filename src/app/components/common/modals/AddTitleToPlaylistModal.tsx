@@ -88,8 +88,8 @@ export function AddTitleToPlaylistModal({ movieId, onClose }: AddTitleToPlaylist
                   <ListVideo size={16} />
                   <span className="text-sm font-medium truncate">{pl.name}</span>
                   {pl.fromUsername && (
-                    <span className="text-[10px] bg-[#dc2626]/20 text-[#dc2626] px-1.5 py-0.5 rounded uppercase tracking-wider ml-2">
-                      Sdíleno od: {pl.fromUsername}
+                    <span className="text-[10px] bg-[#dc2626]/20 text-[#dc2626] px-1.5 py-0.5 rounded uppercase tracking-wider ml-2 shrink-0 truncate max-w-[100px]" title={`Od: ${pl.fromUsername}`}>
+                      Od: {pl.fromUsername}
                     </span>
                   )}
                 </div>
