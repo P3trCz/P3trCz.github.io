@@ -41,7 +41,7 @@ export function Stats() {
       if (range === 'Celá doba') return true;
       const now = Date.now();
       const diff = now - item.watchedAt;
-      
+
       switch (range) {
         case '10 minut':
           return diff <= 10 * 60 * 1000;
@@ -62,7 +62,7 @@ export function Stats() {
 
     filteredHistory.forEach(item => {
       if (item.service === 'Unknown') return; // Ignorovat u všeho
-      
+
       const title = catalog.find(m => m.id.toString() === item.movieId);
 
       if (title) {
