@@ -61,11 +61,13 @@ export function StatsView() {
     });
 
     filteredHistory.forEach(item => {
-      const svc = item.service;
+      if (item.service === 'Unknown') return; // Ignorovat u všeho
+      
       const title = catalog.find(m => m.id.toString() === item.movieId);
 
       if (title) {
         if (title.type === 'Film') {
+          const svc = item.service as string;
           serviceTime[svc] = (serviceTime[svc] || 0) + item.durationMinutes;
           totalMinutes += item.durationMinutes;
           totalFilms++;

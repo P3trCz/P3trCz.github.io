@@ -59,7 +59,11 @@ export function RegisterForm({ onNavigate }: Props) {
             onChange={e => setUsername(e.target.value)}
             className="w-full bg-[#0a0a0f] border border-[#27272a] rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-[#dc2626] transition-colors"
             placeholder="Vaše přezdívka"
+            maxLength={24}
           />
+          <div className={`text-xs mt-1 text-right ${username.length >= 24 ? 'text-[#dc2626]' : 'text-gray-500'}`}>
+            {username.length} / 24 {username.length >= 24 ? '(Dosažen limit)' : ''}
+          </div>
         </div>
 
         <div>

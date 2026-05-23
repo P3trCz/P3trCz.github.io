@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, Film } from 'lucide-react';
+import { Search, Film, ArrowLeft } from 'lucide-react';
 import { catalog } from '../../../data/catalog';
 import { Modal } from '../../common/Modal';
 
@@ -66,8 +66,8 @@ export function RecommendMovieModal({ friendName, onClose, onRecommend }: Recomm
               </div>
             ) : (
               search.trim().length >= 3 && (
-                <div className="text-sm text-gray-500 text-center py-6">
-                  Žádný film ani seriál odpovídající „<span className="text-white font-medium">{search}</span>“ nebyl nalezen.
+                <div className="text-sm text-gray-500 text-center py-6 break-words">
+                  Žádný film ani seriál odpovídající „<span className="text-white font-medium break-all">{search}</span>“ nebyl nalezen.
                 </div>
               )
             )}
@@ -79,7 +79,9 @@ export function RecommendMovieModal({ friendName, onClose, onRecommend }: Recomm
               <div className="flex-1">
                 <div className="font-bold text-white text-lg">{selectedTitle.title}</div>
                 <div className="text-sm text-gray-400">{selectedTitle.release_year} • {selectedTitle.type}</div>
-                <button onClick={() => setSelectedTitleId(null)} className="text-xs text-[#dc2626] hover:text-white mt-2 transition-colors">Vybrat jiný titul</button>
+                <button onClick={() => setSelectedTitleId(null)} className="text-xs text-[#dc2626] hover:text-white mt-2 transition-colors flex items-center gap-1">
+                  <ArrowLeft size={12} /> Zpět k vyhledávání
+                </button>
               </div>
             </div>
 

@@ -4,6 +4,7 @@ import { ServiceType, serviceLogos } from '../../data/catalog';
 import { usersDb } from '../../data/usersDb';
 import { User, LogOut, Key, Edit2 } from 'lucide-react';
 import { Modal } from '../common/Modal';
+import { Snackbar } from '../common/Snackbar';
 
 const availableServices: { id: ServiceType; name: string }[] = [
   { id: 'Netflix', name: 'Netflix' },
@@ -26,13 +27,14 @@ export function SettingsView() {
   const [showUsernameModal, setShowUsernameModal] = useState(false);
   const [newUsername, setNewUsername] = useState('');
   const [usernameError, setUsernameError] = useState('');
-  const [usernameSuccess, setUsernameSuccess] = useState(false);
 
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [passwordError, setPasswordError] = useState('');
-  const [passwordSuccess, setPasswordSuccess] = useState(false);
+
+  const [snackbarMsg, setSnackbarMsg] = useState('');
+  const [snackbarType, setSnackbarType] = useState<'success'|'error'>('success');
 
   if (!currentUser) return null;
 
@@ -40,27 +42,25 @@ export function SettingsView() {
     setUsernameError('');
 
     if (newUsername.length < 3) {
-      setUsernameError('Uživatelské jméno musí mít alespoň 3 znaky.');
+      setUsernameError('Uživatelské jméno musí mít alespoň 3 znaky!');
       return;
     }
 
     const existingUser = usersDb.findUserByUsername(newUsername);
     if (existingUser && existingUser.id !== currentUser?.id) {
-      setUsernameError('Toto uživatelské jméno je již obsazené.');
+      setUsernameError('Toto uživatelské jméno je již obsazené!');
       return;
     }
 
     const updated = usersDb.updateUsername(currentUser!.email, newUsername);
     if (updated) {
       updateUsername(newUsername);
-      setUsernameSuccess(true);
-      setTimeout(() => {
-        setShowUsernameModal(false);
-        setNewUsername('');
-        setUsernameSuccess(false);
-      }, 1500);
+      setSnackbarMsg('Uživatelské jméno bylo úspěšně změněno!');
+      setSnackbarType('success');
+      setShowUsernameModal(false);
+      setNewUsername('');
     } else {
-      setUsernameError('Nepodařilo se změnit uživatelské jméno.');
+      setUsernameError('Nepodařilo se změnit uživatelské jméno!');
     }
   };
 
@@ -68,33 +68,30 @@ export function SettingsView() {
     setShowUsernameModal(false);
     setNewUsername('');
     setUsernameError('');
-    setUsernameSuccess(false);
   };
 
   const handlePasswordChange = () => {
     setPasswordError('');
 
     if (newPassword.length < 6) {
-      setPasswordError('Heslo musí mít alespoň 6 znaků.');
+      setPasswordError('Heslo musí mít alespoň 6 znaků!');
       return;
     }
 
     if (newPassword !== confirmPassword) {
-      setPasswordError('Hesla se neshodují.');
+      setPasswordError('Hesla se neshodují!');
       return;
     }
 
     const updated = usersDb.updatePassword(currentUser.email, newPassword);
     if (updated) {
-      setPasswordSuccess(true);
-      setTimeout(() => {
-        setShowPasswordModal(false);
-        setNewPassword('');
-        setConfirmPassword('');
-        setPasswordSuccess(false);
-      }, 1500);
+      setSnackbarMsg('Heslo bylo úspěšně změněno!');
+      setSnackbarType('success');
+      setShowPasswordModal(false);
+      setNewPassword('');
+      setConfirmPassword('');
     } else {
-      setPasswordError('Nepodařilo se změnit heslo.');
+      setPasswordError('Nepodařilo se změnit heslo!');
     }
   };
 
@@ -103,7 +100,6 @@ export function SettingsView() {
     setNewPassword('');
     setConfirmPassword('');
     setPasswordError('');
-    setPasswordSuccess(false);
   };
 
   return (
@@ -204,15 +200,7 @@ export function SettingsView() {
         onClose={closePasswordModal}
         title="Změnit heslo"
       >
-        {passwordSuccess ? (
-          <div className="text-center py-4">
-            <div className="w-12 h-12 rounded-full bg-green-500/20 flex items-center justify-center mx-auto mb-3">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-green-400"><polyline points="20 6 9 17 4 12"></polyline></svg>
-            </div>
-            <p className="text-green-400 font-medium">Heslo bylo úspěšně změněno!</p>
-          </div>
-        ) : (
-          <div className="space-y-4">
+        <div className="space-y-4">
             <div>
               <label className="block text-sm text-gray-400 mb-2">Nové heslo</label>
               <input
@@ -246,7 +234,6 @@ export function SettingsView() {
               Uložit nové heslo
             </button>
           </div>
-        )}
       </Modal>
 
       <Modal
@@ -254,15 +241,7 @@ export function SettingsView() {
         onClose={closeUsernameModal}
         title="Změnit uživatelské jméno"
       >
-        {usernameSuccess ? (
-          <div className="text-center py-4">
-            <div className="w-12 h-12 rounded-full bg-green-500/20 flex items-center justify-center mx-auto mb-3">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-green-400"><polyline points="20 6 9 17 4 12"></polyline></svg>
-            </div>
-            <p className="text-green-400 font-medium">Uživatelské jméno bylo úspěšně změněno!</p>
-          </div>
-        ) : (
-          <div className="space-y-4">
+        <div className="space-y-4">
             <div>
               <label className="block text-sm text-gray-400 mb-2">Nové uživatelské jméno</label>
               <input
@@ -270,8 +249,12 @@ export function SettingsView() {
                 value={newUsername}
                 onChange={e => setNewUsername(e.target.value)}
                 placeholder="Zadejte nové uživatelské jméno"
+                maxLength={24}
                 className="w-full bg-[#0a0a0f] border border-[#27272a] text-white rounded-lg py-2.5 px-4 focus:outline-none focus:border-[#dc2626] transition-colors"
               />
+              <div className={`text-xs mt-1 text-right ${newUsername.length >= 24 ? 'text-[#dc2626]' : 'text-gray-500'}`}>
+                {newUsername.length} / 24 {newUsername.length >= 24 ? '(Dosažen limit)' : ''}
+              </div>
             </div>
 
             {usernameError && (
@@ -285,8 +268,9 @@ export function SettingsView() {
               Uložit jméno
             </button>
           </div>
-        )}
       </Modal>
+
+      <Snackbar message={snackbarMsg} type={snackbarType} onClose={() => setSnackbarMsg('')} />
     </>
   );
 }

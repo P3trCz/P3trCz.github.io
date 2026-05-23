@@ -7,6 +7,8 @@ import { MoreHorizontal, ArrowLeft, Edit2, Trash2, Share2, Check, Plus } from 'l
 import { useOnClickOutside } from '../../hooks/useOnClickOutside';
 import { TitleCard } from '../catalog/TitleCard';
 import { TitleDetail } from '../catalog/TitleDetail';
+import { RenamePlaylistModal } from '../friends/modals/RenamePlaylistModal';
+import { Snackbar } from '../common/Snackbar';
 
 export function PlaylistsView() {
   const currentUser = useAppStore(state => state.currentUser);
@@ -20,7 +22,8 @@ export function PlaylistsView() {
 
   const playlists = currentUser ? (playlistsState[currentUser.id] || []) : [];
   const watchlist = currentUser ? (watchlistsState[currentUser.id] || []) : [];
-  const watchHistory = currentUser ? (useAppStore.getState().watchHistory[currentUser.id] || []) : [];
+  const watchHistoryState = useAppStore(state => state.watchHistory);
+  const watchHistory = currentUser ? (watchHistoryState[currentUser.id] || []) : [];
   // Unikátní movieIds pro historii, seřazené od nejnovějších
   const historyMovieIds = Array.from(new Set([...watchHistory].reverse().map(h => h.movieId)));
 
@@ -42,6 +45,9 @@ export function PlaylistsView() {
   const [shareModalPlaylistId, setShareModalPlaylistId] = useState<string | null>(null);
   const [shareMessage, setShareMessage] = useState('');
   const [shareSelectedFriendId, setShareSelectedFriendId] = useState('');
+  const [renameModalPlaylistId, setRenameModalPlaylistId] = useState<string | null>(null);
+  const [renamePlaylistName, setRenamePlaylistName] = useState('');
+  const [snackbarMsg, setSnackbarMsg] = useState('');
 
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -52,10 +58,8 @@ export function PlaylistsView() {
   };
 
   const handleRename = (id: string, currentName: string) => {
-    const newName = window.prompt('Zadejte nový název seznamu:', currentName);
-    if (newName && newName.trim() !== '') {
-      renamePlaylist(id, newName.trim());
-    }
+    setRenamePlaylistName(currentName);
+    setRenameModalPlaylistId(id);
     setOpenMenuId(null);
   };
 
@@ -101,12 +105,14 @@ export function PlaylistsView() {
           <div>
             <h1 className="text-3xl font-bold text-white mb-1">{title}</h1>
             {!isWatchlist && !isHistory && playlist?.fromUsername && (
-              <p className="text-xs text-[#dc2626] font-medium uppercase tracking-widest">Sdíleno od uživatele: {playlist.fromUsername}</p>
+              <span className="inline-block mt-2 text-[10px] bg-[#dc2626]/20 text-[#dc2626] px-1.5 py-0.5 rounded uppercase tracking-wider">
+                Sdíleno od: {playlist.fromUsername}
+              </span>
             )}
           </div>
           {!isWatchlist && !isHistory && playlist && (
             <button
-              onClick={() => playlist.movieIds.length > 0 ? setShareModalPlaylistId(playlist.id) : alert('Prázdný seznam nelze sdílet.')}
+              onClick={() => playlist.movieIds.length > 0 ? setShareModalPlaylistId(playlist.id) : setSnackbarMsg('Prázdný seznam nelze sdílet!')}
               className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors ${playlist.movieIds.length > 0 ? 'bg-[#27272a] hover:bg-[#3f3f46] text-white' : 'bg-[#27272a]/50 text-gray-500 cursor-not-allowed'}`}
               title={playlist.movieIds.length === 0 ? "Prázdný seznam nelze sdílet" : ""}
             >
@@ -213,6 +219,7 @@ export function PlaylistsView() {
                   type="text"
                   autoFocus
                   placeholder="Název seznamu..."
+                  maxLength={32}
                   value={newPlaylistName}
                   onChange={e => setNewPlaylistName(e.target.value)}
                   onKeyDown={e => {
@@ -225,8 +232,11 @@ export function PlaylistsView() {
                       setNewPlaylistName('');
                     }
                   }}
-                  className="w-full bg-[#1c1c24] border border-[#27272a] rounded-lg px-4 py-2 text-white focus:outline-none focus:border-[#dc2626] mb-3 text-center"
+                  className="w-full bg-[#1c1c24] border border-[#27272a] rounded-lg px-4 py-2 text-white focus:outline-none focus:border-[#dc2626] mb-1 text-center"
                 />
+                <div className={`text-[10px] mb-3 text-center ${newPlaylistName.length >= 32 ? 'text-[#dc2626]' : 'text-gray-500'}`}>
+                  {newPlaylistName.length} / 32 {newPlaylistName.length >= 32 ? '(Limit)' : ''}
+                </div>
                 <div className="flex gap-2 justify-center">
                   <button
                     onClick={() => {
@@ -299,7 +309,7 @@ export function PlaylistsView() {
               className="panel-container-dark hover:border-[#3f3f46] transition-all cursor-pointer group flex flex-col relative shadow-sm hover:shadow-xl"
             >
               <div className="flex justify-between items-start mb-4">
-                <h2 className="text-xl font-bold text-white group-hover:text-[#dc2626] transition-colors truncate pr-8">{pl.name}</h2>
+                <h2 className="text-xl font-bold text-white group-hover:text-[#dc2626] transition-colors truncate pr-8" title={pl.name}>{pl.name}</h2>
 
                 <button
                   onClick={(e) => {
@@ -323,14 +333,14 @@ export function PlaylistsView() {
                       <Edit2 size={16} /> Přejmenovat
                     </button>
                     <button
-                      onClick={(e) => { 
-                        e.stopPropagation(); 
+                      onClick={(e) => {
+                        e.stopPropagation();
                         if (pl.movieIds.length === 0) {
-                          alert('Prázdný seznam nelze sdílet.');
+                          setSnackbarMsg('Prázdný seznam nelze sdílet!');
                         } else {
-                          setShareModalPlaylistId(pl.id); 
+                          setShareModalPlaylistId(pl.id);
                         }
-                        setOpenMenuId(null); 
+                        setOpenMenuId(null);
                       }}
                       className={`w-full flex items-center gap-3 px-4 py-3 text-sm transition-colors ${pl.movieIds.length > 0 ? 'text-gray-300 hover:text-white hover:bg-[#27272a]' : 'text-gray-600 cursor-not-allowed'}`}
                       title={pl.movieIds.length === 0 ? "Prázdný seznam nelze sdílet" : ""}
@@ -352,7 +362,9 @@ export function PlaylistsView() {
               <div className="text-sm text-gray-500 mt-auto pt-2 border-t border-[#27272a]/50 flex justify-between items-center">
                 <span>{pl.movieIds.length} {pl.movieIds.length === 1 ? 'položka' : pl.movieIds.length >= 2 && pl.movieIds.length <= 4 ? 'položky' : 'položek'}</span>
                 {pl.fromUsername && (
-                  <span className="text-[10px] text-[#dc2626] font-bold uppercase tracking-wider">OD: {pl.fromUsername}</span>
+                  <span className="text-[10px] bg-[#dc2626]/20 text-[#dc2626] px-1.5 py-0.5 rounded uppercase tracking-wider">
+                    Sdíleno od: {pl.fromUsername}
+                  </span>
                 )}
               </div>
             </div>
@@ -386,21 +398,19 @@ export function PlaylistsView() {
                     <div
                       key={friend.id}
                       onClick={() => setShareSelectedFriendId(shareSelectedFriendId === friend.id ? '' : friend.id)}
-                      className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer border transition-all ${
-                        isSelected
+                      className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer border transition-all ${isSelected
                           ? 'bg-[#dc2626]/10 border-[#dc2626] text-white'
                           : 'bg-[#1c1c24] border-[#27272a] text-gray-400 hover:border-[#3f3f46] hover:text-white'
-                      }`}
+                        }`}
                     >
-                      <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs ${
-                        isSelected 
-                          ? 'bg-[#dc2626] text-white' 
+                      <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs ${isSelected
+                          ? 'bg-[#dc2626] text-white'
                           : 'bg-[#0a0a0f] text-gray-400'
-                      }`}>
+                        }`}>
                         {friend.username.charAt(0).toUpperCase()}
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="font-bold text-sm truncate text-white">{friend.username}</div>
+                      <div className="flex-1 min-w-0 flex items-center gap-2">
+                        <div className="font-bold text-sm text-white break-all">{friend.username}</div>
                       </div>
                       {isSelected && <Check size={16} className="text-[#dc2626]" />}
                     </div>
@@ -427,6 +437,7 @@ export function PlaylistsView() {
                   setShareModalPlaylistId(null);
                   setShareMessage('');
                   setShareSelectedFriendId('');
+                  setSnackbarMsg('Seznam byl úspěšně sdílen!');
                 }
               }}
               disabled={!shareSelectedFriendId}
@@ -437,6 +448,18 @@ export function PlaylistsView() {
           </div>
         )}
       </Modal>
+
+      {/* PŘEJMENOVAT MODAL */}
+      {renameModalPlaylistId && (
+        <RenamePlaylistModal
+          playlistId={renameModalPlaylistId}
+          currentName={renamePlaylistName}
+          onClose={() => setRenameModalPlaylistId(null)}
+          onRename={(id, name) => renamePlaylist(id, name)}
+        />
+      )}
+
+      <Snackbar message={snackbarMsg} type={snackbarMsg.includes('Prázdný') ? 'error' : 'success'} onClose={() => setSnackbarMsg('')} />
     </>
   );
 }

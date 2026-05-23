@@ -18,8 +18,8 @@ export function TitleGrid() {
   const subscriptionsState = useAppStore(state => state.subscriptions);
   const EMPTY_ARRAY: string[] = [];
   const userSubscriptions = currentUser ? (subscriptionsState[currentUser.id] || EMPTY_ARRAY) : EMPTY_ARRAY;
-  const watchedTitles = useAppStore(state => state.watchedTitles);
-  const userWatchedTitles = currentUser ? (watchedTitles[currentUser.id] || EMPTY_ARRAY) : EMPTY_ARRAY;
+  const watchHistory = useAppStore(state => state.watchHistory);
+  const userWatchedTitles = currentUser ? (watchHistory[currentUser.id] || []).map(h => h.movieId) : EMPTY_ARRAY;
   const searchQuery = useAppStore(state => state.searchQuery);
   const setSearchQuery = useAppStore(state => state.setSearchQuery);
 
@@ -107,16 +107,16 @@ export function TitleGrid() {
       {/* Search results header */}
       {isSearchActive && (
         <div className="flex items-center justify-between mb-6 bg-[#111116] border border-[#27272a] rounded-xl px-5 py-3">
-          <div className="flex items-center gap-3 text-gray-300">
-            <Search size={18} className="text-gray-500" />
-            <span>
-              Výsledky pro „<span className="text-white font-medium">{searchQuery}</span>"
+          <div className="flex items-center gap-3 text-gray-300 break-words">
+            <Search size={18} className="text-gray-500 shrink-0" />
+            <span className="break-words">
+              Výsledky pro „<span className="text-white font-medium break-all">{searchQuery}</span>"
               <span className="text-gray-500 ml-2">({filteredCatalog.length} {filteredCatalog.length === 1 ? 'výsledek' : filteredCatalog.length >= 2 && filteredCatalog.length <= 4 ? 'výsledky' : 'výsledků'})</span>
             </span>
           </div>
           <button
             onClick={() => setSearchQuery('')}
-            className="flex items-center gap-2 text-sm text-red-400 hover:text-red-300 font-medium transition-colors"
+            className="flex items-center gap-2 text-sm text-red-400 hover:text-red-300 font-medium transition-colors shrink-0"
           >
             <X size={14} />
             Zrušit hledání
@@ -189,9 +189,9 @@ export function TitleGrid() {
               />
             ))
           ) : (
-            <div className="py-12 text-center text-gray-500">
+            <div className="py-12 text-center text-gray-500 px-4">
               {isSearchActive
-                ? `Žádný film ani seriál odpovídající „${searchQuery}" nebyl nalezen.`
+                ? <span className="break-words">Žádný film ani seriál odpovídající „<span className="text-white font-medium break-all">{searchQuery}</span>“ nebyl nalezen.</span>
                 : 'Nenalezeny žádné filmy odpovídající zadaným kritériím nebo nemáte aktivní předplatné.'
               }
             </div>

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { Home, ListVideo, BarChart2, Settings, Play, Info, X, Users } from 'lucide-react';
+import tmdbLogo from '../../images/tmdb-logo.svg';
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
@@ -38,8 +39,8 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
             </div>
             <span className="text-xl font-bold tracking-tight">StreamHub</span>
           </div>
-          
-          <button 
+
+          <button
             onClick={onClose}
             className="lg:hidden text-gray-400 hover:text-white"
           >
@@ -106,23 +107,19 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
 
             <div className="space-y-4 text-gray-300">
               <p className="leading-relaxed">
-                StreamHub je český agregátor streamovacích služeb. Aplikace umožňuje uživatelům procházet katalog filmů dostupných na jejich předplacených platformách, spravovat vlastní seznamy a sledovat statistiky.
+                StreamHub je aplikace, která dává streamovací služby, které jsou dostupné v ČR, pod jednu střechu. Aplikace umožňuje uživatelům procházet katalog filmů dostupných na jejich předplacených platformách, spravovat vlastní seznamy a sledovat statistiky. Dále také může sdílet seznamy a doporučovat filmy přátelům.
               </p>
-
               <div className="border-t border-[#27272a] pt-4 space-y-2">
-                <div className="flex justify-between">
-                  <span className="text-gray-500">Verze</span>
-                  <span className="text-white font-medium">1.0.0</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-500">Technologie</span>
-                  <span className="text-white font-medium">React + TypeScript</span>
-                </div>
+                <p className="text-white font-semibold">Petr Toman</p>
+                <p className="text-gray-400">A25B0288P</p>
               </div>
 
-              <div className="border-t border-[#27272a] pt-4 space-y-2">
-                <p className="text-white font-semibold">Tvůrce: Petr Tom</p>
-                <p className="text-gray-400">Studijní číslo: A25BXXXXP</p>
+              <div className="border-t border-[#27272a] pt-4 mt-2 flex flex-col sm:flex-row items-center gap-4 text-xs text-gray-400 text-center sm:text-left">
+                <img src={tmdbLogo} alt="TMDB" className="w-16 h-auto shrink-0 opacity-80" />
+                <p>
+                  This product uses the TMDB API but is not endorsed or certified by TMDB.<br/>
+                  Veškerá data o filmech, seriálech a plakáty pocházejí z databáze TMDB.
+                </p>
               </div>
             </div>
           </div>

@@ -13,7 +13,7 @@ export type Playlist = {
 export type WatchHistoryItem = {
   movieId: string;
   watchedAt: number; // timestamp
-  service: ServiceType;
+  service: ServiceType | 'Unknown';
   durationMinutes: number;
 };
 
@@ -51,7 +51,7 @@ type AppState = {
   
   // Data per uživatel, klíčem je userId
   watchlists: Record<string, string[]>; // Pole movieIds
-  watchedTitles: Record<string, string[]>; // Zhlédnuté tituly
+  // Zhlédnuté tituly a historie jsou nyní sjednocené pod watchHistory
   playlists: Record<string, Playlist[]>;
   subscriptions: Record<string, ServiceType[]>;
   watchHistory: Record<string, WatchHistoryItem[]>;
@@ -78,12 +78,12 @@ type AppState = {
   // Watchlist akce
   toggleWatchlist: (movieId: string) => void;
   toggleWatchedTitle: (titleId: string) => void;
+  markAsWatched: (titleId: string, service?: ServiceType | 'Unknown', durationMinutes?: number) => void;
   
   // Subscriptions akce
   toggleSubscription: (service: ServiceType) => void;
   
-  // History akce
-  addToHistory: (movieId: string, service: ServiceType, durationMinutes: number) => void;
+  // History akce sjednocena s markAsWatched
 
   // Přátelé a Sdílení akce
   sendFriendRequest: (toUser: User) => void;
@@ -115,7 +115,6 @@ export const useAppStore = create<AppState>()(
     (set, get) => ({
       currentUser: null,
       watchlists: {},
-      watchedTitles: {},
       playlists: {},
       subscriptions: {},
       watchHistory: {},
@@ -250,15 +249,53 @@ export const useAppStore = create<AppState>()(
         if (!userId) return;
         
         set((state) => {
-          const currentList = state.watchedTitles[userId] || [];
-          const exists = currentList.includes(titleId);
+          const currentHistory = state.watchHistory[userId] || [];
+          const exists = currentHistory.some(h => h.movieId === titleId);
           
+          if (exists) {
+            // Odebrat z historie
+            return {
+              watchHistory: {
+                ...state.watchHistory,
+                [userId]: currentHistory.filter(h => h.movieId !== titleId)
+              }
+            };
+          } else {
+            // Pokud neexistuje a zavoláme klasický toggle, znamená to, že to chce jen přidat
+            // Toto by ideálně mělo jít přes markAsWatched, takže to zrovna zavoláme odsud:
+            setTimeout(() => get().markAsWatched(titleId, 'Unknown'), 0);
+            return state;
+          }
+        });
+      },
+
+      markAsWatched: (titleId, service = 'Unknown', durationMinutes = 0) => {
+        const userId = get().currentUser?.id;
+        if (!userId) return;
+
+        set((state) => {
+          const currentHistory = state.watchHistory[userId] || [];
+          const existingIndex = currentHistory.findIndex(h => h.movieId === titleId);
+
+          if (existingIndex >= 0) {
+            // Pokud záznam už existuje
+            if (service !== 'Unknown') {
+              // Aktualizujeme službu (pokud to bylo Unknown a teď jsme klikli na přehrát)
+              const newHistory = [...currentHistory];
+              newHistory[existingIndex] = { ...newHistory[existingIndex], service, watchedAt: Date.now(), durationMinutes };
+              return { watchHistory: { ...state.watchHistory, [userId]: newHistory } };
+            }
+            return state;
+          }
+
+          // Nový záznam
           return {
-            watchedTitles: {
-              ...state.watchedTitles,
-              [userId]: exists 
-                ? currentList.filter(id => id !== titleId)
-                : [...currentList, titleId]
+            watchHistory: {
+              ...state.watchHistory,
+              [userId]: [
+                ...currentHistory,
+                { movieId: titleId, watchedAt: service === 'Unknown' ? 0 : Date.now(), service, durationMinutes: service === 'Unknown' ? 0 : durationMinutes }
+              ]
             }
           };
         });
@@ -282,26 +319,6 @@ export const useAppStore = create<AppState>()(
           };
         });
       },
-      
-      addToHistory: (movieId, service, durationMinutes) => {
-        const userId = get().currentUser?.id;
-        if (!userId) return;
-        
-        set((state) => {
-          const currentHistory = state.watchHistory[userId] || [];
-          return {
-            watchHistory: {
-              ...state.watchHistory,
-              [userId]: [
-                ...currentHistory,
-                { movieId, watchedAt: Date.now(), service, durationMinutes }
-              ]
-            }
-          };
-        });
-      },
-
-      // PŘÁTELÉ A SDÍLENÍ
       sendFriendRequest: (toUser) => {
         const currentUser = get().currentUser;
         if (!currentUser) return;

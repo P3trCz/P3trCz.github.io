@@ -51,12 +51,14 @@ export function MessageHistoryModal({
             return (
               <div key={msg.id} className={`flex flex-col ${isMe ? 'items-end' : 'items-start'}`}>
                 <div className={`max-w-[85%] rounded-2xl p-4 ${isMe ? 'bg-[#dc2626]/10 border border-[#dc2626]/20' : 'bg-[#1c1c24] border border-[#27272a]'}`}>
-                  <div className="flex justify-between items-center gap-4 mb-2">
-                    <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">{isMe ? 'Vy' : msg.fromUsername}</span>
-                    <span className="text-[10px] text-gray-500">{formatDate(msg.timestamp)}</span>
+                  <div className="flex justify-between items-start gap-4 mb-2">
+                    <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest break-all min-w-0 flex-1">{isMe ? 'Vy' : msg.fromUsername}</span>
+                    <span className="text-[10px] text-gray-500 shrink-0 mt-0.5">{formatDate(msg.timestamp)}</span>
                   </div>
 
-                  {msg.message && <p className="text-sm text-gray-200 mb-3 italic">"{msg.message}"</p>}
+                  {msg.message && (
+                    <p className="text-sm mt-1 text-gray-200 break-words whitespace-pre-wrap">{msg.message}</p>
+                  )}
 
                   {msg.type === 'RECOMMENDED_TITLE' && (
                     <div className="bg-black/20 rounded-xl p-3 flex items-center gap-3">

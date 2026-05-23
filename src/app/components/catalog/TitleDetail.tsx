@@ -3,6 +3,7 @@ import { Title, ServiceType, serviceColors } from '../../data/catalog';
 import { X, Star, Play, Share2, Check, Eye } from 'lucide-react';
 import { useAppStore } from '../../store/useAppStore';
 import { usersDb } from '../../data/usersDb';
+import { Snackbar } from '../common/Snackbar';
 
 type Props = {
   title: Title;
@@ -10,13 +11,13 @@ type Props = {
 };
 
 export function TitleDetail({ title, onClose }: Props) {
-  const addToHistory = useAppStore(state => state.addToHistory);
+  const markAsWatched = useAppStore(state => state.markAsWatched);
   const currentUser = useAppStore(state => state.currentUser);
+  const toggleWatchedTitle = useAppStore(state => state.toggleWatchedTitle);
   const subscriptionsState = useAppStore(state => state.subscriptions);
   const userSubscriptions = currentUser ? (subscriptionsState[currentUser.id] || []) : [];
-  const watchedTitles = useAppStore(state => state.watchedTitles);
-  const toggleWatchedTitle = useAppStore(state => state.toggleWatchedTitle);
-  const isWatched = currentUser && (watchedTitles[currentUser.id] || []).includes(title.id.toString());
+  const watchHistory = useAppStore(state => state.watchHistory);
+  const isWatched = currentUser && (watchHistory[currentUser.id] || []).some(h => h.movieId === title.id.toString());
 
   const friends = useAppStore(state => state.friends);
   const recommendTitle = useAppStore(state => state.recommendTitle);
@@ -27,13 +28,14 @@ export function TitleDetail({ title, onClose }: Props) {
   const [shareModalOpen, setShareModalOpen] = useState(false);
   const [shareSelectedFriendId, setShareSelectedFriendId] = useState('');
   const [shareMessage, setShareMessage] = useState('');
+  const [snackbarMsg, setSnackbarMsg] = useState('');
 
   const handlePlay = (service: ServiceType) => {
-    const duration = title.type === 'Film' ? title.runtime : 0;
-    addToHistory(title.id.toString(), service, duration);
-    if (currentUser && !isWatched) {
-      toggleWatchedTitle(title.id.toString());
-    }
+    // Simulace zhlédnutí pro statistiky
+    const duration = title.type === 'Film' ? title.runtime : 45;
+    markAsWatched(title.id.toString(), service, duration);
+    
+    // Zde by normálně bylo spuštění přehrávače
     if (title.watch_link) {
       window.open(title.watch_link, '_blank');
     }
@@ -218,6 +220,7 @@ export function TitleDetail({ title, onClose }: Props) {
                   onClick={() => {
                     if (shareSelectedFriendId) {
                       recommendTitle(shareSelectedFriendId, title.id.toString(), shareMessage);
+                      setSnackbarMsg('Titul byl úspěšně doporučen!');
                       setShareModalOpen(false);
                       setShareMessage('');
                       setShareSelectedFriendId('');
@@ -233,6 +236,8 @@ export function TitleDetail({ title, onClose }: Props) {
           </div>
         </div>
       )}
+
+      <Snackbar message={snackbarMsg} type="success" onClose={() => setSnackbarMsg('')} />
     </div>
   );
 }

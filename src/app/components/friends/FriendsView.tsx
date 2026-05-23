@@ -9,6 +9,7 @@ import { RecommendMovieModal } from './modals/RecommendMovieModal';
 import { MessageHistoryModal } from './modals/MessageHistoryModal';
 import { PreviewPlaylistModal } from './modals/PreviewPlaylistModal';
 import { AddTitleToPlaylistModal } from './modals/AddTitleToPlaylistModal';
+import { Snackbar } from '../common/Snackbar';
 export function FriendsView() {
   const currentUser = useAppStore(state => state.currentUser);
   const friends = useAppStore(state => state.friends);
@@ -50,18 +51,18 @@ export function FriendsView() {
 
     if (!currentUser) return;
     if (addUsername.toLowerCase() === currentUser.username.toLowerCase()) {
-      setAddError('Nemůžete přidat sami sebe.');
+      setAddError('Nemůžete přidat sami sebe!');
       return;
     }
 
     const user = usersDb.findUserByUsername(addUsername);
     if (!user) {
-      setAddError('Uživatel nebyl nalezen.');
+      setAddError('Uživatel nebyl nalezen!');
       return;
     }
 
     if (myFriendsIds.includes(user.id)) {
-      setAddError('Tento uživatel už je mezi vašimi přáteli.');
+      setAddError('Tento uživatel už je mezi vašimi přáteli!');
       return;
     }
 
@@ -74,7 +75,7 @@ export function FriendsView() {
   const handleRemoveFriend = (friendId: string, username: string) => {
     if (window.confirm(`Opravdu si přejete odebrat uživatele ${username} z přátel?`)) {
       removeFriend(friendId);
-      setAddSuccess('Přítel byl odebrán.');
+      setAddSuccess('Přítel byl odebrán!');
       setTimeout(() => setAddSuccess(''), 3000);
     }
   };
@@ -106,8 +107,6 @@ export function FriendsView() {
                   className="w-full pl-10 pr-4 py-3 bg-[#1c1c24] border border-[#27272a] rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-[#dc2626] transition-colors"
                 />
               </div>
-              {addError && <p className="text-red-500 text-sm">{addError}</p>}
-              {addSuccess && <p className="text-green-500 text-sm">{addSuccess}</p>}
               <button
                 type="submit"
                 disabled={!addUsername.trim()}
@@ -159,15 +158,15 @@ export function FriendsView() {
                     {notif.type === 'SHARED_PLAYLIST' && (
                       <div>
                         <div className="flex justify-between items-start mb-2">
-                          <p className="text-sm text-gray-300">
-                            <strong className="text-white">{notif.fromUsername}</strong> s vámi sdílí seznam: <strong className="text-white">{notif.playlist?.name}</strong>
+                          <p className="text-sm text-gray-300 min-w-0 flex-1 break-words">
+                            <strong className="text-white break-all">{notif.fromUsername}</strong> s vámi sdílí seznam: <strong className="text-white break-all">{notif.playlist?.name}</strong>
                           </p>
-                          <button onClick={() => dismissNotification(notif.id)} className="text-gray-500 hover:text-white">
+                          <button onClick={() => dismissNotification(notif.id)} className="text-gray-500 hover:text-white shrink-0 ml-4 relative -top-1">
                             <X size={16} />
                           </button>
                         </div>
                         {notif.message && (
-                          <div className="bg-[#0a0a0f] p-3 rounded-lg text-sm text-gray-400 italic mb-3">
+                          <div className="bg-[#0a0a0f] p-3 rounded-lg text-sm text-gray-400 italic mb-3 break-words whitespace-pre-wrap">
                             "{notif.message}"
                           </div>
                         )}
@@ -188,10 +187,10 @@ export function FriendsView() {
                     {notif.type === 'RECOMMENDED_TITLE' && (
                       <div>
                         <div className="flex justify-between items-start mb-2">
-                          <p className="text-sm text-gray-300">
-                            <strong className="text-white">{notif.fromUsername}</strong> vám doporučuje:
+                          <p className="text-sm text-gray-300 min-w-0 flex-1 break-words">
+                            <strong className="text-white break-all">{notif.fromUsername}</strong> vám doporučuje:
                           </p>
-                          <button onClick={() => dismissNotification(notif.id)} className="text-gray-500 hover:text-white">
+                          <button onClick={() => dismissNotification(notif.id)} className="text-gray-500 hover:text-white shrink-0 ml-4 relative -top-1">
                             <X size={16} />
                           </button>
                         </div>
@@ -210,7 +209,7 @@ export function FriendsView() {
                                 </div>
                               </div>
                               {notif.message && (
-                                <div className="bg-[#0a0a0f] p-3 rounded-lg text-sm text-gray-400 italic">
+                                <div className="bg-[#0a0a0f] p-3 rounded-lg text-sm text-gray-400 italic break-words whitespace-pre-wrap">
                                   "{notif.message}"
                                 </div>
                               )}
@@ -248,11 +247,11 @@ export function FriendsView() {
                   return (
                     <div key={friend.id} className="bg-[#1c1c24] border border-[#27272a] rounded-xl p-5 flex flex-col justify-between">
                       <div className="flex items-center gap-4 mb-6">
-                        <div className="w-12 h-12 bg-gradient-to-br from-[#dc2626] to-[#7c3aed] rounded-full flex items-center justify-center text-white font-bold text-lg">
+                        <div className="shrink-0 w-12 h-12 bg-gradient-to-br from-[#dc2626] to-[#7c3aed] rounded-full flex items-center justify-center text-white font-bold text-lg">
                           {friend.username.charAt(0).toUpperCase()}
                         </div>
-                        <div>
-                          <div className="font-bold text-white">{friend.username}</div>
+                        <div className="min-w-0 flex-1">
+                          <div className="font-bold text-white break-all">{friend.username}</div>
                         </div>
                       </div>
 
@@ -288,7 +287,10 @@ export function FriendsView() {
           onClose={() => setSharePlaylistFriendId(null)}
           onShare={(playlistId, message) => {
             const list = myPlaylists.find(p => p.id === playlistId);
-            if (list) sharePlaylist(sharePlaylistFriendId, list, message);
+            if (list) {
+              sharePlaylist(sharePlaylistFriendId, list, message);
+              setAddSuccess('Seznam byl úspěšně sdílen!');
+            }
             setSharePlaylistFriendId(null);
           }}
         />
@@ -302,6 +304,7 @@ export function FriendsView() {
           onRecommend={(movieId, message) => {
             recommendTitle(recommendTitleFriendId, movieId, message);
             setRecommendMovieFriendId(null);
+            setAddSuccess('Titul byl úspěšně doporučen!');
           }}
         />
       )}
@@ -336,10 +339,9 @@ export function FriendsView() {
             if (success) {
               setPreviewPlaylist(null);
               setPreviewFromUsername('');
-              setAddSuccess('Seznam byl uložen do vašich seznamů.');
-              setTimeout(() => setAddSuccess(''), 3000);
+              setAddSuccess('Seznam byl uložen do vašich seznamů!');
             } else {
-              alert('Tento seznam už ve svých seznamech máte.');
+              setAddError('Tento seznam už ve svých seznamech máte!');
             }
           }}
         />
@@ -357,6 +359,10 @@ export function FriendsView() {
       {selectedTitleForDetail && (
         <TitleDetail title={selectedTitleForDetail} onClose={() => setSelectedTitleForDetail(null)} />
       )}
+
+      {/* SNACKBARS */}
+      <Snackbar message={addSuccess} type="success" onClose={() => setAddSuccess('')} />
+      <Snackbar message={addError} type="error" onClose={() => setAddError('')} />
     </div>
   );
 }

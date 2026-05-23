@@ -30,17 +30,28 @@ export function SharePlaylistModal({ friendName, playlists, onClose, onShare }: 
               {playlists.map(pl => (
                 <div
                   key={pl.id}
-                  onClick={() => setSelectedList(selectedList === pl.id ? '' : pl.id)}
-                  className={`flex items-center gap-4 p-4 rounded-xl cursor-pointer border transition-all ${selectedList === pl.id
-                    ? 'bg-[#dc2626]/10 border-[#dc2626] text-white'
-                    : 'bg-[#1c1c24] border-[#27272a] text-gray-400 hover:border-[#3f3f46] hover:text-white'
-                    }`}
+                  onClick={() => pl.movieIds.length > 0 && setSelectedList(selectedList === pl.id ? '' : pl.id)}
+                  className={`flex items-center gap-4 p-4 rounded-xl border transition-all ${
+                    pl.movieIds.length === 0
+                      ? 'bg-[#0a0a0f] border-[#27272a] opacity-50 cursor-not-allowed'
+                      : selectedList === pl.id
+                        ? 'bg-[#dc2626]/10 border-[#dc2626] text-white cursor-pointer'
+                        : 'bg-[#1c1c24] border-[#27272a] text-gray-400 hover:border-[#3f3f46] hover:text-white cursor-pointer'
+                  }`}
+                  title={pl.movieIds.length === 0 ? "Prázdný seznam nelze sdílet" : ""}
                 >
                   <div className={`p-2 rounded-lg ${selectedList === pl.id ? 'bg-[#dc2626] text-white' : 'bg-[#0a0a0f] text-gray-500'}`}>
                     <ListVideo size={20} />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="font-bold truncate">{pl.name}</div>
+                    <div className="font-bold truncate flex items-center gap-2">
+                      <span className="truncate">{pl.name}</span>
+                      {pl.fromUsername && (
+                        <span className="text-[10px] bg-[#dc2626]/20 text-[#dc2626] px-1.5 py-0.5 rounded uppercase tracking-wider font-normal shrink-0">
+                          Sdíleno od: {pl.fromUsername}
+                        </span>
+                      )}
+                    </div>
                     <div className="text-xs opacity-60">
                       {pl.movieIds.length} {pl.movieIds.length === 1 ? 'položka' : pl.movieIds.length >= 2 && pl.movieIds.length <= 4 ? 'položky' : 'položek'}
                     </div>
