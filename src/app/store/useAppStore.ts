@@ -106,17 +106,13 @@ type AppState = {
   saveSharedPlaylist: (notificationId: string) => void;
 };
 
-const isDuplicatePlaylist = (userPlaylists: Playlist[], playlistToCheck: Playlist, fromUsername?: string) => {
+const isDuplicatePlaylist = (userPlaylists: Playlist[], playlistToCheck: Playlist) => {
   const sortedNewIds = JSON.stringify([...playlistToCheck.titleIds].sort());
   const hasIdenticalContent = userPlaylists.some(p =>
     JSON.stringify([...p.titleIds].sort()) === sortedNewIds
   );
 
-  const hasSameNameAndAuthor = userPlaylists.some(p =>
-    p.name === playlistToCheck.name && p.fromUsername === fromUsername
-  );
-
-  return hasIdenticalContent || hasSameNameAndAuthor;
+  return hasIdenticalContent;
 };
 
 export const useAppStore = create<AppState>()(
@@ -479,7 +475,7 @@ export const useAppStore = create<AppState>()(
 
         const userPlaylists = get().playlists[currentUser.id] || [];
 
-        if (isDuplicatePlaylist(userPlaylists, playlist, fromUsername)) return false;
+        if (isDuplicatePlaylist(userPlaylists, playlist)) return false;
 
         set(state => {
           const newUserPlaylists = state.playlists[currentUser.id] || [];
@@ -568,7 +564,7 @@ export const useAppStore = create<AppState>()(
 
           const userPlaylists = state.playlists[currentUser.id] || [];
 
-          if (isDuplicatePlaylist(userPlaylists, notif.playlist, notif.fromUsername)) {
+          if (isDuplicatePlaylist(userPlaylists, notif.playlist)) {
             // Pokud je to duplicita, jen smažeme notifikaci
             return {
               notifications: {
