@@ -5,6 +5,7 @@ import { TitleDetail } from './TitleDetail';
 import { Filter, RefreshCw, Search, X } from 'lucide-react';
 import { FilterDropdown } from './FilterDropdown';
 import { useAppStore } from '../../../store/useAppStore';
+import { searchTitles } from '../../../utils/searchUtils';
 
 export function TitleGrid() {
   const [selectedTitle, setSelectedTitle] = useState<Title | null>(null);
@@ -46,18 +47,14 @@ export function TitleGrid() {
   const allTypes = ['Film', 'Seriál'];
 
   const filteredCatalog = useMemo(() => {
-    return catalog.filter(title => {
-      // 1. Základní filtr - film musí být dostupný na některé ze služeb, které uživatel vlastní
-      const hasSubscribedService = title.streaming_services && title.streaming_services.some(service => userSubscriptions.includes(service));
-      if (!hasSubscribedService) return false;
+    // 1. Získání základu (vyhledávání nebo celý katalog)
+    const baseCatalog = isSearchActive ? searchTitles(searchQuery, catalog) : catalog;
 
-      // 2. Fulltextové vyhledávání v názvu (od 3 znaků) (český i anglický název)
-      if (isSearchActive) {
-        const normalizeText = (text: string) => text.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-        const query = normalizeText(searchQuery);
-        const matchesSearch = normalizeText(title.title).includes(query) ||
-          (title.title_en && normalizeText(title.title_en).includes(query));
-        if (!matchesSearch) return false;
+    return baseCatalog.filter(title => {
+      // 2. Základní filtr - film musí být dostupný na některé ze služeb, které uživatel vlastní
+      if (!isSearchActive) {
+        const hasSubscribedService = title.streaming_services && title.streaming_services.some(service => userSubscriptions.includes(service));
+        if (!hasSubscribedService) return false;
       }
 
       // 3. Filtr podle služeb (OR logiky)

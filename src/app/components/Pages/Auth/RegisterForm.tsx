@@ -18,19 +18,18 @@ export function RegisterForm({ onNavigate }: Props) {
     e.preventDefault();
     setTimeout(() => {
       if (usersDb.findUserByEmail(email)) {
-      setError('Uživatel s tímto emailem již existuje.');
-      return;
-    }
-    
-    if (usersDb.findUserByUsername(username)) {
-      setError('Toto uživatelské jméno je již zabrané.');
-      return;
-    }
+        setError('Uživatel s tímto emailem již existuje.');
+        return;
+      }
 
-    const newUser = usersDb.createUser({ username, email, password });
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { password: _p, ...userWithoutPassword } = newUser;
-    login(userWithoutPassword);
+      if (usersDb.findUserByUsername(username)) {
+        setError('Toto uživatelské jméno je již zabrané.');
+        return;
+      }
+
+      const newUser = usersDb.createUser({ username, email, password });
+      const { password: _p, ...userWithoutPassword } = newUser;
+      login(userWithoutPassword);
     }, 500);
   };
 

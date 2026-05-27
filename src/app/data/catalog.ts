@@ -15,8 +15,8 @@ export type Title = {
   genres: string[];
   streaming_services: ServiceType[] | null;
   watch_link: string;
-  poster_url: string;
-  backdrop_url: string;
+  poster_url: string | undefined;
+  backdrop_url: string | undefined;
 };
 
 export const serviceLogos: Record<ServiceType, string> = {
@@ -57,6 +57,8 @@ rawData.forEach(m => {
 
   const title: Title = {
     ...m,
+    poster_url: m.poster_url || undefined,
+    backdrop_url: m.backdrop_url || undefined,
     title_en: m.title_en || "",
     streaming_services: services
   };

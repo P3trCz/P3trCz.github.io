@@ -203,6 +203,77 @@ export function Playlists() {
   };
 
   const renderOverview = () => {
+    const myPlaylists = playlists.filter(pl => !pl.fromUsername);
+    const sharedPlaylists = playlists.filter(pl => !!pl.fromUsername);
+
+    const renderPlaylistCard = (pl: typeof playlists[0]) => (
+      <div
+        key={pl.id}
+        onClick={() => handlePlaylistClick(pl.id)}
+        className="panel-container-dark hover:border-[#3f3f46] transition-all cursor-pointer group flex flex-col relative shadow-sm hover:shadow-xl"
+      >
+        <div className="flex justify-between items-start mb-4">
+          <h2 className="text-xl font-bold text-white group-hover:text-[#dc2626] transition-colors truncate pr-8" title={pl.name}>{pl.name}</h2>
+
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              setOpenMenuId(openMenuId === pl.id ? null : pl.id);
+            }}
+            className="absolute top-6 right-6 text-gray-400 hover:text-white z-10"
+          >
+            <MoreHorizontal size={20} />
+          </button>
+
+          {openMenuId === pl.id && (
+            <div
+              ref={menuRef}
+              className="absolute top-12 right-6 w-48 bg-[#1c1c24] border border-[#27272a] rounded-xl shadow-2xl overflow-hidden z-20"
+            >
+              <button
+                onClick={(e) => { e.stopPropagation(); handleRename(pl.id, pl.name); }}
+                className="w-full flex items-center gap-3 px-4 py-3 text-sm text-gray-300 hover:text-white hover:bg-[#27272a] transition-colors"
+              >
+                <Edit2 size={16} /> Přejmenovat
+              </button>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (pl.titleIds.length === 0) {
+                    setSnackbarMsg('Prázdný seznam nelze sdílet!');
+                  } else {
+                    setShareModalPlaylistId(pl.id);
+                  }
+                  setOpenMenuId(null);
+                }}
+                className={`w-full flex items-center gap-3 px-4 py-3 text-sm transition-colors ${pl.titleIds.length > 0 ? 'text-gray-300 hover:text-white hover:bg-[#27272a]' : 'text-gray-600 cursor-not-allowed'}`}
+                title={pl.titleIds.length === 0 ? "Prázdný seznam nelze sdílet" : ""}
+              >
+                <Share2 size={16} /> Sdílet
+              </button>
+              <button
+                onClick={(e) => { e.stopPropagation(); handleDelete(pl.id); }}
+                className="w-full flex items-center gap-3 px-4 py-3 text-sm text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-colors"
+              >
+                <Trash2 size={16} /> Odstranit
+              </button>
+            </div>
+          )}
+        </div>
+
+        {renderPreview(pl.titleIds)}
+
+        <div className="text-sm text-gray-500 mt-auto pt-2 border-t border-[#27272a]/50 flex justify-between items-center gap-2">
+          <span className="whitespace-nowrap shrink-0">{pl.titleIds.length} {pl.titleIds.length === 1 ? 'položka' : pl.titleIds.length >= 2 && pl.titleIds.length <= 4 ? 'položky' : 'položek'}</span>
+          {pl.fromUsername && (
+            <span className="text-[10px] bg-[#dc2626]/20 text-[#dc2626] px-1.5 py-0.5 rounded uppercase tracking-wider truncate min-w-0" title={`Od: ${pl.fromUsername}`}>
+              Od: {pl.fromUsername}
+            </span>
+          )}
+        </div>
+      </div>
+    );
+
     return (
       <div className="p-8 pt-2">
         <h1 className="text-3xl font-bold text-white mb-8">Moje seznamy</h1>
@@ -240,6 +311,15 @@ export function Playlists() {
                 <div className="flex gap-2 justify-center">
                   <button
                     onClick={() => {
+                      setIsCreating(false);
+                      setNewPlaylistName('');
+                    }}
+                    className="bg-[#27272a] hover:bg-[#3f3f46] text-white px-4 py-1.5 rounded-lg text-sm font-medium transition-colors"
+                  >
+                    Zrušit
+                  </button>
+                  <button
+                    onClick={() => {
                       if (newPlaylistName.trim()) {
                         createPlaylist(newPlaylistName.trim());
                         setNewPlaylistName('');
@@ -250,15 +330,6 @@ export function Playlists() {
                     className="bg-[#dc2626] hover:bg-[#b91c1c] text-white px-4 py-1.5 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
                   >
                     Vytvořit
-                  </button>
-                  <button
-                    onClick={() => {
-                      setIsCreating(false);
-                      setNewPlaylistName('');
-                    }}
-                    className="bg-[#27272a] hover:bg-[#3f3f46] text-white px-4 py-1.5 rounded-lg text-sm font-medium transition-colors"
-                  >
-                    Zrušit
                   </button>
                 </div>
               </div>
@@ -302,74 +373,17 @@ export function Playlists() {
             </div>
           </div>
 
-          {playlists.map(pl => (
-            <div
-              key={pl.id}
-              onClick={() => handlePlaylistClick(pl.id)}
-              className="panel-container-dark hover:border-[#3f3f46] transition-all cursor-pointer group flex flex-col relative shadow-sm hover:shadow-xl"
-            >
-              <div className="flex justify-between items-start mb-4">
-                <h2 className="text-xl font-bold text-white group-hover:text-[#dc2626] transition-colors truncate pr-8" title={pl.name}>{pl.name}</h2>
-
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setOpenMenuId(openMenuId === pl.id ? null : pl.id);
-                  }}
-                  className="absolute top-6 right-6 text-gray-400 hover:text-white z-10"
-                >
-                  <MoreHorizontal size={20} />
-                </button>
-
-                {openMenuId === pl.id && (
-                  <div
-                    ref={menuRef}
-                    className="absolute top-12 right-6 w-48 bg-[#1c1c24] border border-[#27272a] rounded-xl shadow-2xl overflow-hidden z-20"
-                  >
-                    <button
-                      onClick={(e) => { e.stopPropagation(); handleRename(pl.id, pl.name); }}
-                      className="w-full flex items-center gap-3 px-4 py-3 text-sm text-gray-300 hover:text-white hover:bg-[#27272a] transition-colors"
-                    >
-                      <Edit2 size={16} /> Přejmenovat
-                    </button>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        if (pl.titleIds.length === 0) {
-                          setSnackbarMsg('Prázdný seznam nelze sdílet!');
-                        } else {
-                          setShareModalPlaylistId(pl.id);
-                        }
-                        setOpenMenuId(null);
-                      }}
-                      className={`w-full flex items-center gap-3 px-4 py-3 text-sm transition-colors ${pl.titleIds.length > 0 ? 'text-gray-300 hover:text-white hover:bg-[#27272a]' : 'text-gray-600 cursor-not-allowed'}`}
-                      title={pl.titleIds.length === 0 ? "Prázdný seznam nelze sdílet" : ""}
-                    >
-                      <Share2 size={16} /> Sdílet
-                    </button>
-                    <button
-                      onClick={(e) => { e.stopPropagation(); handleDelete(pl.id); }}
-                      className="w-full flex items-center gap-3 px-4 py-3 text-sm text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-colors"
-                    >
-                      <Trash2 size={16} /> Odstranit
-                    </button>
-                  </div>
-                )}
-              </div>
-
-              {renderPreview(pl.titleIds)}
-
-              <div className="text-sm text-gray-500 mt-auto pt-2 border-t border-[#27272a]/50 flex justify-between items-center gap-2">
-                <span className="whitespace-nowrap shrink-0">{pl.titleIds.length} {pl.titleIds.length === 1 ? 'položka' : pl.titleIds.length >= 2 && pl.titleIds.length <= 4 ? 'položky' : 'položek'}</span>
-                {pl.fromUsername && (
-                  <span className="text-[10px] bg-[#dc2626]/20 text-[#dc2626] px-1.5 py-0.5 rounded uppercase tracking-wider truncate min-w-0" title={`Od: ${pl.fromUsername}`}>
-                    Od: {pl.fromUsername}
-                  </span>
-                )}
-              </div>
-            </div>
-          ))}
+          {myPlaylists.map(renderPlaylistCard)}
         </div>
+
+        {sharedPlaylists.length > 0 && (
+          <div className="mt-12">
+            <h1 className="text-3xl font-bold text-white mb-8">Seznamy sdílené se mnou</h1>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {sharedPlaylists.map(renderPlaylistCard)}
+            </div>
+          </div>
+        )}
       </div>
     );
   };

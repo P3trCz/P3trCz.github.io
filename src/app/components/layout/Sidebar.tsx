@@ -107,7 +107,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
 
             <div className="space-y-4 text-gray-300">
               <p className="leading-relaxed">
-                StreamHub je aplikace, která dává streamovací služby, které jsou dostupné v ČR, pod jednu střechu. Aplikace umožňuje uživatelům procházet katalog filmů dostupných na jejich předplacených platformách, spravovat vlastní seznamy a sledovat statistiky. Dále také může sdílet seznamy a doporučovat filmy přátelům.
+                StreamHub je aplikace, která dává streamovací služby, které jsou dostupné v ČR, pod jednu střechu. Aplikace umožňuje uživatelům procházet katalog filmů dostupných na jejich předplacených platformách, spravovat vlastní seznamy a sledovat statistiky. Dále uživatel také může sdílet seznamy a doporučovat filmy přátelům.
               </p>
               <div className="border-t border-[#27272a] pt-4 space-y-2">
                 <p className="text-white font-semibold">Petr Toman</p>

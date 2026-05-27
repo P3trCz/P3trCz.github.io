@@ -23,16 +23,16 @@ export function RemoveFriendModal({ friendToRemove, onClose, onConfirm }: Remove
         </p>
         <div className="flex gap-2">
           <button
-            onClick={onConfirm}
-            className="flex-1 bg-[#dc2626] hover:bg-[#b91c1c] text-white py-2.5 rounded-lg text-sm font-medium transition-colors"
-          >
-            Odstranit
-          </button>
-          <button
             onClick={onClose}
             className="flex-1 bg-[#27272a] hover:bg-[#3f3f46] text-white py-2.5 rounded-lg text-sm font-medium transition-colors"
           >
             Zrušit
+          </button>
+          <button
+            onClick={onConfirm}
+            className="flex-1 bg-[#dc2626] hover:bg-[#b91c1c] text-white py-2.5 rounded-lg text-sm font-medium transition-colors"
+          >
+            Odstranit
           </button>
         </div>
       </div>

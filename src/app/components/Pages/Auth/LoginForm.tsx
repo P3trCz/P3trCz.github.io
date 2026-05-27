@@ -20,7 +20,6 @@ export function LoginForm({ onNavigate }: Props) {
 
       const user = usersDb.findUserByEmail(email);
       if (user && user.password === password) {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { password: _p, ...userWithoutPassword } = user;
         login(userWithoutPassword);
       } else {
@@ -58,16 +57,7 @@ export function LoginForm({ onNavigate }: Props) {
         </div>
 
         <div>
-          <div className="flex justify-between items-center mb-1">
-            <label className="block text-sm font-medium text-gray-400">Heslo</label>
-            <button
-              type="button"
-              onClick={() => onNavigate('forgot-password')}
-              className="text-xs text-[#dc2626] hover:text-[#b91c1c]"
-            >
-              Zapomenuté heslo
-            </button>
-          </div>
+          <label className="block text-sm font-medium text-gray-400 mb-1">Heslo</label>
           <input
             type="password"
             required
@@ -76,6 +66,15 @@ export function LoginForm({ onNavigate }: Props) {
             className="w-full bg-[#0a0a0f] border border-[#27272a] rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-[#dc2626] transition-colors"
             placeholder="Zadejte své heslo"
           />
+          <div className="flex justify-end mt-1">
+            <button
+              type="button"
+              onClick={() => onNavigate('forgot-password')}
+              className="text-xs text-[#dc2626] hover:text-[#b91c1c]"
+            >
+              Zapomenuté heslo
+            </button>
+          </div>
         </div>
 
         <button

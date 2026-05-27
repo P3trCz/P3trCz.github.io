@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Search, Film, ArrowLeft } from 'lucide-react';
 import { catalog } from '../../../data/catalog';
+import { searchTitles } from '../../../utils/searchUtils';
 import { Modal } from '../Modal';
 
 type RecommendMovieModalProps = {
@@ -14,15 +15,7 @@ export function RecommendMovieModal({ friendName, onClose, onRecommend }: Recomm
   const [selectedTitleId, setSelectedTitleId] = useState<string | null>(null);
   const [message, setMessage] = useState('');
 
-  const normalizeText = (text: string) => text.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-
-  const filteredMovies = search.trim().length >= 3
-    ? catalog.filter(m => {
-      const query = normalizeText(search);
-      return normalizeText(m.title).includes(query) ||
-        (m.title_en && normalizeText(m.title_en).includes(query));
-    }).slice(0, 5)
-    : [];
+  const filteredMovies = searchTitles(search).slice(0, 5);
 
   const selectedTitle = selectedTitleId ? catalog.find(m => m.id.toString() === selectedTitleId.toString()) : null;
 

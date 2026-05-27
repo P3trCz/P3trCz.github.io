@@ -277,7 +277,7 @@ export function Friends() {
                           <Film size={16} /> Doporučit titul
                         </button>
                         <button onClick={() => setHistoryFriendId(friend.id)} className="w-full flex items-center justify-center gap-2 bg-[#27272a] hover:bg-[#3f3f46] text-white py-2 rounded-lg text-sm font-medium transition-colors">
-                          <MessageSquare size={16} /> Historie zpráv
+                          <MessageSquare size={16} /> Historie doporučení
                         </button>
                         <button onClick={() => handleRemoveFriend(friend.id, friend.username)} className="w-full flex items-center justify-center gap-2 bg-transparent hover:bg-red-500/10 text-red-500 py-2 rounded-lg text-sm font-medium transition-colors mt-2">
                           <Trash2 size={16} /> Odebrat z přátel
@@ -323,7 +323,7 @@ export function Friends() {
         />
       )}
 
-      {/* MODAL: Historie zpráv */}
+      {/* MODAL: Historie doporučení */}
       {historyFriendId && (
         <MessageHistoryModal
           friend={myFriends.find(f => f?.id === historyFriendId)!}
