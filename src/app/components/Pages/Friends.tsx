@@ -188,11 +188,8 @@ export function Friends() {
                           <button onClick={() => {
                             setPreviewPlaylist(notif.playlist || null);
                             setPreviewFromUsername(notif.fromUsername);
-                          }} className="flex-1 flex items-center justify-center gap-1 bg-[#27272a] hover:bg-[#3f3f46] text-white py-2 rounded-lg text-xs font-medium transition-colors">
-                            <Eye size={14} /> Otevřít
-                          </button>
-                          <button onClick={() => saveSharedPlaylist(notif.id)} className="flex-1 flex items-center justify-center gap-1 bg-[#dc2626] hover:bg-[#b91c1c] text-white py-2 rounded-lg text-xs font-medium transition-colors">
-                            <Download size={14} /> Uložit
+                          }} className="flex-1 flex items-center justify-center gap-2 bg-[#27272a] hover:bg-[#3f3f46] text-white py-2 rounded-lg text-sm font-medium transition-colors">
+                            <Eye size={16} /> Otevřít seznam
                           </button>
                         </div>
                       </div>
