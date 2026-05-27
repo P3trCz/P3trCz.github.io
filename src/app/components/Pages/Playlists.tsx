@@ -9,6 +9,8 @@ import { TitleCard } from './Catalog/TitleCard';
 import { TitleDetail } from './Catalog/TitleDetail';
 import { RenamePlaylistModal } from '../Common/modals/RenamePlaylistModal';
 import { DeletePlaylistModal } from '../Common/modals/DeletePlaylistModal';
+import { SearchTitleForPlaylistModal } from '../Common/modals/SearchTitleForPlaylistModal';
+import { SharePlaylistWithFriendModal } from '../Common/modals/SharePlaylistWithFriendModal';
 import { Snackbar } from '../Common/Snackbar';
 
 export function Playlists() {
@@ -19,6 +21,7 @@ export function Playlists() {
   const deletePlaylist = useAppStore(state => state.deletePlaylist);
   const sharePlaylistAction = useAppStore(state => state.sharePlaylist);
   const createPlaylist = useAppStore(state => state.createPlaylist);
+  const addToPlaylist = useAppStore(state => state.addToPlaylist);
   const friends = useAppStore(state => state.friends);
 
   const playlists = currentUser ? (playlistsState[currentUser.id] || []) : [];
@@ -44,10 +47,9 @@ export function Playlists() {
   const myFriends = myFriendsIds.map(id => usersDb.getUsers().find(u => u.id === id)).filter(Boolean);
 
   const [shareModalPlaylistId, setShareModalPlaylistId] = useState<string | null>(null);
-  const [shareMessage, setShareMessage] = useState('');
-  const [shareSelectedFriendId, setShareSelectedFriendId] = useState('');
   const [renameModalPlaylistId, setRenameModalPlaylistId] = useState<string | null>(null);
   const [deleteModalPlaylistId, setDeleteModalPlaylistId] = useState<string | null>(null);
+  const [addTitleModalPlaylistId, setAddTitleModalPlaylistId] = useState<string | null>(null);
   const [renamePlaylistName, setRenamePlaylistName] = useState('');
   const [snackbarMsg, setSnackbarMsg] = useState('');
 
@@ -111,13 +113,21 @@ export function Playlists() {
             )}
           </div>
           {!isWatchlist && !isHistory && playlist && (
-            <button
-              onClick={() => playlist.titleIds.length > 0 ? setShareModalPlaylistId(playlist.id) : setSnackbarMsg('Prázdný seznam nelze sdílet!')}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors ${playlist.titleIds.length > 0 ? 'bg-[#27272a] hover:bg-[#3f3f46] text-white' : 'bg-[#27272a]/50 text-gray-500 cursor-not-allowed'}`}
-              title={playlist.titleIds.length === 0 ? "Prázdný seznam nelze sdílet" : ""}
-            >
-              <Share2 size={18} /> Sdílet
-            </button>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => setAddTitleModalPlaylistId(playlist.id)}
+                className="flex items-center gap-2 px-4 py-2 bg-[#dc2626] hover:bg-[#b91c1c] text-white rounded-lg font-medium transition-colors"
+              >
+                <Plus size={18} /> Přidat titul
+              </button>
+              <button
+                onClick={() => playlist.titleIds.length > 0 ? setShareModalPlaylistId(playlist.id) : setSnackbarMsg('Prázdný seznam nelze sdílet!')}
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors ${playlist.titleIds.length > 0 ? 'bg-[#27272a] hover:bg-[#3f3f46] text-white' : 'bg-[#27272a]/50 text-gray-500 cursor-not-allowed'}`}
+                title={playlist.titleIds.length === 0 ? "Prázdný seznam nelze sdílet" : ""}
+              >
+                <Share2 size={18} /> Sdílet
+              </button>
+            </div>
           )}
         </div>
 
@@ -393,75 +403,20 @@ export function Playlists() {
       {activePlaylistId ? renderDetail() : renderOverview()}
 
       {/* SDÍLET MODAL */}
-      <Modal
-        isOpen={!!shareModalPlaylistId}
-        onClose={() => setShareModalPlaylistId(null)}
-        title="Sdílet seznam"
-      >
-        {myFriends.length === 0 ? (
-          <div className="text-center text-gray-500 py-6">Nemáte přidané žádné přátele.</div>
-        ) : (
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-400 mb-2">Vyberte přítele</label>
-              <div className="flex flex-col gap-2 max-h-[250px] overflow-y-auto pr-2 custom-scrollbar">
-                {myFriends.map(friend => {
-                  if (!friend) return null;
-                  const isSelected = shareSelectedFriendId === friend.id;
-                  return (
-                    <div
-                      key={friend.id}
-                      onClick={() => setShareSelectedFriendId(shareSelectedFriendId === friend.id ? '' : friend.id)}
-                      className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer border transition-all ${isSelected
-                        ? 'bg-[#dc2626]/10 border-[#dc2626] text-white'
-                        : 'bg-[#1c1c24] border-[#27272a] text-gray-400 hover:border-[#3f3f46] hover:text-white'
-                        }`}
-                    >
-                      <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs ${isSelected
-                        ? 'bg-[#dc2626] text-white'
-                        : 'bg-[#0a0a0f] text-gray-400'
-                        }`}>
-                        {friend.username.charAt(0).toUpperCase()}
-                      </div>
-                      <div className="flex-1 min-w-0 flex items-center gap-2">
-                        <div className="font-bold text-sm text-white break-all">{friend.username}</div>
-                      </div>
-                      {isSelected && <Check size={16} className="text-[#dc2626]" />}
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-400 mb-2">Zpráva (nepovinné)</label>
-              <textarea
-                value={shareMessage}
-                onChange={e => setShareMessage(e.target.value)}
-                placeholder="Podívej se na tohle. Je to opravdu hustý!"
-                className="w-full form-input-dark h-24 resize-none"
-              ></textarea>
-            </div>
-
-            <button
-              onClick={() => {
-                const pl = playlists.find(p => p.id === shareModalPlaylistId);
-                if (pl && shareSelectedFriendId) {
-                  sharePlaylistAction(shareSelectedFriendId, pl, shareMessage);
-                  setShareModalPlaylistId(null);
-                  setShareMessage('');
-                  setShareSelectedFriendId('');
-                  setSnackbarMsg('Seznam byl úspěšně sdílen!');
-                }
-              }}
-              disabled={!shareSelectedFriendId}
-              className="w-full flex items-center justify-center gap-2 btn-action-primary mt-2"
-            >
-              <Share2 size={18} /> Sdílet s přítelem
-            </button>
-          </div>
-        )}
-      </Modal>
+      {shareModalPlaylistId && (
+        <SharePlaylistWithFriendModal
+          friends={myFriends as any}
+          onClose={() => setShareModalPlaylistId(null)}
+          onShare={(friendId, message) => {
+            const pl = playlists.find(p => p.id === shareModalPlaylistId);
+            if (pl) {
+              sharePlaylistAction(friendId, pl, message);
+              setShareModalPlaylistId(null);
+              setSnackbarMsg('Seznam byl úspěšně sdílen!');
+            }
+          }}
+        />
+      )}
 
       {/* PŘEJMENOVAT MODAL */}
       {renameModalPlaylistId && (
@@ -488,10 +443,19 @@ export function Playlists() {
         />
       )}
 
+      {/* PŘIDAT TITUL MODAL */}
+      {addTitleModalPlaylistId && (
+        <SearchTitleForPlaylistModal
+          playlistName={playlists.find(p => p.id === addTitleModalPlaylistId)?.name || 'Seznam'}
+          onClose={() => setAddTitleModalPlaylistId(null)}
+          onAddTitle={(titleId) => {
+            addToPlaylist(addTitleModalPlaylistId, titleId);
+            setSnackbarMsg('Titul byl přidán do seznamu.');
+          }}
+        />
+      )}
+
       <Snackbar message={snackbarMsg} type={snackbarMsg.includes('Prázdný') ? 'error' : 'success'} onClose={() => setSnackbarMsg('')} />
     </>
   );
 }
-
-
-
