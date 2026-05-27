@@ -1,12 +1,33 @@
 import React, { useState } from 'react';
 import { useAppStore } from '../../store/useAppStore';
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Sector } from 'recharts';
 import { catalog, ServiceType, serviceLogos, serviceColors } from '../../data/catalog';
+
+const renderActiveShape = (props: any) => {
+  const { cx, cy, innerRadius, outerRadius, startAngle, endAngle, fill } = props;
+  return (
+    <g>
+      <Sector
+        cx={cx}
+        cy={cy}
+        innerRadius={innerRadius}
+        outerRadius={outerRadius + 8}
+        startAngle={startAngle}
+        endAngle={endAngle}
+        fill={fill}
+        style={{ outline: 'none' }}
+      />
+    </g>
+  );
+};
+
+const PieComponent = Pie as any;
 
 const timeRanges = ['5 minut', '10 minut', '1 hodina', 'Týden', 'Měsíc', '3 měsíce', '6 měsíců', 'Rok', 'Celá doba'];
 
 export function Stats() {
   const [range, setRange] = useState('Měsíc');
+  const [activeIndex, setActiveIndex] = useState<number | undefined>(undefined);
   const currentUser = useAppStore(state => state.currentUser);
   const watchHistoryState = useAppStore(state => state.watchHistory);
   const history = currentUser ? (watchHistoryState[currentUser.id] || []) : [];
@@ -160,7 +181,7 @@ export function Stats() {
             <div className="h-80 w-full relative">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
-                  <Pie
+                  <PieComponent
                     data={stats.pieData}
                     cx="50%"
                     cy="50%"
@@ -169,11 +190,16 @@ export function Stats() {
                     paddingAngle={2}
                     dataKey="value"
                     stroke="none"
+                    activeIndex={activeIndex}
+                    activeShape={renderActiveShape}
+                    onMouseEnter={(_: any, index: number) => setActiveIndex(index)}
+                    onMouseLeave={() => setActiveIndex(undefined)}
+                    style={{ outline: 'none' }}
                   >
                     {stats.pieData.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={serviceColors[entry.name as ServiceType] || '#8884d8'} />
                     ))}
-                  </Pie>
+                  </PieComponent>
                   <Tooltip
                     contentStyle={{ backgroundColor: '#1c1c24', borderColor: '#27272a', color: 'white', borderRadius: '8px' }}
                     itemStyle={{ color: 'white' }}

@@ -162,7 +162,7 @@ export function TitleDetail({ title, onClose }: Props) {
                         }`}
                     >
                       <Play size={18} className={isOwned ? "fill-white shrink-0 group-hover:translate-x-0.5 transition-transform" : "fill-gray-500 shrink-0"} />
-                      <span className="text-sm">Přehrát na {service}</span>
+                      <span className="text-sm shrink-0 whitespace-nowrap">Přehrát na {service}</span>
                     </button>
                   );
                 })

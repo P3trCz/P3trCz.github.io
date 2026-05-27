@@ -20,6 +20,14 @@
     margin: 0;
   }
 
+  /* Prevent Recharts outline on click */
+  .recharts-wrapper,
+  .recharts-surface,
+  .recharts-sector,
+  .recharts-layer {
+    outline: none !important;
+  }
+
   /* Povolení scrollbaru s tmavým tématem */
   ::-webkit-scrollbar {
     width: 8px;

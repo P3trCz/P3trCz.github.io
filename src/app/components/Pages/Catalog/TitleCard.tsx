@@ -76,14 +76,14 @@ export function TitleCard({ title, onClick, className = '' }: Props) {
 
       <div className={`hidden lg:flex flex-wrap gap-1.5 ${isWatched ? 'opacity-50 grayscale' : ''}`}>
         {!title.streaming_services ? (
-          <span className="text-[10px] font-bold px-2 py-0.5 rounded text-gray-400 bg-[#27272a]">
+          <span className="text-xs shrink-0 whitespace-nowrap font-bold px-2 py-0.5 rounded text-gray-400 bg-[#27272a]">
             Nedostupné
           </span>
         ) : (
           title.streaming_services.map(service => (
             <span
               key={service}
-              className="text-[10px] font-bold px-2 py-0.5 rounded text-white"
+              className="text-xs shrink-0 whitespace-nowrap font-bold px-2 py-0.5 rounded text-white"
               style={{ backgroundColor: serviceColors[service] }}
             >
               {service}

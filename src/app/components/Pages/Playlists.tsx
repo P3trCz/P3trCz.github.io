@@ -22,6 +22,8 @@ export function Playlists() {
   const sharePlaylistAction = useAppStore(state => state.sharePlaylist);
   const createPlaylist = useAppStore(state => state.createPlaylist);
   const addToPlaylist = useAppStore(state => state.addToPlaylist);
+  const removeFromPlaylist = useAppStore(state => state.removeFromPlaylist);
+  const toggleWatchlist = useAppStore(state => state.toggleWatchlist);
   const friends = useAppStore(state => state.friends);
 
   const playlists = currentUser ? (playlistsState[currentUser.id] || []) : [];
@@ -112,14 +114,16 @@ export function Playlists() {
               </span>
             )}
           </div>
-          {!isWatchlist && !isHistory && playlist && (
-            <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3">
+            {!isHistory && (
               <button
-                onClick={() => setAddTitleModalPlaylistId(playlist.id)}
+                onClick={() => setAddTitleModalPlaylistId(isWatchlist ? '__watchlist__' : playlist!.id)}
                 className="flex items-center gap-2 px-4 py-2 bg-[#dc2626] hover:bg-[#b91c1c] text-white rounded-lg font-medium transition-colors"
               >
                 <Plus size={18} /> Přidat titul
               </button>
+            )}
+            {!isWatchlist && !isHistory && playlist && (
               <button
                 onClick={() => playlist.titleIds.length > 0 ? setShareModalPlaylistId(playlist.id) : setSnackbarMsg('Prázdný seznam nelze sdílet!')}
                 className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors ${playlist.titleIds.length > 0 ? 'bg-[#27272a] hover:bg-[#3f3f46] text-white' : 'bg-[#27272a]/50 text-gray-500 cursor-not-allowed'}`}
@@ -127,8 +131,8 @@ export function Playlists() {
               >
                 <Share2 size={18} /> Sdílet
               </button>
-            </div>
-          )}
+            )}
+          </div>
         </div>
 
         <div className="bg-[#0a0a0f] border border-[#27272a] rounded-xl shadow-sm">
@@ -446,11 +450,22 @@ export function Playlists() {
       {/* PŘIDAT TITUL MODAL */}
       {addTitleModalPlaylistId && (
         <SearchTitleForPlaylistModal
-          playlistName={playlists.find(p => p.id === addTitleModalPlaylistId)?.name || 'Seznam'}
+          playlistName={addTitleModalPlaylistId === '__watchlist__' ? 'Přehrát později' : playlists.find(p => p.id === addTitleModalPlaylistId)?.name || 'Seznam'}
+          currentTitleIds={addTitleModalPlaylistId === '__watchlist__' ? watchlist : playlists.find(p => p.id === addTitleModalPlaylistId)?.titleIds || []}
           onClose={() => setAddTitleModalPlaylistId(null)}
-          onAddTitle={(titleId) => {
-            addToPlaylist(addTitleModalPlaylistId, titleId);
-            setSnackbarMsg('Titul byl přidán do seznamu.');
+          onToggleTitle={(titleId) => {
+            if (addTitleModalPlaylistId === '__watchlist__') {
+              toggleWatchlist(titleId);
+            } else {
+              const currentPlaylist = playlists.find(p => p.id === addTitleModalPlaylistId);
+              if (currentPlaylist) {
+                if (currentPlaylist.titleIds.includes(titleId)) {
+                  removeFromPlaylist(addTitleModalPlaylistId, titleId);
+                } else {
+                  addToPlaylist(addTitleModalPlaylistId, titleId);
+                }
+              }
+            }
           }}
         />
       )}

@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
-import { Search, Plus, Check } from 'lucide-react';
+import { Search, Check } from 'lucide-react';
 import { searchTitles } from '../../../utils/searchUtils';
 import { Modal } from '../Modal';
 
 type SearchTitleForPlaylistModalProps = {
   playlistName: string;
+  currentTitleIds: string[];
   onClose: () => void;
-  onAddTitle: (titleId: string) => void;
+  onToggleTitle: (titleId: string) => void;
 };
 
-export function SearchTitleForPlaylistModal({ playlistName, onClose, onAddTitle }: SearchTitleForPlaylistModalProps) {
+export function SearchTitleForPlaylistModal({ playlistName, currentTitleIds, onClose, onToggleTitle }: SearchTitleForPlaylistModalProps) {
   const [search, setSearch] = useState('');
-  const [selectedTitleId, setSelectedTitleId] = useState<string | null>(null);
 
   const filteredMovies = searchTitles(search).slice(0, 5);
 
@@ -44,11 +44,11 @@ export function SearchTitleForPlaylistModal({ playlistName, onClose, onAddTitle 
         {filteredMovies.length > 0 ? (
           <div className="flex flex-col gap-2 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
             {filteredMovies.map(title => {
-              const isSelected = selectedTitleId === title.id.toString();
+              const isSelected = currentTitleIds.includes(title.id.toString());
               return (
                 <div
                   key={`${title.type}-${title.id}`}
-                  onClick={() => setSelectedTitleId(title.id.toString())}
+                  onClick={() => onToggleTitle(title.id.toString())}
                   className={`flex items-center gap-3 p-2 rounded-lg cursor-pointer transition-colors border ${
                     isSelected ? 'bg-[#dc2626]/10 border-[#dc2626] text-white' : 'border-transparent hover:bg-[#27272a] hover:border-[#3f3f46]'
                   }`}
@@ -75,24 +75,12 @@ export function SearchTitleForPlaylistModal({ playlistName, onClose, onAddTitle 
           )
         )}
 
-        <div className="flex gap-2 pt-2">
+        <div className="pt-2">
           <button
             onClick={onClose}
-            className="flex-1 bg-[#27272a] hover:bg-[#3f3f46] text-white py-2.5 rounded-lg text-sm font-medium transition-colors"
+            className="w-full bg-[#27272a] hover:bg-[#3f3f46] text-white py-2.5 rounded-lg text-sm font-medium transition-colors"
           >
-            Zrušit
-          </button>
-          <button
-            onClick={() => {
-              if (selectedTitleId) {
-                onAddTitle(selectedTitleId);
-                onClose();
-              }
-            }}
-            disabled={!selectedTitleId}
-            className="flex-1 flex items-center justify-center gap-2 bg-[#dc2626] hover:bg-[#b91c1c] text-white py-2.5 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
-          >
-            <Plus size={18} /> Přidat
+            Hotovo
           </button>
         </div>
       </div>
