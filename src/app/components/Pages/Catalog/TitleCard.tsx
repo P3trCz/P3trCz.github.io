@@ -63,7 +63,7 @@ export function TitleCard({ title, onClick, className = '' }: Props) {
             }}
             className={`w-8 h-8 rounded-full border flex items-center justify-center transition-colors ${
               isWatched
-                ? 'bg-green-500/10 border-green-500 text-green-500'
+                ? 'bg-red-500/10 border-[#dc2626] text-[#dc2626]'
                 : 'bg-[#111116] border-[#27272a] text-gray-500 hover:text-white hover:border-[#dc2626]'
             }`}
             title={isWatched ? 'Označeno jako zhlédnuté' : 'Označit jako zhlédnuté'}

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useAppStore } from '../../store/useAppStore';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Sector } from 'recharts';
 import { catalog, ServiceType, serviceLogos, serviceColors } from '../../data/catalog';
+import { CustomTimeRangeModal } from '../Common/modals/CustomTimeRangeModal';
 
 const renderActiveShape = (props: any) => {
   const { cx, cy, innerRadius, outerRadius, startAngle, endAngle, fill } = props;
@@ -23,7 +24,7 @@ const renderActiveShape = (props: any) => {
 
 const PieComponent = Pie as any;
 
-const timeRanges = ['5 minut', '10 minut', '1 hodina', '1 den', 'Týden', 'Měsíc', '3 měsíce', '6 měsíců', 'Rok', 'Celá doba'];
+const timeRanges = ['5 minut', '10 minut', '1 hodina', '1 den', 'Týden', 'Měsíc', '3 měsíce', '6 měsíců', 'Rok', 'Celá doba', 'Určit vlastní rozsah'];
 
 export function Stats() {
   const [range, setRange] = useState('Měsíc');
@@ -32,26 +33,76 @@ export function Stats() {
   const watchHistoryState = useAppStore(state => state.watchHistory);
   const history = currentUser ? (watchHistoryState[currentUser.id] || []) : [];
 
+  const [customRange, setCustomRange] = useState<{ from: number, to: number } | null>(null);
+  const [isCustomModalOpen, setIsCustomModalOpen] = useState(false);
+
   const formatTime = (totalMinutes: number) => {
     const h = Math.floor(totalMinutes / 60);
     const m = totalMinutes % 60;
     return `${h} h ${m} min`;
   };
 
-  const formatRangeForSentence = (r: string) => {
-    switch (r) {
-      case '5 minut': return 'posledních 5 minut';
-      case '10 minut': return 'posledních 10 minut';
-      case '1 hodina': return 'poslední hodinu';
-      case '1 den': return 'poslední den';
-      case 'Týden': return 'poslední týden';
-      case 'Měsíc': return 'poslední měsíc';
-      case '3 měsíce': return 'poslední 3 měsíce';
-      case '6 měsíců': return 'posledních 6 měsíců';
-      case 'Rok': return 'poslední rok';
-      case 'Celá doba': return 'celou dobu';
-      default: return r.toLowerCase();
+  const getRangeDates = () => {
+    const to = new Date();
+    let from = new Date(0);
+    const now = Date.now();
+
+    if (range === 'Určit vlastní rozsah' && customRange) {
+      from = new Date(customRange.from);
+      to.setTime(customRange.to);
+    } else {
+      switch (range) {
+        case '5 minut': from = new Date(now - 5 * 60 * 1000); break;
+        case '10 minut': from = new Date(now - 10 * 60 * 1000); break;
+        case '1 hodina': from = new Date(now - 60 * 60 * 1000); break;
+        case '1 den': from = new Date(now - 24 * 60 * 60 * 1000); break;
+        case 'Týden': from = new Date(now - 7 * 24 * 60 * 60 * 1000); break;
+        case 'Měsíc': from = new Date(now - 30 * 24 * 60 * 60 * 1000); break;
+        case '3 měsíce': from = new Date(now - 90 * 24 * 60 * 60 * 1000); break;
+        case '6 měsíců': from = new Date(now - 180 * 24 * 60 * 60 * 1000); break;
+        case 'Rok': from = new Date(now - 365 * 24 * 60 * 60 * 1000); break;
+        case 'Celá doba': {
+          const validHistory = history.filter(h => h.watchedAt > 0);
+          if (validHistory.length > 0) {
+            from = new Date(Math.min(...validHistory.map(h => h.watchedAt)));
+          } else {
+            from = new Date(now);
+          }
+          break;
+        }
+      }
     }
+
+    const formatDate = (d: Date) => {
+      const day = d.getDate().toString().padStart(2, '0');
+      const month = (d.getMonth() + 1).toString().padStart(2, '0');
+      return `${day}.${month}.${d.getFullYear()}`;
+    };
+
+    return { from: formatDate(from), to: formatDate(to) };
+  };
+
+  const formatRangeForSentence = (r: string, includeDates = true) => {
+    const dates = getRangeDates();
+    const suffix = includeDates ? ` (od ${dates.from} do ${dates.to})` : '';
+
+    let base = r.toLowerCase();
+    switch (r) {
+      case '5 minut': base = 'posledních 5 minut'; break;
+      case '10 minut': base = 'posledních 10 minut'; break;
+      case '1 hodina': base = 'poslední hodinu'; break;
+      case '1 den': base = 'poslední den'; break;
+      case 'Týden': base = 'poslední týden'; break;
+      case 'Měsíc': base = 'poslední měsíc'; break;
+      case '3 měsíce': base = 'poslední 3 měsíce'; break;
+      case '6 měsíců': base = 'posledních 6 měsíců'; break;
+      case 'Rok': base = 'poslední rok'; break;
+      case 'Celá doba': base = 'celou dobu'; break;
+      case 'Určit vlastní rozsah':
+        if (includeDates) return `od ${dates.from} do ${dates.to}`;
+        else return 'vlastní období';
+    }
+    return base + suffix;
   };
 
   const processData = () => {
@@ -63,6 +114,10 @@ export function Stats() {
     // Filtrování historie na základě vybraného časového období
     const filteredHistory = history.filter(item => {
       if (range === 'Celá doba') return true;
+      if (range === 'Určit vlastní rozsah' && customRange) {
+        return item.watchedAt >= customRange.from && item.watchedAt <= customRange.to;
+      }
+
       const now = Date.now();
       const diff = now - item.watchedAt;
 
@@ -139,7 +194,13 @@ export function Stats() {
         {timeRanges.map(r => (
           <button
             key={r}
-            onClick={() => setRange(r)}
+            onClick={() => {
+              if (r === 'Určit vlastní rozsah') {
+                setIsCustomModalOpen(true);
+              } else {
+                setRange(r);
+              }
+            }}
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${range === r
               ? 'bg-[#2563eb] text-white'
               : 'text-gray-400 hover:text-white'
@@ -173,13 +234,13 @@ export function Stats() {
           </div>
           <h2 className="text-xl font-semibold text-white mb-2">Žádná data za vybrané období</h2>
           <p className="text-gray-400 max-w-md">
-            Za zvolené období ({formatRangeForSentence(range)}) nemáte zaznamenaná žádná data sledování. Zkuste zvolit delší časové období nebo zhlédnout nějaký film.
+            Za zvolené období ({formatRangeForSentence(range, true)}) nemáte zaznamenaná žádná data sledování. Zkuste zvolit delší časové období nebo zhlédnout nějaký film.
           </p>
         </div>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 panel-container-dark">
-            <h2 className="text-lg font-medium text-white mb-6">Podíl služeb na čase sledování filmů za {formatRangeForSentence(range)}</h2>
+            <h2 className="text-lg font-medium text-white mb-6">Podíl služeb na čase sledování filmů {range === 'Určit vlastní rozsah' ? '' : 'za '}{formatRangeForSentence(range, true)}</h2>
 
             <div className="h-80 w-full relative">
               <ResponsiveContainer width="100%" height="100%">
@@ -224,7 +285,7 @@ export function Stats() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-6">
             <div className="panel-container-dark">
-              <h3 className="text-sm font-medium text-gray-400 mb-2">Celkový čas sledování filmů za {formatRangeForSentence(range)}</h3>
+              <h3 className="text-sm font-medium text-gray-400 mb-2">Celkový čas sledování filmů za {formatRangeForSentence(range, false)}</h3>
               <div className="text-4xl font-bold text-white mb-2">{formatTime(stats.totalMinutes)}</div>
               <div className="text-sm text-gray-500">
                 {stats.totalFilms} {stats.totalFilms === 1 ? 'zhlédnutý film' : stats.totalFilms >= 2 && stats.totalFilms <= 4 ? 'zhlédnuté filmy' : 'zhlédnutých filmů'}
@@ -259,6 +320,16 @@ export function Stats() {
             </div>
           </div>
         </div>
+      )}
+      {isCustomModalOpen && (
+        <CustomTimeRangeModal
+          onClose={() => setIsCustomModalOpen(false)}
+          onSave={(from, to) => {
+            setCustomRange({ from, to });
+            setRange('Určit vlastní rozsah');
+            setIsCustomModalOpen(false);
+          }}
+        />
       )}
     </div>
   );

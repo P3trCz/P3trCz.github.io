@@ -60,7 +60,7 @@ export function TitleDetail({ title, onClose }: Props) {
               if (currentUser) toggleWatchedTitle(title.id.toString());
             }}
             className={`w-10 h-10 flex items-center justify-center rounded-full backdrop-blur-md transition-colors ${isWatched
-              ? 'bg-green-500/20 text-green-500 border border-green-500/50'
+              ? 'bg-red-500/20 text-[#dc2626] border border-[#dc2626]/50'
               : 'bg-black/40 text-gray-400 hover:text-white border border-white/10'
               }`}
             title={isWatched ? "Odznačit jako zhlédnuté" : "Označit jako zhlédnuté"}
