@@ -283,14 +283,20 @@ export const useAppStore = create<AppState>()(
           const existingIndex = currentHistory.findIndex(h => h.titleId === titleId);
 
           if (existingIndex >= 0) {
-            // Pokud záznam už existuje
-            if (service !== 'Unknown') {
-              // Aktualizujeme službu (pokud to bylo Unknown a teď jsme klikli na přehrát)
-              const newHistory = [...currentHistory];
-              newHistory[existingIndex] = { ...newHistory[existingIndex], service, watchedAt: Date.now(), durationMinutes };
-              return { watchHistory: { ...state.watchHistory, [userId]: newHistory } };
-            }
-            return state;
+            // Záznam už existuje, vyjmeme ho a dáme na konec pole (aby byl nahoře v historii)
+            const newHistory = [...currentHistory];
+            const [existingItem] = newHistory.splice(existingIndex, 1);
+
+            const updatedItem = {
+              ...existingItem,
+              // Pokud přehráváme přes službu, aktualizujeme čas a službu
+              watchedAt: service !== 'Unknown' ? Date.now() : (existingItem.watchedAt || Date.now()),
+              service: service !== 'Unknown' ? service : existingItem.service,
+              durationMinutes: service !== 'Unknown' ? durationMinutes : existingItem.durationMinutes
+            };
+
+            newHistory.push(updatedItem);
+            return { watchHistory: { ...state.watchHistory, [userId]: newHistory } };
           }
 
           // Nový záznam
@@ -597,7 +603,6 @@ export const useAppStore = create<AppState>()(
     {
       name: 'streamhub-storage', // klíč v localStorage
       partialize: (state) => {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { searchQuery: _s, setSearchQuery: _sq, ...rest } = state;
         return rest;
       },

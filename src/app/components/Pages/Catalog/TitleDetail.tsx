@@ -143,6 +143,7 @@ export function TitleDetail({ title, onClose }: Props) {
               {!title.streaming_services ? (
                 <button
                   disabled
+                  title="Tento titul není aktuálně dostupný na žádné streamovací službě"
                   className="flex items-center justify-center gap-3 flex-1 min-w-[200px] px-5 py-4 rounded-xl font-semibold bg-[#1c1c24] text-gray-500 cursor-not-allowed border border-[#27272a]"
                 >
                   <span className="text-sm">Nedostupné</span>
@@ -155,6 +156,7 @@ export function TitleDetail({ title, onClose }: Props) {
                     <button
                       key={service}
                       onClick={() => isOwned ? handlePlay(service) : null}
+                      title={!isOwned ? "Tuto službu nemáte aktivní" : undefined}
                       style={isOwned ? { backgroundColor: color } : {}}
                       className={`flex items-center justify-center gap-3 flex-1 min-w-[200px] px-5 py-4 rounded-xl font-semibold transition-all group ${isOwned
                         ? 'text-white hover:scale-[1.02] active:scale-100 shadow-lg'

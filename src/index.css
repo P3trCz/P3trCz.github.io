@@ -20,6 +20,11 @@
     margin: 0;
   }
 
+  /* Zajištění, aby se žádné lucide ikonky nikdy nedeformovaly (nezmenšovaly) ve flex kontejnerech */
+  svg.lucide {
+    flex-shrink: 0;
+  }
+
   /* Prevent Recharts outline on click */
   .recharts-wrapper,
   .recharts-surface,

@@ -23,7 +23,7 @@ const renderActiveShape = (props: any) => {
 
 const PieComponent = Pie as any;
 
-const timeRanges = ['5 minut', '10 minut', '1 hodina', 'Týden', 'Měsíc', '3 měsíce', '6 měsíců', 'Rok', 'Celá doba'];
+const timeRanges = ['5 minut', '10 minut', '1 hodina', '1 den', 'Týden', 'Měsíc', '3 měsíce', '6 měsíců', 'Rok', 'Celá doba'];
 
 export function Stats() {
   const [range, setRange] = useState('Měsíc');
@@ -43,6 +43,7 @@ export function Stats() {
       case '5 minut': return 'posledních 5 minut';
       case '10 minut': return 'posledních 10 minut';
       case '1 hodina': return 'poslední hodinu';
+      case '1 den': return 'poslední den';
       case 'Týden': return 'poslední týden';
       case 'Měsíc': return 'poslední měsíc';
       case '3 měsíce': return 'poslední 3 měsíce';
@@ -72,6 +73,8 @@ export function Stats() {
           return diff <= 10 * 60 * 1000;
         case '1 hodina':
           return diff <= 60 * 60 * 1000;
+        case '1 den':
+          return diff <= 24 * 60 * 60 * 1000;
         case 'Týden':
           return diff <= 7 * 24 * 60 * 60 * 1000;
         case 'Měsíc':
