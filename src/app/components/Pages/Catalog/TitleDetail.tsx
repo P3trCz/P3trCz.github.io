@@ -117,9 +117,29 @@ export function TitleDetail({ title, onClose }: Props) {
               </>
             )}
             <span>•</span>
-            <div className="flex items-center gap-1 text-[#eab308]">
-              <Star size={14} className="fill-[#eab308]" />
-              <span className="font-medium">{title.rating}/100</span>
+            <div className="flex items-center gap-2">
+              <div className="flex gap-0.5" title={`${title.rating}%`}>
+                {[0, 1, 2, 3, 4].map((i) => {
+                  const starValue = (title.rating / 20) - i;
+                  let fillFraction = 0;
+                  if (starValue >= 1) fillFraction = 1;
+                  else if (starValue > 0) fillFraction = Math.round(starValue * 4) / 4;
+                  return (
+                    <div key={i} className="relative w-[14px] h-[14px]">
+                      <Star size={14} className="absolute top-0 left-0 text-gray-600" />
+                      {fillFraction > 0 && (
+                        <div
+                          className="absolute top-0 left-0 h-full overflow-hidden"
+                          style={{ width: `${fillFraction * 100}%` }}
+                        >
+                          <Star size={14} className="fill-[#eab308] text-[#eab308] min-w-[14px]" />
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+              <span className="font-medium text-[#eab308]">{title.rating}%</span>
             </div>
           </div>
 

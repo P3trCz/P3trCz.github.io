@@ -18,16 +18,28 @@ export function TitleCard({ title, onClick, className = '' }: Props) {
   const isWatched = currentUser && (watchHistory[currentUser.id] || []).some(h => h.titleId === title.id.toString());
 
   const renderStars = (rating: number) => {
-    const stars = Math.round(rating / 20); // 1-5
     return (
-      <div className="flex gap-0.5">
-        {[...Array(5)].map((_, i) => (
-          <Star
-            key={i}
-            size={14}
-            className={i < stars ? 'fill-[#eab308] text-[#eab308]' : 'text-gray-600'}
-          />
-        ))}
+      <div className="flex gap-0.5" title={`${rating}%`}>
+        {[0, 1, 2, 3, 4].map((i) => {
+          const starValue = (rating / 20) - i;
+          let fillFraction = 0;
+          if (starValue >= 1) fillFraction = 1;
+          else if (starValue > 0) fillFraction = Math.round(starValue * 4) / 4;
+
+          return (
+            <div key={i} className="relative w-[14px] h-[14px]">
+              <Star size={14} className="absolute top-0 left-0 text-gray-600" />
+              {fillFraction > 0 && (
+                <div
+                  className="absolute top-0 left-0 h-full overflow-hidden"
+                  style={{ width: `${fillFraction * 100}%` }}
+                >
+                  <Star size={14} className="fill-[#eab308] text-[#eab308] min-w-[14px]" />
+                </div>
+              )}
+            </div>
+          );
+        })}
       </div>
     );
   };

@@ -3,14 +3,14 @@ import { catalog, Title, ServiceType } from '../../../data/catalog';
 import { TitleCard } from './TitleCard';
 import { TitleDetail } from './TitleDetail';
 import { Filter, RefreshCw, Search, X } from 'lucide-react';
-import { FilterDropdown } from './FilterDropdown';
+import { FilterDropdown, AdvancedFilterState } from './FilterDropdown';
 import { useAppStore } from '../../../store/useAppStore';
 import { searchTitles } from '../../../utils/searchUtils';
 
 export function TitleGrid() {
   const [selectedTitle, setSelectedTitle] = useState<Title | null>(null);
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
-  const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
+  const [selectedGenres, setSelectedGenres] = useState<AdvancedFilterState>({ included: [], excluded: [] });
   const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
   const [selectedWatched, setSelectedWatched] = useState<string[]>([]);
   const [displayedCount, setDisplayedCount] = useState(25);
@@ -63,10 +63,14 @@ export function TitleGrid() {
         if (!matchesService) return false;
       }
 
-      // 4. Filtr podle žánrů (AND logika)
-      if (selectedGenres.length > 0) {
-        const matchesGenres = selectedGenres.every(genre => title.genres.includes(genre));
+      // 4. Filtr podle žánrů (AND logika pro zahrnuté, vyloučení)
+      if (selectedGenres.included.length > 0) {
+        const matchesGenres = selectedGenres.included.every(genre => title.genres.includes(genre));
         if (!matchesGenres) return false;
+      }
+      if (selectedGenres.excluded.length > 0) {
+        const hasExcluded = selectedGenres.excluded.some(genre => title.genres.includes(genre));
+        if (hasExcluded) return false;
       }
 
       // 5. Filtr podle typu (Film / Seriál)
@@ -88,11 +92,11 @@ export function TitleGrid() {
   const displayedCatalog = filteredCatalog.slice(0, displayedCount);
   const hasMore = displayedCount < filteredCatalog.length;
 
-  const hasAnyFilter = selectedServices.length > 0 || selectedGenres.length > 0 || selectedTypes.length > 0 || selectedWatched.length > 0;
+  const hasAnyFilter = selectedServices.length > 0 || selectedGenres.included.length > 0 || selectedGenres.excluded.length > 0 || selectedTypes.length > 0 || selectedWatched.length > 0;
 
   const clearFilters = () => {
     setSelectedServices([]);
-    setSelectedGenres([]);
+    setSelectedGenres({ included: [], excluded: [] });
     setSelectedTypes([]);
     setSelectedWatched([]);
   };
@@ -148,10 +152,10 @@ export function TitleGrid() {
             onChange={setSelectedServices}
           />
           <FilterDropdown
-            label="Žánry"
+            label="Žánr"
             options={allGenres}
-            selected={selectedGenres}
-            onChange={setSelectedGenres}
+            advancedState={selectedGenres}
+            onAdvancedChange={setSelectedGenres}
           />
         </div>
 
