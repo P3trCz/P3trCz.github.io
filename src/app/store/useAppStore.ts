@@ -493,7 +493,7 @@ export const useAppStore = create<AppState>()(
           const newPlaylist: Playlist = {
             ...playlist,
             id: Math.random().toString(36).substr(2, 9),
-            fromUserId
+            fromUserId: fromUserId === currentUser.id ? undefined : fromUserId
           };
           return {
             playlists: {
