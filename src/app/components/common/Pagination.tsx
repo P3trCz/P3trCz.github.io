@@ -38,7 +38,7 @@ export function Pagination({
   const endItem = Math.min(currentPage * itemsPerPage, totalItems);
 
   return (
-    <div className="flex flex-col sm:flex-row items-center justify-between gap-4 py-4 px-6 bg-[#0a0a0f] border border-[#27272a] rounded-b-xl shadow-sm border-t-0 text-sm text-gray-400">
+    <div className="flex flex-col md:flex-row items-center justify-between gap-4 py-4 px-4 sm:px-6 bg-[#0a0a0f] border border-[#27272a] rounded-xl shadow-sm mt-4 text-sm text-gray-400">
       <div className="flex items-center gap-3">
         <label htmlFor="items-per-page" className="whitespace-nowrap">Položky na stránku:</label>
         <select
@@ -56,12 +56,12 @@ export function Pagination({
         </select>
       </div>
 
-      <div className="flex items-center gap-6">
+      <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6 w-full md:w-auto">
         <div className="whitespace-nowrap">
           {startItem}-{endItem} z {totalItems}
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap justify-center items-center gap-1 sm:gap-2">
           <button
             onClick={() => onPageChange(1)}
             disabled={currentPage === 1}
