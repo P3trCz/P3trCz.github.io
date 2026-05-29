@@ -161,15 +161,13 @@ export function Playlists() {
         </div>
 
         {allTitles.length > 0 && (
-          <div className="mt-8 flex justify-center w-full max-w-[1200px] mx-auto lg:ml-0 lg:max-w-none">
-            <Pagination
-              totalItems={allTitles.length}
-              itemsPerPage={pageSize}
-              currentPage={currentPage}
-              onPageChange={setCurrentPage}
-              onItemsPerPageChange={setPageSize}
-            />
-          </div>
+          <Pagination
+            totalItems={allTitles.length}
+            itemsPerPage={pageSize}
+            currentPage={currentPage}
+            onPageChange={setCurrentPage}
+            onItemsPerPageChange={setPageSize}
+          />
         )}
 
         {selectedTitle && (
