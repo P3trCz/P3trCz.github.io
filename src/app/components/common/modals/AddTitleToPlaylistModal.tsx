@@ -86,7 +86,7 @@ export function AddTitleToPlaylistModal({ titleId, onClose }: AddTitleToPlaylist
                   }`}
               >
                 <div className="flex items-center gap-3 truncate pr-2">
-                  <ListVideo size={16} className="shrink-0" />
+                  <ListVideo size={16} />
                   <span className="text-sm font-medium truncate">{pl.name}</span>
                 </div>
                 <div className="flex items-center gap-2 shrink-0">

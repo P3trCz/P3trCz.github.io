@@ -194,7 +194,7 @@ export function TitleDetail({ title, onClose }: Props) {
                         : 'bg-[#1c1c24] text-gray-500 cursor-not-allowed border border-[#27272a]'
                         }`}
                     >
-                      <Play size={18} className={isOwned ? "fill-white shrink-0 group-hover:translate-x-0.5 transition-transform" : "fill-gray-500 shrink-0"} />
+                      <Play size={18} className={isOwned ? "fill-white group-hover:translate-x-0.5 transition-transform" : "fill-gray-500"} />
                       <span className="text-sm shrink-0 whitespace-nowrap">Přehrát na {service}</span>
                     </button>
                   );

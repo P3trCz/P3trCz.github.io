@@ -7,6 +7,8 @@ import { Filter, RefreshCw, Search, X } from 'lucide-react';
 import { FilterDropdown, AdvancedFilterState } from './FilterDropdown';
 import { useAppStore } from '../../../store/useAppStore';
 import { searchTitles } from '../../../utils/searchUtils';
+import { SortField, SortOrder, sortTitles } from '../../../utils/sortUtils';
+import { SortableHeader } from '../../Common/SortableHeader';
 
 export function TitleGrid() {
   const [selectedTitle, setSelectedTitle] = useState<Title | null>(null);
@@ -16,6 +18,25 @@ export function TitleGrid() {
   const [selectedWatched, setSelectedWatched] = useState<string[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(25);
+  const [sortField, setSortField] = useState<SortField>(null);
+  const [sortOrder, setSortOrder] = useState<SortOrder>('desc');
+
+  const handleSort = (field: SortField) => {
+    setCurrentPage(1);
+    if (sortField === field) {
+      const isDefaultAsc = field === 'title';
+      if (isDefaultAsc) {
+        if (sortOrder === 'asc') setSortOrder('desc');
+        else setSortField(null);
+      } else {
+        if (sortOrder === 'desc') setSortOrder('asc');
+        else setSortField(null);
+      }
+    } else {
+      setSortField(field);
+      setSortOrder(field === 'title' ? 'asc' : 'desc');
+    }
+  };
 
   const currentUser = useAppStore(state => state.currentUser);
   const subscriptionsState = useAppStore(state => state.subscriptions);
@@ -86,11 +107,15 @@ export function TitleGrid() {
         if (selectedWatched.includes('Nezhlédnuté') && isWatched) return false;
       }
 
-      return true;
+    return true;
     });
   }, [selectedServices, selectedGenres, selectedTypes, selectedWatched, userSubscriptions, searchQuery, isSearchActive, userWatchedTitles]);
 
-  const displayedCatalog = filteredCatalog.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+  const sortedCatalog = useMemo(() => {
+    return sortTitles(filteredCatalog, sortField, sortOrder);
+  }, [filteredCatalog, sortField, sortOrder]);
+
+  const displayedCatalog = sortedCatalog.slice((currentPage - 1) * pageSize, currentPage * pageSize);
 
   const hasAnyFilter = selectedServices.length > 0 || selectedGenres.included.length > 0 || selectedGenres.excluded.length > 0 || selectedTypes.length > 0 || selectedWatched.length > 0;
 
@@ -107,7 +132,7 @@ export function TitleGrid() {
       {isSearchActive && (
         <div className="flex items-center justify-between mb-6 bg-[#111116] border border-[#27272a] rounded-xl px-5 py-3">
           <div className="flex items-center gap-3 text-gray-300 break-words">
-            <Search size={18} className="text-gray-500 shrink-0" />
+            <Search size={18} className="text-gray-500" />
             <span className="break-words">
               Výsledky pro „<span className="text-white font-medium break-all">{searchQuery}</span>"
               <span className="text-gray-500 ml-2">({filteredCatalog.length} {filteredCatalog.length === 1 ? 'výsledek' : filteredCatalog.length >= 2 && filteredCatalog.length <= 4 ? 'výsledky' : 'výsledků'})</span>
@@ -168,12 +193,12 @@ export function TitleGrid() {
 
       <div className="bg-[#0a0a0f] border border-[#27272a] rounded-xl shadow-sm">
         {/* Table Header */}
-        <div className="grid grid-cols-1 lg:grid-cols-[3fr_1fr_2fr_1fr_2fr] gap-4 items-center py-4 px-4 border-b border-[#27272a] text-xs font-semibold text-gray-400 tracking-wider bg-[#0a0a0f] rounded-t-xl">
-          <div>TITULY</div>
+        <div className="grid grid-cols-1 lg:grid-cols-[3fr_1fr_2fr_1fr_2fr] gap-4 items-center py-4 px-4 border-b border-[#27272a] text-xs font-semibold text-gray-400 tracking-wider bg-[#0a0a0f] rounded-t-xl group">
+          <SortableHeader label="TITULY" field="title" currentSortField={sortField} currentSortOrder={sortOrder} onSort={handleSort} />
           <div className="hidden lg:block">TYP</div>
-          <div className="hidden lg:block">ŽÁNR</div>
-          <div className="hidden lg:block">HODNOCENÍ</div>
-          <div className="hidden lg:block">DOSTUPNOST</div>
+          <SortableHeader label="ŽÁNR" field="genres" currentSortField={sortField} currentSortOrder={sortOrder} onSort={handleSort} className="hidden lg:flex" />
+          <SortableHeader label="HODNOCENÍ" field="rating" currentSortField={sortField} currentSortOrder={sortOrder} onSort={handleSort} className="hidden lg:flex" />
+          <SortableHeader label="DOSTUPNOST" field="services" currentSortField={sortField} currentSortOrder={sortOrder} onSort={handleSort} className="hidden lg:flex" />
         </div>
 
         {/* Table Body */}

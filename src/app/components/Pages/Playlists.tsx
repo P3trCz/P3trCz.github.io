@@ -14,6 +14,8 @@ import { DeletePlaylistModal } from '../Common/modals/DeletePlaylistModal';
 import { SearchTitleForPlaylistModal } from '../Common/modals/SearchTitleForPlaylistModal';
 import { SharePlaylistWithFriendModal } from '../Common/modals/SharePlaylistWithFriendModal';
 import { Snackbar } from '../Common/Snackbar';
+import { SortField, SortOrder, sortTitles } from '../../utils/sortUtils';
+import { SortableHeader } from '../Common/SortableHeader';
 
 export function Playlists() {
   const currentUser = useAppStore(state => state.currentUser);
@@ -38,6 +40,25 @@ export function Playlists() {
   const [activePlaylistId, setActivePlaylistId] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(25);
+  const [sortField, setSortField] = useState<SortField>(null);
+  const [sortOrder, setSortOrder] = useState<SortOrder>('desc');
+
+  const handleSort = (field: SortField) => {
+    setCurrentPage(1);
+    if (sortField === field) {
+      const isDefaultAsc = field === 'title';
+      if (isDefaultAsc) {
+        if (sortOrder === 'asc') setSortOrder('desc');
+        else setSortField(null);
+      } else {
+        if (sortOrder === 'desc') setSortOrder('asc');
+        else setSortField(null);
+      }
+    } else {
+      setSortField(field);
+      setSortOrder(field === 'title' ? 'asc' : 'desc');
+    }
+  };
 
   const handlePlaylistClick = (id: string | null) => {
     setActivePlaylistId(id);
@@ -91,7 +112,8 @@ export function Playlists() {
 
     const title = isWatchlist ? 'Přehrát později' : isHistory ? 'Historie sledování' : playlist!.name;
     const allTitles = getMovies(isWatchlist ? watchlist : isHistory ? historytitleIds : playlist!.titleIds);
-    const displayedTitles = allTitles.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+    const sortedTitles = sortTitles(allTitles, sortField, sortOrder);
+    const displayedTitles = sortedTitles.slice((currentPage - 1) * pageSize, currentPage * pageSize);
 
     return (
       <div className="p-8 pb-24">
@@ -134,12 +156,12 @@ export function Playlists() {
         </div>
 
         <div className="bg-[#0a0a0f] border border-[#27272a] rounded-xl shadow-sm">
-          <div className="grid grid-cols-1 lg:grid-cols-[3fr_1fr_2fr_1fr_2fr] gap-4 items-center py-4 px-4 border-b border-[#27272a] text-xs font-semibold text-gray-400 tracking-wider bg-[#0a0a0f] rounded-t-xl">
-            <div>TITULY</div>
+          <div className="grid grid-cols-1 lg:grid-cols-[3fr_1fr_2fr_1fr_2fr] gap-4 items-center py-4 px-4 border-b border-[#27272a] text-xs font-semibold text-gray-400 tracking-wider bg-[#0a0a0f] rounded-t-xl group">
+            <SortableHeader label="TITULY" field="title" currentSortField={sortField} currentSortOrder={sortOrder} onSort={handleSort} />
             <div className="hidden lg:block">TYP</div>
-            <div className="hidden lg:block">ŽÁNR</div>
-            <div className="hidden lg:block">HODNOCENÍ</div>
-            <div className="hidden lg:block">DOSTUPNOST</div>
+            <SortableHeader label="ŽÁNR" field="genres" currentSortField={sortField} currentSortOrder={sortOrder} onSort={handleSort} className="hidden lg:flex" />
+            <SortableHeader label="HODNOCENÍ" field="rating" currentSortField={sortField} currentSortOrder={sortOrder} onSort={handleSort} className="hidden lg:flex" />
+            <SortableHeader label="DOSTUPNOST" field="services" currentSortField={sortField} currentSortOrder={sortOrder} onSort={handleSort} className="hidden lg:flex" />
           </div>
 
           <div className="flex flex-col">
