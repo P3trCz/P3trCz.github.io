@@ -135,59 +135,9 @@ export const useAppStore = create<AppState>()(
 
       logout: () => set({ currentUser: null, searchQuery: '' }),
 
-      updateUsername: (newUsername) => set(state => {
-        const currentUser = state.currentUser;
-        if (!currentUser) return state;
-
-        const newPlaylists = { ...state.playlists };
-        const newNotifications = { ...state.notifications };
-        const newMessageHistory = { ...state.messageHistory };
-
-        // Update playlists across all users
-        Object.keys(newPlaylists).forEach(userId => {
-          newPlaylists[userId] = newPlaylists[userId].map(pl => {
-            if (pl.fromUserId === currentUser.id) {
-              return { ...pl, fromUsername: newUsername };
-            }
-            return pl;
-          });
-        });
-
-        // Update notifications across all users
-        Object.keys(newNotifications).forEach(userId => {
-          newNotifications[userId] = newNotifications[userId].map(notif => {
-            let updated = { ...notif };
-            if (updated.fromUserId === currentUser.id) {
-              updated.fromUsername = newUsername;
-              if (updated.playlist) {
-                updated.playlist = { ...updated.playlist, fromUsername: newUsername };
-              }
-            }
-            return updated;
-          });
-        });
-
-        // Update message history across all users
-        Object.keys(newMessageHistory).forEach(userId => {
-          newMessageHistory[userId] = newMessageHistory[userId].map(msg => {
-            let updated = { ...msg };
-            if (updated.fromUserId === currentUser.id) {
-              updated.fromUsername = newUsername;
-              if (updated.playlist) {
-                updated.playlist = { ...updated.playlist, fromUsername: newUsername };
-              }
-            }
-            return updated;
-          });
-        });
-
-        return {
-          currentUser: { ...currentUser, username: newUsername },
-          playlists: newPlaylists,
-          notifications: newNotifications,
-          messageHistory: newMessageHistory
-        };
-      }),
+      updateUsername: (newUsername) => set(state => ({
+        currentUser: state.currentUser ? { ...state.currentUser, username: newUsername } : null
+      })),
 
       createPlaylist: (name) => {
         const userId = get().currentUser?.id;

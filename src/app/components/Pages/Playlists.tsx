@@ -7,6 +7,7 @@ import { MoreHorizontal, ArrowLeft, Edit2, Trash2, Share2, Check, Plus } from 'l
 import { useOnClickOutside } from '../../hooks/useOnClickOutside';
 import { TitleCard } from './Catalog/TitleCard';
 import { TitleDetail } from './Catalog/TitleDetail';
+import { getDynamicUsername } from '../../utils/userUtils';
 import { RenamePlaylistModal } from '../Common/modals/RenamePlaylistModal';
 import { DeletePlaylistModal } from '../Common/modals/DeletePlaylistModal';
 import { SearchTitleForPlaylistModal } from '../Common/modals/SearchTitleForPlaylistModal';
@@ -110,7 +111,7 @@ export function Playlists() {
             <h1 className="text-3xl font-bold text-white mb-1">{title}</h1>
             {!isWatchlist && !isHistory && playlist?.fromUsername && (
               <span className="inline-block mt-2 text-[10px] bg-[#dc2626]/20 text-[#dc2626] px-1.5 py-0.5 rounded uppercase tracking-wider">
-                Od: {playlist.fromUsername}
+                Od: {getDynamicUsername(playlist.fromUserId, playlist.fromUsername)}
               </span>
             )}
           </div>
@@ -280,8 +281,8 @@ export function Playlists() {
         <div className="text-sm text-gray-500 mt-auto pt-2 border-t border-[#27272a]/50 flex justify-between items-center gap-2">
           <span className="whitespace-nowrap shrink-0">{pl.titleIds.length} {pl.titleIds.length === 1 ? 'položka' : pl.titleIds.length >= 2 && pl.titleIds.length <= 4 ? 'položky' : 'položek'}</span>
           {pl.fromUsername && (
-            <span className="text-[10px] bg-[#dc2626]/20 text-[#dc2626] px-1.5 py-0.5 rounded uppercase tracking-wider truncate min-w-0" title={`Od: ${pl.fromUsername}`}>
-              Od: {pl.fromUsername}
+            <span className="text-[10px] bg-[#dc2626]/20 text-[#dc2626] px-1.5 py-0.5 rounded uppercase tracking-wider truncate min-w-0" title={`Od: ${getDynamicUsername(pl.fromUserId, pl.fromUsername)}`}>
+              Od: {getDynamicUsername(pl.fromUserId, pl.fromUsername)}
             </span>
           )}
         </div>

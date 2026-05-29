@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useAppStore, Playlist } from '../../store/useAppStore';
 import { usersDb } from '../../data/usersDb';
 import { catalog, Title } from '../../data/catalog';
+import { getDynamicUsername } from '../../utils/userUtils';
 import { Search, UserPlus, Check, X, Share2, Film, Trash2, Play, Download, Eye, MessageSquare } from 'lucide-react';
 import { TitleDetail } from './Catalog/TitleDetail';
 import { SharePlaylistModal } from '../Common/modals/SharePlaylistModal';
@@ -38,6 +39,7 @@ export function Friends() {
   const [historyFriendId, setHistoryFriendId] = useState<string | null>(null);
   const [previewPlaylist, setPreviewPlaylist] = useState<Playlist | null>(null);
   const [previewFromUsername, setPreviewFromUsername] = useState<string>('');
+  const [previewFromUserId, setPreviewFromUserId] = useState<string>('');
   const [addingtitleId, setAddingtitleId] = useState<string | null>(null);
   const [selectedTitleForDetail, setSelectedTitleForDetail] = useState<Title | null>(null);
   const [friendToRemove, setFriendToRemove] = useState<{id: string, name: string} | null>(null);
@@ -147,7 +149,7 @@ export function Friends() {
                     {notif.type === 'FRIEND_REQUEST' && (
                       <div>
                         <p className="text-sm text-gray-300 mb-3 break-words min-w-0">
-                          <strong className="text-white break-all">{notif.fromUsername}</strong> si vás chce přidat do přátel.
+                          <strong className="text-white break-all">{getDynamicUsername(notif.fromUserId, notif.fromUsername)}</strong> si vás chce přidat do přátel.
                         </p>
                         <div className="flex gap-2">
                           <button onClick={() => acceptFriendRequest(notif.id)} className="flex-1 flex items-center justify-center gap-1 bg-[#dc2626] hover:bg-[#b91c1c] text-white py-2 rounded-lg text-xs font-medium transition-colors">
@@ -163,7 +165,7 @@ export function Friends() {
                     {notif.type === 'FRIEND_REQUEST_REJECTED' && (
                       <div className="flex justify-between items-start gap-4">
                         <p className="text-sm text-gray-300">
-                          <strong className="text-white">{notif.fromUsername}</strong> zamítl/a vaši žádost o přátelství.
+                          <strong className="text-white">{getDynamicUsername(notif.fromUserId, notif.fromUsername)}</strong> zamítl/a vaši žádost o přátelství.
                         </p>
                         <button onClick={() => dismissNotification(notif.id)} className="text-gray-500 hover:text-white">
                           <X size={16} />
@@ -175,7 +177,7 @@ export function Friends() {
                       <div>
                         <div className="flex justify-between items-start mb-2">
                           <p className="text-sm text-gray-300 min-w-0 flex-1 break-words">
-                            <strong className="text-white break-all">{notif.fromUsername}</strong> s vámi sdílí seznam: <strong className="text-white break-all">{notif.playlist?.name}</strong>
+                            <strong className="text-white break-all">{getDynamicUsername(notif.fromUserId, notif.fromUsername)}</strong> s vámi sdílí seznam: <strong className="text-white break-all">{notif.playlist?.name}</strong>
                           </p>
                           <button onClick={() => dismissNotification(notif.id)} className="text-gray-500 hover:text-white shrink-0 ml-4 relative -top-1">
                             <X size={16} />
@@ -189,7 +191,8 @@ export function Friends() {
                         <div className="flex gap-2">
                           <button onClick={() => {
                             setPreviewPlaylist(notif.playlist || null);
-                            setPreviewFromUsername(notif.fromUsername);
+                            setPreviewFromUsername(getDynamicUsername(notif.fromUserId, notif.fromUsername));
+                            setPreviewFromUserId(notif.fromUserId || '');
                           }} className="flex-1 flex items-center justify-center gap-2 bg-[#27272a] hover:bg-[#3f3f46] text-white py-2 rounded-lg text-sm font-medium transition-colors">
                             <Eye size={16} /> Otevřít seznam
                           </button>
@@ -201,7 +204,7 @@ export function Friends() {
                       <div>
                         <div className="flex justify-between items-start mb-2">
                           <p className="text-sm text-gray-300 min-w-0 flex-1 break-words">
-                            <strong className="text-white break-all">{notif.fromUsername}</strong> vám doporučuje:
+                            <strong className="text-white break-all">{getDynamicUsername(notif.fromUserId, notif.fromUsername)}</strong> vám doporučuje:
                           </p>
                           <button onClick={() => dismissNotification(notif.id)} className="text-gray-500 hover:text-white shrink-0 ml-4 relative -top-1">
                             <X size={16} />
@@ -330,9 +333,10 @@ export function Friends() {
           onClose={() => setHistoryFriendId(null)}
           onViewMovie={(title) => setSelectedTitleForDetail(title)}
           onAddMovieToPlaylist={(titleId) => setAddingtitleId(titleId)}
-          onViewPlaylist={(playlist, fromUsername) => {
+          onViewPlaylist={(playlist, fromUsername, fromUserId) => {
             setPreviewPlaylist(playlist);
             setPreviewFromUsername(fromUsername);
+            setPreviewFromUserId(fromUserId || '');
           }}
         />
       )}
@@ -345,10 +349,11 @@ export function Friends() {
           onClose={() => {
             setPreviewPlaylist(null);
             setPreviewFromUsername('');
+            setPreviewFromUserId('');
           }}
           onViewMovie={(title) => setSelectedTitleForDetail(title)}
           onSave={() => {
-            const success = importPlaylist(previewPlaylist, previewFromUsername);
+            const success = importPlaylist(previewPlaylist, previewFromUsername, previewFromUserId);
             if (success) {
               setPreviewPlaylist(null);
               setPreviewFromUsername('');

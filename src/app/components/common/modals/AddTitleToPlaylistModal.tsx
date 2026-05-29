@@ -3,6 +3,7 @@ import { Clock, Check, ListVideo, Plus } from 'lucide-react';
 import { useAppStore } from '../../../store/useAppStore';
 import { catalog } from '../../../data/catalog';
 import { Modal } from '../Modal';
+import { getDynamicUsername } from '../../../utils/userUtils';
 
 type AddTitleToPlaylistModalProps = {
   titleId: string;
@@ -90,8 +91,8 @@ export function AddTitleToPlaylistModal({ titleId, onClose }: AddTitleToPlaylist
                 </div>
                 <div className="flex items-center gap-2 shrink-0">
                   {pl.fromUsername && (
-                    <span className="text-[10px] bg-[#dc2626]/20 text-[#dc2626] px-1.5 py-0.5 rounded uppercase tracking-wider truncate max-w-[100px]" title={`Od: ${pl.fromUsername}`}>
-                      Od: {pl.fromUsername}
+                    <span className="text-[10px] bg-[#dc2626]/20 text-[#dc2626] px-1.5 py-0.5 rounded uppercase tracking-wider truncate max-w-[100px]" title={`Od: ${getDynamicUsername(pl.fromUserId, pl.fromUsername)}`}>
+                      Od: {getDynamicUsername(pl.fromUserId, pl.fromUsername)}
                     </span>
                   )}
                   {isAdded && <Check size={16} className="text-[#dc2626]" />}
