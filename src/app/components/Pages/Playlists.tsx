@@ -5,8 +5,9 @@ import { usersDb } from '../../data/usersDb';
 import { Modal } from '../Common/Modal';
 import { MoreHorizontal, ArrowLeft, Edit2, Trash2, Share2, Check, Plus } from 'lucide-react';
 import { useOnClickOutside } from '../../hooks/useOnClickOutside';
-import { TitleCard } from './Catalog/TitleCard';
 import { TitleDetail } from './Catalog/TitleDetail';
+import { TitleCard } from './Catalog/TitleCard';
+import { Pagination } from '../Common/Pagination';
 import { getUsername } from '../../utils/userUtils';
 import { RenamePlaylistModal } from '../Common/modals/RenamePlaylistModal';
 import { DeletePlaylistModal } from '../Common/modals/DeletePlaylistModal';
@@ -35,11 +36,12 @@ export function Playlists() {
   const historytitleIds = Array.from(new Set([...watchHistory].reverse().map(h => h.titleId)));
 
   const [activePlaylistId, setActivePlaylistId] = useState<string | null>(null);
-  const [displayedCount, setDisplayedCount] = useState(25);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(25);
 
   const handlePlaylistClick = (id: string | null) => {
     setActivePlaylistId(id);
-    setDisplayedCount(25);
+    setCurrentPage(1);
   };
   const [selectedTitle, setSelectedTitle] = useState<Title | null>(null);
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
@@ -89,12 +91,7 @@ export function Playlists() {
 
     const title = isWatchlist ? 'Přehrát později' : isHistory ? 'Historie sledování' : playlist!.name;
     const allTitles = getMovies(isWatchlist ? watchlist : isHistory ? historytitleIds : playlist!.titleIds);
-    const displayedTitles = allTitles.slice(0, displayedCount);
-    const hasMore = displayedCount < allTitles.length;
-
-    const handleLoadMore = () => {
-      setDisplayedCount(prev => Math.min(prev + 25, allTitles.length));
-    };
+    const displayedTitles = allTitles.slice((currentPage - 1) * pageSize, currentPage * pageSize);
 
     return (
       <div className="p-8 pb-24">
@@ -163,14 +160,15 @@ export function Playlists() {
           </div>
         </div>
 
-        {hasMore && (
-          <div className="mt-8 flex justify-center">
-            <button
-              onClick={handleLoadMore}
-              className="px-6 py-2.5 bg-[#1c1c24] hover:bg-[#dc2626] border border-[#27272a] hover:border-[#dc2626] rounded-xl text-white font-medium transition-colors"
-            >
-              Načíst dalších 25
-            </button>
+        {allTitles.length > 0 && (
+          <div className="mt-8 flex justify-center w-full max-w-[1200px] mx-auto lg:ml-0 lg:max-w-none">
+            <Pagination
+              totalItems={allTitles.length}
+              itemsPerPage={pageSize}
+              currentPage={currentPage}
+              onPageChange={setCurrentPage}
+              onItemsPerPageChange={setPageSize}
+            />
           </div>
         )}
 
