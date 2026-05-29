@@ -13,6 +13,7 @@ export type Title = {
   runtime: number;
   release_year: string;
   genres: string[];
+  episodes: number | null;
   streaming_services: ServiceType[] | null;
   watch_link: string;
   poster_url: string | undefined;
@@ -60,6 +61,7 @@ rawData.forEach(m => {
     poster_url: m.poster_url || undefined,
     backdrop_url: m.backdrop_url || undefined,
     title_en: m.title_en || "",
+    episodes: m.episodes || null,
     streaming_services: services
   };
 

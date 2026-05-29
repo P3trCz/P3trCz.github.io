@@ -21,9 +21,10 @@ export type Playlist = {
 
 export type WatchHistoryItem = {
   titleId: string;
-  watchedAt: number; // timestamp
-  service: ServiceType | 'Unknown';
+  watchedAt: number;
+  service: string;
   durationMinutes: number;
+  episodesWatched?: number;
 };
 
 export type NotificationType =
@@ -85,7 +86,7 @@ type AppState = {
   // Watchlist akce
   toggleWatchlist: (titleId: string) => void;
   toggleWatchedTitle: (titleId: string) => void;
-  markAsWatched: (titleId: string, service?: ServiceType | 'Unknown', durationMinutes?: number, watchedAt?: number) => void;
+  markAsWatched: (titleId: string, service?: ServiceType | 'Unknown', durationMinutes?: number, watchedAt?: number, episodesWatched?: number) => void;
 
   // Subscriptions akce
   toggleSubscription: (service: ServiceType) => void;
@@ -279,7 +280,7 @@ export const useAppStore = create<AppState>()(
       promptWatchedTitleId: null,
       setPromptWatchedTitleId: (titleId) => set({ promptWatchedTitleId: titleId }),
 
-      markAsWatched: (titleId, service = 'Unknown', durationMinutes = 0, watchedAt?: number) => {
+      markAsWatched: (titleId, service = 'Unknown', durationMinutes = 0, watchedAt?: number, episodesWatched?: number) => {
         const userId = get().currentUser?.id;
         if (!userId) return;
 
@@ -288,30 +289,33 @@ export const useAppStore = create<AppState>()(
           const existingIndex = currentHistory.findIndex(h => h.titleId === titleId);
 
           if (existingIndex >= 0) {
-            // Záznam už existuje, vyjmeme ho a dáme na konec pole (aby byl nahoře v historii)
             const newHistory = [...currentHistory];
             const [existingItem] = newHistory.splice(existingIndex, 1);
 
-            const updatedItem = {
+            const updatedItem: WatchHistoryItem = {
               ...existingItem,
-              // Pokud přehráváme přes službu nebo manuálně měníme
-              watchedAt: watchedAt ?? (service !== 'Unknown' ? Date.now() : (existingItem.watchedAt || Date.now())),
-              service: service !== 'Unknown' ? service : existingItem.service,
-              durationMinutes: service !== 'Unknown' ? durationMinutes : existingItem.durationMinutes
+              watchedAt: watchedAt ?? existingItem.watchedAt,
+              service: service,
+              durationMinutes: durationMinutes,
+              episodesWatched: episodesWatched !== undefined ? episodesWatched : existingItem.episodesWatched
             };
 
             newHistory.push(updatedItem);
             return { watchHistory: { ...state.watchHistory, [userId]: newHistory } };
           }
 
-          // Nový záznam
+          const newHistoryItem: WatchHistoryItem = {
+            titleId,
+            watchedAt: watchedAt ?? Date.now(),
+            service,
+            durationMinutes,
+            episodesWatched
+          };
+
           return {
             watchHistory: {
               ...state.watchHistory,
-              [userId]: [
-                ...currentHistory,
-                { titleId: titleId, watchedAt: service === 'Unknown' ? 0 : Date.now(), service, durationMinutes: service === 'Unknown' ? 0 : durationMinutes }
-              ]
+              [userId]: [...currentHistory, newHistoryItem]
             }
           };
         });

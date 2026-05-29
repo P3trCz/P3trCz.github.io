@@ -2,6 +2,7 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { catalog, Title, ServiceType } from '../../../data/catalog';
 import { TitleCard } from './TitleCard';
 import { TitleDetail } from './TitleDetail';
+import { Pagination } from '../../Common/Pagination';
 import { Filter, RefreshCw, Search, X } from 'lucide-react';
 import { FilterDropdown, AdvancedFilterState } from './FilterDropdown';
 import { useAppStore } from '../../../store/useAppStore';
@@ -13,7 +14,8 @@ export function TitleGrid() {
   const [selectedGenres, setSelectedGenres] = useState<AdvancedFilterState>({ included: [], excluded: [] });
   const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
   const [selectedWatched, setSelectedWatched] = useState<string[]>([]);
-  const [displayedCount, setDisplayedCount] = useState(25);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(25);
 
   const currentUser = useAppStore(state => state.currentUser);
   const subscriptionsState = useAppStore(state => state.subscriptions);
@@ -28,8 +30,7 @@ export function TitleGrid() {
 
   // Reset pagination when filters or search change
   useEffect(() => {
-    const timer = setTimeout(() => setDisplayedCount(25), 0);
-    return () => clearTimeout(timer);
+    setCurrentPage(1);
   }, [selectedServices, selectedGenres, selectedTypes, selectedWatched, userSubscriptions, searchQuery]);
 
   // Filmy dostupné na uživatelových službách
@@ -89,8 +90,7 @@ export function TitleGrid() {
     });
   }, [selectedServices, selectedGenres, selectedTypes, selectedWatched, userSubscriptions, searchQuery, isSearchActive, userWatchedTitles]);
 
-  const displayedCatalog = filteredCatalog.slice(0, displayedCount);
-  const hasMore = displayedCount < filteredCatalog.length;
+  const displayedCatalog = filteredCatalog.slice((currentPage - 1) * pageSize, currentPage * pageSize);
 
   const hasAnyFilter = selectedServices.length > 0 || selectedGenres.included.length > 0 || selectedGenres.excluded.length > 0 || selectedTypes.length > 0 || selectedWatched.length > 0;
 
@@ -99,10 +99,6 @@ export function TitleGrid() {
     setSelectedGenres({ included: [], excluded: [] });
     setSelectedTypes([]);
     setSelectedWatched([]);
-  };
-
-  const handleLoadMore = () => {
-    setDisplayedCount(prev => Math.min(prev + 25, filteredCatalog.length));
   };
 
   return (
@@ -188,7 +184,7 @@ export function TitleGrid() {
                 key={`${title.type}-${title.id}`}
                 title={title}
                 onClick={(m) => setSelectedTitle(m)}
-                className={index === displayedCatalog.length - 1 ? "rounded-b-xl border-b-0" : ""}
+                className={index === displayedCatalog.length - 1 ? "border-b-0" : ""}
               />
             ))
           ) : (
@@ -202,15 +198,14 @@ export function TitleGrid() {
         </div>
       </div>
 
-      {hasMore && (
-        <div className="mt-8 flex justify-center">
-          <button
-            onClick={handleLoadMore}
-            className="px-6 py-2.5 bg-[#1c1c24] hover:bg-[#dc2626] border border-[#27272a] hover:border-[#dc2626] rounded-xl text-white font-medium transition-colors"
-          >
-            Načíst dalších 25
-          </button>
-        </div>
+      {filteredCatalog.length > 0 && (
+        <Pagination
+          totalItems={filteredCatalog.length}
+          itemsPerPage={pageSize}
+          currentPage={currentPage}
+          onPageChange={setCurrentPage}
+          onItemsPerPageChange={setPageSize}
+        />
       )}
 
       {selectedTitle && (

@@ -6,6 +6,7 @@ import { CustomTimeRangeModal } from '../Common/modals/CustomTimeRangeModal';
 import { StatsWatchedTitlesModal } from '../Common/modals/StatsWatchedTitlesModal';
 import { TitleDetail } from './Catalog/TitleDetail';
 import { Title } from '../../data/catalog';
+import { X } from 'lucide-react';
 
 const renderActiveShape = (props: any) => {
   const { cx, cy, innerRadius, outerRadius, startAngle, endAngle, fill } = props;
@@ -246,7 +247,7 @@ export function Stats() {
           </div>
           <h2 className="text-xl font-semibold text-white mb-2">Zatím žádná data</h2>
           <p className="text-gray-400 max-w-md">
-            Graf nemůže být vygenerován, protože jste zatím nezhlédli žádný film. Přejděte do katalogu a spusťte přehrávání — statistiky se začnou automaticky zaznamenávat.
+            Graf nemůže být vygenerován, protože jste zatím nezhlédli žádný titul. Přejděte do katalogu a zhlédněte jakýkoliv titul.
           </p>
         </div>
       ) : stats.totalMovies === 0 ? (
@@ -259,7 +260,7 @@ export function Stats() {
           </div>
           <h2 className="text-xl font-semibold text-white mb-2">Žádná data za vybrané období</h2>
           <p className="text-gray-400 max-w-md">
-            Za zvolené období ({formatRangeForSentence(range, true)}) nemáte zaznamenaná žádná data sledování. Zkuste zvolit delší časové období nebo zhlédnout nějaký film.
+            Za zvolené období ({formatRangeForSentence(range, true)}) nemáte zaznamenaná žádná data sledování. Zkuste zvolit delší časové období nebo zhlédnout jakýkoliv titul.
           </p>
         </div>
       ) : (
@@ -268,8 +269,22 @@ export function Stats() {
             <h2 className="text-lg font-medium text-white mb-6">Podíl služeb na čase sledování filmů {range === 'Vlastní rozsah' ? '' : 'za '}{formatRangeForSentence(range, true)}</h2>
 
             <div className="h-80 w-full relative">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
+              {stats.pieData.length === 0 ? (
+                <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-6 border-2 border-dashed border-[#27272a] rounded-xl">
+                  <div className="w-12 h-12 rounded-full bg-[#1c1c24] flex items-center justify-center mb-4">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-gray-500">
+                      <path d="M21.21 15.89A10 10 0 1 1 8 2.83" />
+                      <path d="M22 12A10 10 0 0 0 12 2v10z" />
+                    </svg>
+                  </div>
+                  <h3 className="text-lg font-semibold text-white mb-2">Žádná data za vybrané období</h3>
+                  <p className="text-sm text-gray-400 max-w-md">
+                    Za zvolené období ({formatRangeForSentence(range, true)}) nemáte zaznamenaná žádná data sledování filmů. Zkuste zvolit delší časové období nebo zhlédnout nějaký film.
+                  </p>
+                </div>
+              ) : (
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
                   <PieComponent
                     data={stats.pieData}
                     cx="50%"
@@ -296,6 +311,7 @@ export function Stats() {
                   />
                 </PieChart>
               </ResponsiveContainer>
+              )}
             </div>
 
             <div className="flex flex-wrap justify-center gap-6 mt-4">
@@ -312,15 +328,9 @@ export function Stats() {
             <div className="panel-container-dark">
               <h3 className="text-sm font-medium text-gray-400 mb-2">Celkový čas sledování filmů za {formatRangeForSentence(range, false)}</h3>
               <div className="text-4xl font-bold text-white mb-2">{formatTime(stats.totalMinutes)}</div>
-              <div className="text-sm text-gray-500 mb-4">
+              <div className="text-sm text-gray-500">
                 {stats.totalFilms} {stats.totalFilms === 1 ? 'zhlédnutý film' : stats.totalFilms >= 2 && stats.totalFilms <= 4 ? 'zhlédnuté filmy' : 'zhlédnutých filmů'}
               </div>
-              <button
-                onClick={() => setIsWatchedTitlesModalOpen(true)}
-                className="w-full bg-[#27272a] hover:bg-[#3f3f46] text-white py-2 rounded-xl text-sm font-medium transition-colors"
-              >
-                Zobrazit zhlédnuté tituly
-              </button>
             </div>
 
             <div className="panel-container-dark">
@@ -355,20 +365,30 @@ export function Stats() {
               <div className="w-full bg-[#27272a] rounded-full h-2">
                 <div className="bg-[#2563eb] h-2 rounded-full" style={{ width: `${genreFilter === 'Film' ? (stats.totalFilms > 0 ? Math.round((stats.topGenreCountMovie / stats.totalFilms) * 100) : 0) : genreFilter === 'Seriál' ? (stats.totalWatchedSeries > 0 ? Math.round((stats.topGenreCountSeries / stats.totalWatchedSeries) * 100) : 0) : (stats.totalFilms + stats.totalWatchedSeries > 0 ? Math.round((stats.topGenreCountAll / (stats.totalFilms + stats.totalWatchedSeries)) * 100) : 0)}%` }}></div>
               </div>
-              <div className="text-sm text-gray-500 mt-3">
+              <div className="text-sm text-gray-500 mt-3 mb-6">
                 {genreFilter === 'Film' ? (stats.totalFilms > 0 ? Math.round((stats.topGenreCountMovie / stats.totalFilms) * 100) : 0) : genreFilter === 'Seriál' ? (stats.totalWatchedSeries > 0 ? Math.round((stats.topGenreCountSeries / stats.totalWatchedSeries) * 100) : 0) : (stats.totalFilms + stats.totalWatchedSeries > 0 ? Math.round((stats.topGenreCountAll / (stats.totalFilms + stats.totalWatchedSeries)) * 100) : 0)} % ze všech zhlédnutých {genreFilter === 'Film' ? 'filmů' : genreFilter === 'Seriál' ? 'seriálů' : 'titulů'}
               </div>
+              <button
+                onClick={() => setIsWatchedTitlesModalOpen(true)}
+                className="w-full bg-[#27272a] hover:bg-[#3f3f46] text-white py-2 rounded-xl text-sm font-medium transition-colors mt-auto"
+              >
+                Zobrazit zhlédnuté tituly
+              </button>
             </div>
 
             <div className="panel-container-dark">
               <h3 className="text-sm font-medium text-gray-400 mb-4">Nejpoužívanější služba (podle filmů)</h3>
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 rounded-lg bg-[#1c1c24] border border-[#27272a] p-2 flex items-center justify-center overflow-hidden">
-                  <img
-                    src={serviceLogos[stats.topService as ServiceType]}
-                    alt={stats.topService}
-                    className="max-w-full max-h-full object-contain"
-                  />
+                  {stats.totalFilms === 0 ? (
+                    <X size={24} className="text-gray-500" />
+                  ) : (
+                    <img
+                      src={serviceLogos[stats.topService as ServiceType]}
+                      alt={stats.topService}
+                      className="max-w-full max-h-full object-contain"
+                    />
+                  )}
                 </div>
                 <div>
                   <div className="text-lg font-bold text-white">{stats.topService}</div>

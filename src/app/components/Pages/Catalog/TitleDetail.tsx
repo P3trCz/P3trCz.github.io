@@ -17,7 +17,9 @@ export function TitleDetail({ title, onClose }: Props) {
   const subscriptionsState = useAppStore(state => state.subscriptions);
   const userSubscriptions = currentUser ? (subscriptionsState[currentUser.id] || []) : [];
   const watchHistory = useAppStore(state => state.watchHistory);
-  const isWatched = currentUser && (watchHistory[currentUser.id] || []).some(h => h.titleId === title.id.toString());
+  const currentHistory = currentUser ? (watchHistory[currentUser.id] || []) : [];
+  const existingItem = currentHistory.find(h => h.titleId === title.id.toString());
+  const isWatched = !!existingItem;
 
   const friends = useAppStore(state => state.friends);
   const recommendTitle = useAppStore(state => state.recommendTitle);
@@ -155,6 +157,15 @@ export function TitleDetail({ title, onClose }: Props) {
               <h3 className="text-sm font-medium text-gray-400 mb-2">Popis</h3>
               <p className="text-gray-300 leading-relaxed">{title.overview}</p>
             </div>
+
+            {title.type === 'Seriál' && isWatched && existingItem?.episodesWatched !== undefined && (
+              <div className="bg-[#1c1c24] border border-[#27272a] rounded-xl p-4 flex items-center justify-between">
+                <span className="text-sm font-medium text-gray-300">Zhlédnuté epizody</span>
+                <span className="text-sm font-bold text-white">
+                  {existingItem.episodesWatched} {title.episodes ? `z ${title.episodes}` : ''}
+                </span>
+              </div>
+            )}
           </div>
 
           <div className="mt-8 pt-6 border-t border-[#27272a]">

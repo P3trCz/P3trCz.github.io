@@ -14,6 +14,7 @@ export function MarkAsWatchedModal() {
 
   const [date, setDate] = useState<string>('');
   const [service, setService] = useState<string>('Unknown');
+  const [episodesWatched, setEpisodesWatched] = useState<number | ''>('');
 
   const title = catalog.find(t => t.id.toString() === promptWatchedTitleId);
 
@@ -29,21 +30,61 @@ export function MarkAsWatchedModal() {
         const dateString = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
         setDate(dateString);
         setService(existingItem.service);
+        if (title?.type === 'Seriál' && existingItem.episodesWatched !== undefined) {
+          setEpisodesWatched(existingItem.episodesWatched);
+        } else if (title?.type === 'Seriál' && title.episodes) {
+          setEpisodesWatched(0);
+        }
       } else {
         // Dnešní datum
         const d = new Date();
         const dateString = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
         setDate(dateString);
         setService('Unknown');
+        if (title?.type === 'Seriál' && title.episodes) {
+          setEpisodesWatched(0);
+        }
       }
     }
-  }, [promptWatchedTitleId, existingItem]);
+  }, [promptWatchedTitleId, existingItem, title]);
 
   if (!promptWatchedTitleId || !title) return null;
 
   const handleSave = () => {
-    const timestamp = date ? new Date(date).getTime() : Date.now();
-    markAsWatched(promptWatchedTitleId, service as any, 0, timestamp);
+    let timestamp = Date.now();
+    if (date) {
+      const d = new Date();
+      const todayString = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+      
+      if (existingItem) {
+        const existingD = new Date(existingItem.watchedAt || Date.now());
+        const existingDateString = `${existingD.getFullYear()}-${String(existingD.getMonth() + 1).padStart(2, '0')}-${String(existingD.getDate()).padStart(2, '0')}`;
+        
+        if (date === existingDateString) {
+          timestamp = existingItem.watchedAt;
+        } else if (date === todayString) {
+          timestamp = Date.now();
+        } else {
+          timestamp = new Date(date).getTime();
+        }
+      } else {
+        if (date === todayString) {
+          timestamp = Date.now();
+        } else {
+          timestamp = new Date(date).getTime();
+        }
+      }
+    }
+    const duration = (title.type === 'Film' && service !== 'Unknown') ? title.runtime : 0;
+    let eps: number | undefined = undefined;
+    
+    if (title.type === 'Seriál' && title.episodes !== null) {
+      eps = episodesWatched === '' ? undefined : Number(episodesWatched);
+      if (eps !== undefined && eps > title.episodes) eps = title.episodes;
+      if (eps !== undefined && eps < 0) eps = 0;
+    }
+    
+    markAsWatched(promptWatchedTitleId, service as any, duration, timestamp, eps);
     setPromptWatchedTitleId(null);
   };
 
@@ -95,6 +136,22 @@ export function MarkAsWatchedModal() {
             ))}
           </select>
         </div>
+
+        {title.type === 'Seriál' && title.episodes !== null && (
+          <div>
+            <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">
+              Zhlédnuté epizody (z celkových {title.episodes})
+            </label>
+            <input
+              type="number"
+              min={0}
+              max={title.episodes}
+              value={episodesWatched}
+              onChange={(e) => setEpisodesWatched(e.target.value === '' ? '' : Number(e.target.value))}
+              className="w-full bg-[#1c1c24] border border-[#27272a] text-white px-4 py-3 rounded-xl focus:outline-none focus:border-[#dc2626] transition-colors"
+            />
+          </div>
+        )}
 
         <div className="flex flex-col sm:flex-row justify-end gap-3 mt-4">
           <button
