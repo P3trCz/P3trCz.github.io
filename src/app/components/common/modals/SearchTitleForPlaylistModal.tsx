@@ -13,7 +13,7 @@ type SearchTitleForPlaylistModalProps = {
 export function SearchTitleForPlaylistModal({ playlistName, currentTitleIds, onClose, onToggleTitle }: SearchTitleForPlaylistModalProps) {
   const [search, setSearch] = useState('');
 
-  const filteredMovies = searchTitles(search).slice(0, 5);
+  const filteredMovies = searchTitles(search).slice(0, 10);
 
   return (
     <Modal

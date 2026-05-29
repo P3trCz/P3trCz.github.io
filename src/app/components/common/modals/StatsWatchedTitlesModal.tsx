@@ -1,23 +1,33 @@
 import React, { useState } from 'react';
 import { Title } from '../../../data/catalog';
+import { WatchHistoryItem } from '../../../store/useAppStore';
 import { Modal } from '../Modal';
 import { TitleTile } from '../../Pages/Catalog/TitleTile';
 
 type Props = {
   titles: Title[];
+  history: WatchHistoryItem[];
   rangeText: string;
   onClose: () => void;
   onViewMovie: (title: Title) => void;
 };
 
-export function StatsWatchedTitlesModal({ titles, rangeText, onClose, onViewMovie }: Props) {
+export function StatsWatchedTitlesModal({ titles, history, rangeText, onClose, onViewMovie }: Props) {
   const [displayedCount, setDisplayedCount] = useState(24);
   const [filter, setFilter] = useState<'Vše' | 'Filmy' | 'Seriály'>('Filmy');
+  const [onlyWithService, setOnlyWithService] = useState(false);
 
   const filteredTitles = titles.filter(t => {
-    if (filter === 'Vše') return true;
-    if (filter === 'Filmy') return t.type === 'Film';
-    if (filter === 'Seriály') return t.type === 'Seriál';
+    if (filter !== 'Vše') {
+      if (filter === 'Filmy' && t.type !== 'Film') return false;
+      if (filter === 'Seriály' && t.type !== 'Seriál') return false;
+    }
+    if (onlyWithService) {
+      // Check if ANY history item for this title has a known service
+      const titleHistory = history.filter(h => h.titleId === t.id.toString());
+      const hasKnownService = titleHistory.some(h => h.service !== 'Unknown');
+      if (!hasKnownService) return false;
+    }
     return true;
   });
 
@@ -35,18 +45,34 @@ export function StatsWatchedTitlesModal({ titles, rangeText, onClose, onViewMovi
     >
       <div className="flex flex-col h-[80vh]">
         <div className="px-6 py-3 border-b border-[#27272a] bg-[#111116] flex items-center justify-between">
-          <div className="flex gap-2">
-            {['Vše', 'Filmy', 'Seriály'].map(f => (
-              <button
-                key={f}
-                onClick={() => { setFilter(f as any); setDisplayedCount(24); }}
-                className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
-                  filter === f ? 'bg-[#dc2626] text-white' : 'bg-[#1c1c24] border border-[#27272a] text-gray-400 hover:text-white'
-                }`}
-              >
-                {f}
-              </button>
-            ))}
+          <div className="flex flex-wrap gap-4 items-center">
+            <div className="flex gap-2">
+              {['Vše', 'Filmy', 'Seriály'].map(f => (
+                <button
+                  key={f}
+                  onClick={() => { setFilter(f as any); setDisplayedCount(24); }}
+                  className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
+                    filter === f ? 'bg-[#dc2626] text-white' : 'bg-[#1c1c24] border border-[#27272a] text-gray-400 hover:text-white'
+                  }`}
+                >
+                  {f}
+                </button>
+              ))}
+            </div>
+            <label className="flex items-center gap-2 cursor-pointer group">
+              <div className="relative flex items-center justify-center w-5 h-5 rounded border border-[#27272a] bg-[#1c1c24] group-hover:border-[#dc2626] transition-colors">
+                <input
+                  type="checkbox"
+                  checked={onlyWithService}
+                  onChange={(e) => { setOnlyWithService(e.target.checked); setDisplayedCount(24); }}
+                  className="sr-only"
+                />
+                {onlyWithService && <div className="w-3 h-3 bg-[#dc2626] rounded-sm" />}
+              </div>
+              <span className="text-sm font-medium text-gray-400 group-hover:text-white transition-colors">
+                Pouze na službách
+              </span>
+            </label>
           </div>
           <span className="text-sm text-gray-500">
             {filteredTitles.length} {filteredTitles.length === 1 ? 'titul' : filteredTitles.length >= 2 && filteredTitles.length <= 4 ? 'tituly' : 'titulů'}

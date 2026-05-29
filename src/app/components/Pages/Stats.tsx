@@ -158,8 +158,6 @@ export function Stats() {
     });
 
     filteredHistory.forEach(item => {
-      if (item.service === 'Unknown') return; // Ignorovat u všeho
-
       const title = catalog.find(m => m.id.toString() === item.titleId);
 
       if (title) {
@@ -167,6 +165,10 @@ export function Stats() {
           seenTitleIds.add(title.id.toString());
           watchedTitleObjects.push(title);
         }
+
+        // Tady zastavíme zpracování pro statistiky, pokud je to Jiná.
+        // Tím se nezvýší počty filmů, seriálů, ani se nepřidají žánry.
+        if (item.service === 'Unknown') return;
 
         if (title.type === 'Film') {
           const svc = item.service as string;
@@ -202,9 +204,10 @@ export function Stats() {
       topGenreCountSeries: topGenreSeries ? topGenreSeries[1] : 0,
       topGenreAll: topGenreAll ? topGenreAll[0] : 'N/A',
       topGenreCountAll: topGenreAll ? topGenreAll[1] : 0,
-      totalMovies: filteredHistory.length,
+      totalMovies: filteredHistory.filter(h => h.service !== 'Unknown').length,
       totalFilms,
       watchedTitles: watchedTitleObjects,
+      filteredHistory,
       topService: topService ? topService[0] : 'N/A',
       topServiceMinutes: topService ? topService[1] : 0
     };
@@ -285,32 +288,32 @@ export function Stats() {
               ) : (
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
-                  <PieComponent
-                    data={stats.pieData}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={80}
-                    outerRadius={120}
-                    paddingAngle={2}
-                    dataKey="value"
-                    stroke="none"
-                    activeIndex={activeIndex}
-                    activeShape={renderActiveShape}
-                    onMouseEnter={(_: any, index: number) => setActiveIndex(index)}
-                    onMouseLeave={() => setActiveIndex(undefined)}
-                    style={{ outline: 'none' }}
-                  >
-                    {stats.pieData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={serviceColors[entry.name as ServiceType] || '#8884d8'} />
-                    ))}
-                  </PieComponent>
-                  <Tooltip
-                    contentStyle={{ backgroundColor: '#1c1c24', borderColor: '#27272a', color: 'white', borderRadius: '8px' }}
-                    itemStyle={{ color: 'white' }}
-                    formatter={(value: unknown, name: any) => [formatTime(Number(value)), String(name)]}
-                  />
-                </PieChart>
-              </ResponsiveContainer>
+                    <PieComponent
+                      data={stats.pieData}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={80}
+                      outerRadius={120}
+                      paddingAngle={2}
+                      dataKey="value"
+                      stroke="none"
+                      activeIndex={activeIndex}
+                      activeShape={renderActiveShape}
+                      onMouseEnter={(_: any, index: number) => setActiveIndex(index)}
+                      onMouseLeave={() => setActiveIndex(undefined)}
+                      style={{ outline: 'none' }}
+                    >
+                      {stats.pieData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={serviceColors[entry.name as ServiceType] || '#8884d8'} />
+                      ))}
+                    </PieComponent>
+                    <Tooltip
+                      contentStyle={{ backgroundColor: '#1c1c24', borderColor: '#27272a', color: 'white', borderRadius: '8px' }}
+                      itemStyle={{ color: 'white' }}
+                      formatter={(value: unknown, name: any) => [formatTime(Number(value)), String(name)]}
+                    />
+                  </PieChart>
+                </ResponsiveContainer>
               )}
             </div>
 
@@ -334,22 +337,22 @@ export function Stats() {
             </div>
 
             <div className="panel-container-dark">
-              <div className="flex justify-between items-center mb-2">
+              <div className="flex flex-col 2xl:flex-row justify-between items-start 2xl:items-center gap-3 mb-3">
                 <h3 className="text-sm font-medium text-gray-400">Nejsledovanější žánr</h3>
                 <div className="flex bg-[#1c1c24] rounded-full p-0.5 border border-[#27272a]">
-                  <button 
+                  <button
                     onClick={() => setGenreFilter('Vše')}
                     className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${genreFilter === 'Vše' ? 'bg-[#dc2626] text-white' : 'text-gray-400 hover:text-white'}`}
                   >
                     Vše
                   </button>
-                  <button 
+                  <button
                     onClick={() => setGenreFilter('Film')}
                     className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${genreFilter === 'Film' ? 'bg-[#dc2626] text-white' : 'text-gray-400 hover:text-white'}`}
                   >
                     Filmy
                   </button>
-                  <button 
+                  <button
                     onClick={() => setGenreFilter('Seriál')}
                     className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${genreFilter === 'Seriál' ? 'bg-[#dc2626] text-white' : 'text-gray-400 hover:text-white'}`}
                   >
@@ -357,7 +360,7 @@ export function Stats() {
                   </button>
                 </div>
               </div>
-              
+
               <div className="text-2xl font-bold text-white mb-4">
                 {genreFilter === 'Film' ? stats.topGenreMovie : genreFilter === 'Seriál' ? stats.topGenreSeries : stats.topGenreAll}
               </div>
@@ -412,6 +415,7 @@ export function Stats() {
       {isWatchedTitlesModalOpen && (
         <StatsWatchedTitlesModal
           titles={stats.watchedTitles}
+          history={stats.filteredHistory}
           rangeText={formatRangeForSentence(range, false)}
           onClose={() => setIsWatchedTitlesModalOpen(false)}
           onViewMovie={(title) => setSelectedTitle(title)}

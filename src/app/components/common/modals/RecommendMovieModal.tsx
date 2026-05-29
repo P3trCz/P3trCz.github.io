@@ -15,7 +15,7 @@ export function RecommendMovieModal({ friendName, onClose, onRecommend }: Recomm
   const [selectedTitleId, setSelectedTitleId] = useState<string | null>(null);
   const [message, setMessage] = useState('');
 
-  const filteredMovies = searchTitles(search).slice(0, 5);
+  const filteredMovies = searchTitles(search).slice(0, 10);
 
   const selectedTitle = selectedTitleId ? catalog.find(m => m.id.toString() === selectedTitleId.toString()) : null;
 
