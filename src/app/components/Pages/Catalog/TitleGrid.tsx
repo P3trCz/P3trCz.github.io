@@ -16,6 +16,7 @@ export function TitleGrid() {
   const [selectedGenres, setSelectedGenres] = useState<AdvancedFilterState>({ included: [], excluded: [] });
   const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
   const [selectedWatched, setSelectedWatched] = useState<string[]>([]);
+  const [selectedCountries, setSelectedCountries] = useState<string[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(25);
   const [sortField, setSortField] = useState<SortField>(null);
@@ -53,7 +54,7 @@ export function TitleGrid() {
   // Reset pagination when filters or search change
   useEffect(() => {
     setCurrentPage(1);
-  }, [selectedServices, selectedGenres, selectedTypes, selectedWatched, userSubscriptions, searchQuery]);
+  }, [selectedServices, selectedGenres, selectedTypes, selectedWatched, selectedCountries, userSubscriptions, searchQuery]);
 
   // Filmy dostupné na uživatelových službách
   const availableTitles = useMemo(() => {
@@ -66,7 +67,8 @@ export function TitleGrid() {
     return userSubscriptions.filter(s => validServices.has(s as ServiceType)).sort();
   }, [availableTitles, userSubscriptions]);
 
-  const allGenres = useMemo(() => Array.from(new Set(availableTitles.flatMap(m => m.genres))).sort(), [availableTitles]);
+  const allGenres = useMemo(() => Array.from(new Set(availableTitles.flatMap(m => m.genres))).sort((a, b) => a.localeCompare(b, 'cs')), [availableTitles]);
+  const allCountries = useMemo(() => Array.from(new Set(availableTitles.flatMap(m => m.origin_countries || []))).sort((a, b) => a.localeCompare(b, 'cs')), [availableTitles]);
   const allTypes = ['Film', 'Seriál'];
 
   const filteredCatalog = useMemo(() => {
@@ -108,9 +110,15 @@ export function TitleGrid() {
         if (selectedWatched.includes('Nezhlédnuté') && isWatched) return false;
       }
 
+      // 7. Filtr podle země původu
+      if (selectedCountries.length > 0) {
+        const matchesCountry = title.origin_countries && title.origin_countries.some(c => selectedCountries.includes(c));
+        if (!matchesCountry) return false;
+      }
+
     return true;
     });
-  }, [selectedServices, selectedGenres, selectedTypes, selectedWatched, userSubscriptions, searchQuery, isSearchActive, userWatchedTitles]);
+  }, [selectedServices, selectedGenres, selectedTypes, selectedWatched, selectedCountries, userSubscriptions, searchQuery, isSearchActive, userWatchedTitles]);
 
   const sortedCatalog = useMemo(() => {
     return sortTitles(filteredCatalog, sortField, sortOrder, language);
@@ -118,13 +126,14 @@ export function TitleGrid() {
 
   const displayedCatalog = sortedCatalog.slice((currentPage - 1) * pageSize, currentPage * pageSize);
 
-  const hasAnyFilter = selectedServices.length > 0 || selectedGenres.included.length > 0 || selectedGenres.excluded.length > 0 || selectedTypes.length > 0 || selectedWatched.length > 0;
+  const hasAnyFilter = selectedServices.length > 0 || selectedGenres.included.length > 0 || selectedGenres.excluded.length > 0 || selectedTypes.length > 0 || selectedWatched.length > 0 || selectedCountries.length > 0;
 
   const clearFilters = () => {
     setSelectedServices([]);
     setSelectedGenres({ included: [], excluded: [] });
     setSelectedTypes([]);
     setSelectedWatched([]);
+    setSelectedCountries([]);
   };
 
   return (
@@ -178,6 +187,12 @@ export function TitleGrid() {
             options={allGenres}
             advancedState={selectedGenres}
             onAdvancedChange={setSelectedGenres}
+          />
+          <FilterDropdown
+            label="Země původu"
+            options={allCountries}
+            selected={selectedCountries}
+            onChange={setSelectedCountries}
           />
         </div>
 

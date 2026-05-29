@@ -18,6 +18,7 @@ export type Title = {
   watch_link: string;
   poster_url: string | undefined;
   backdrop_url: string | undefined;
+  origin_countries: string[];
 };
 
 export const serviceLogos: Record<ServiceType, string> = {
@@ -46,6 +47,15 @@ export const serviceColors: Record<ServiceType, string> = {
 const rawData = tmdbData as any[];
 const uniqueDataMap = new Map<string, Title>();
 
+const regionNames = new Intl.DisplayNames(['cs'], { type: 'region' });
+const getCountryName = (code: string) => {
+  try {
+    return regionNames.of(code) || code;
+  } catch (e) {
+    return code;
+  }
+};
+
 rawData.forEach(m => {
   // Normalizace názvů a ošetření null
   const services = m.streaming_services
@@ -56,13 +66,18 @@ rawData.forEach(m => {
     }) as ServiceType[]
     : null;
 
+  const countries = m.origin_countries
+    ? (m.origin_countries as string[]).map(getCountryName)
+    : [];
+
   const title: Title = {
     ...m,
     poster_url: m.poster_url || undefined,
     backdrop_url: m.backdrop_url || undefined,
     title_en: m.title_en || "",
     episodes: m.episodes || null,
-    streaming_services: services
+    streaming_services: services,
+    origin_countries: countries
   };
 
   // Zajistí, že ID budou unikátní (kombinace typu a ID pro jistotu)
