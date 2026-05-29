@@ -96,7 +96,7 @@ type AppState = {
   // History akce sjednocena s markAsWatched
 
   // Přátelé a Sdílení akce
-  sendFriendRequest: (toUser: User) => void;
+  sendFriendRequest: (toUser: User) => 'SUCCESS' | 'ALREADY_SENT' | 'ALREADY_FRIENDS';
   acceptFriendRequest: (notificationId: string) => void;
   rejectFriendRequest: (notificationId: string) => void;
   removeFriend: (friendId: string) => void;
@@ -345,13 +345,17 @@ export const useAppStore = create<AppState>()(
       },
       sendFriendRequest: (toUser) => {
         const currentUser = get().currentUser;
-        if (!currentUser) return;
+        if (!currentUser) return 'SUCCESS';
+
+        const myFriends = get().friends[currentUser.id] || [];
+        if (myFriends.includes(toUser.id)) return 'ALREADY_FRIENDS';
+
+        const toUserNotifs = get().notifications[toUser.id] || [];
+        if (toUserNotifs.some(n => n.type === 'FRIEND_REQUEST' && n.fromUserId === currentUser.id)) {
+          return 'ALREADY_SENT';
+        }
 
         set(state => {
-          const toUserNotifs = state.notifications[toUser.id] || [];
-          // Zjistíme, jestli už od nás nemá žádost
-          if (toUserNotifs.some(n => n.type === 'FRIEND_REQUEST' && n.fromUserId === currentUser.id)) return state;
-
           const newNotif: Notification = {
             id: Math.random().toString(36).substr(2, 9),
             type: 'FRIEND_REQUEST',
@@ -366,6 +370,8 @@ export const useAppStore = create<AppState>()(
             }
           };
         });
+        
+        return 'SUCCESS';
       },
 
       acceptFriendRequest: (notificationId) => {

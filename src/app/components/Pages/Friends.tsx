@@ -34,6 +34,7 @@ export function Friends() {
   const [addUsername, setAddUsername] = useState('');
   const [addError, setAddError] = useState('');
   const [addSuccess, setAddSuccess] = useState('');
+  const [friendSearch, setFriendSearch] = useState('');
 
   // Modals state
   const [sharePlaylistFriendId, setSharePlaylistFriendId] = useState<string | null>(null);
@@ -43,12 +44,48 @@ export function Friends() {
   const [previewFromUserId, setPreviewFromUserId] = useState<string>('');
   const [addingtitleId, setAddingtitleId] = useState<string | null>(null);
   const [selectedTitleForDetail, setSelectedTitleForDetail] = useState<Title | null>(null);
-  const [friendToRemove, setFriendToRemove] = useState<{id: string, name: string} | null>(null);
+  const [friendToRemove, setFriendToRemove] = useState<{ id: string, name: string } | null>(null);
 
   const myFriendsIds = currentUser ? (friends[currentUser.id] || []) : [];
   const myFriends = myFriendsIds.map(id => usersDb.getUsers().find(u => u.id === id)).filter(Boolean);
   const myNotifications = currentUser ? (notifications[currentUser.id] || []) : [];
   const myPlaylists = currentUser ? (playlists[currentUser.id] || []) : [];
+
+  const getLatestMessageTime = (friendId: string) => {
+    if (!currentUser) return 0;
+    const history = messageHistory[currentUser.id] || [];
+    const messagesWithFriend = history.filter(m => m.fromUserId === friendId || m.toUserId === friendId);
+    return messagesWithFriend.length > 0 ? Math.max(...messagesWithFriend.map(m => m.timestamp)) : 0;
+  };
+
+  const pendingOutgoingRequests: { userId: string, timestamp: number }[] = [];
+  if (currentUser) {
+    Object.entries(notifications).forEach(([userId, userNotifs]) => {
+      const pendingReq = userNotifs.find(n => n.type === 'FRIEND_REQUEST' && n.fromUserId === currentUser.id);
+      if (pendingReq) {
+        pendingOutgoingRequests.push({ userId, timestamp: pendingReq.timestamp });
+      }
+    });
+  }
+
+  const displayFriends = myFriends.map(friend => ({
+    type: 'FRIEND' as const,
+    user: friend!,
+    latestMessageTime: getLatestMessageTime(friend!.id)
+  }));
+
+  const displayPending = pendingOutgoingRequests.map(req => ({
+    type: 'PENDING_OUTGOING' as const,
+    user: usersDb.getUsers().find(u => u.id === req.userId)!,
+    timestamp: req.timestamp
+  })).filter(item => item.user);
+
+  const filteredFriends = displayFriends.filter(item => item.user.username.toLowerCase().includes(friendSearch.toLowerCase()));
+  const filteredPending = displayPending.filter(item => item.user.username.toLowerCase().includes(friendSearch.toLowerCase()));
+
+  const sortedFriends = filteredFriends.sort((a, b) => b.latestMessageTime - a.latestMessageTime);
+  const sortedPending = filteredPending.sort((a, b) => b.timestamp - a.timestamp);
+  const allDisplayItems = [...sortedFriends, ...sortedPending];
 
   const handleAddFriend = (e: React.FormEvent) => {
     e.preventDefault();
@@ -78,8 +115,14 @@ export function Friends() {
       return;
     }
 
-    sendFriendRequest(user);
-    setAddSuccess('Žádost o přátelství byla odeslána!');
+    const status = sendFriendRequest(user);
+    if (status === 'ALREADY_FRIENDS') {
+      setAddError('Tento uživatel už je mezi vašimi přáteli!');
+    } else if (status === 'ALREADY_SENT') {
+      setAddError('Žádost už byla kdysi odeslána!');
+    } else {
+      setAddSuccess('Žádost o přátelství byla odeslána!');
+    }
     setAddUsername('');
     setTimeout(() => setAddSuccess(''), 3000);
   };
@@ -248,26 +291,62 @@ export function Friends() {
         {/* Pravý sloupec: Seznam přátel */}
         <div className="lg:col-span-2">
           <div className="panel-container-dark min-h-[500px]">
-            <h2 className="text-xl font-bold text-white mb-6">Moji přátelé</h2>
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+              <h2 className="text-xl font-bold text-white">Moji přátelé</h2>
+              <div className="relative w-full sm:w-64">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-500">
+                  <Search size={16} />
+                </div>
+                <input
+                  type="text"
+                  placeholder="Vyhledat přítele..."
+                  value={friendSearch}
+                  onChange={(e) => setFriendSearch(e.target.value)}
+                  className="w-full pl-9 pr-4 py-2 bg-[#111116] border border-[#27272a] rounded-xl text-sm text-white placeholder-gray-500 focus:outline-none focus:border-[#dc2626] transition-colors"
+                />
+              </div>
+            </div>
 
-            {myFriends.length === 0 ? (
+            {allDisplayItems.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-64 text-gray-500">
                 <UserPlus size={48} className="mb-4 opacity-20" />
-                <p>Zatím nemáte žádné přátele.</p>
-                <p className="text-sm">Vyhledejte uživatele podle jména a pošlete mu žádost.</p>
+                <p>{friendSearch ? 'Žádný přítel neodpovídá vyhledávání.' : 'Zatím nemáte žádné přátele.'}</p>
+                {!friendSearch && <p className="text-sm">Vyhledejte uživatele podle jména a pošlete mu žádost.</p>}
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {myFriends.map(friend => {
-                  if (!friend) return null;
+                {allDisplayItems.map(item => {
+                  const friend = item.user;
+                  if (item.type === 'PENDING_OUTGOING') {
+                    return (
+                      <div key={`pending-${friend.id}`} className="bg-[#1c1c24] border border-[#27272a] border-dashed rounded-xl p-5 flex flex-col justify-between opacity-60">
+                        <div className="flex items-center gap-4 mb-6">
+                          <div className="shrink-0 w-12 h-12 bg-gray-700 rounded-full flex items-center justify-center text-gray-300 font-bold text-lg">
+                            {friend.username.charAt(0).toUpperCase()}
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <div className="font-bold text-white break-all">{friend.username}</div>
+                            <div className="text-xs text-gray-400 mt-1">Žádost odeslána</div>
+                          </div>
+                        </div>
+                        <div className="flex flex-col gap-2">
+                          <div className="w-full text-center py-2 text-sm text-gray-500">Čeká se na přijetí</div>
+                        </div>
+                      </div>
+                    );
+                  }
+
                   return (
-                    <div key={friend.id} className="bg-[#1c1c24] border border-[#27272a] rounded-xl p-5 flex flex-col justify-between">
+                    <div key={`friend-${friend.id}`} className="bg-[#1c1c24] border border-[#27272a] rounded-xl p-5 flex flex-col justify-between">
                       <div className="flex items-center gap-4 mb-6">
                         <div className="shrink-0 w-12 h-12 bg-gradient-to-br from-[#dc2626] to-[#7c3aed] rounded-full flex items-center justify-center text-white font-bold text-lg">
                           {friend.username.charAt(0).toUpperCase()}
                         </div>
                         <div className="min-w-0 flex-1">
                           <div className="font-bold text-white break-all">{friend.username}</div>
+                          {item.latestMessageTime > 0 && (
+                            <div className="text-xs text-gray-500 mt-1">Aktivní: {new Date(item.latestMessageTime).toLocaleDateString('cs-CZ')}</div>
+                          )}
                         </div>
                       </div>
 
