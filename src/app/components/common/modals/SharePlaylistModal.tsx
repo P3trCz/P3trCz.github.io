@@ -31,13 +31,12 @@ export function SharePlaylistModal({ friendName, playlists, onClose, onShare }: 
                 <div
                   key={pl.id}
                   onClick={() => pl.titleIds.length > 0 && setSelectedList(selectedList === pl.id ? '' : pl.id)}
-                  className={`flex items-center gap-4 p-4 rounded-xl border transition-all ${
-                    pl.titleIds.length === 0
+                  className={`flex items-center gap-4 p-4 rounded-xl border transition-all ${pl.titleIds.length === 0
                       ? 'bg-[#0a0a0f] border-[#27272a] opacity-50 cursor-not-allowed'
                       : selectedList === pl.id
                         ? 'bg-[#dc2626]/10 border-[#dc2626] text-white cursor-pointer'
                         : 'bg-[#1c1c24] border-[#27272a] text-gray-400 hover:border-[#3f3f46] hover:text-white cursor-pointer'
-                  }`}
+                    }`}
                   title={pl.titleIds.length === 0 ? "Prázdný seznam nelze sdílet" : ""}
                 >
                   <div className={`p-2 rounded-lg ${selectedList === pl.id ? 'bg-[#dc2626] text-white' : 'bg-[#0a0a0f] text-gray-500'}`}>

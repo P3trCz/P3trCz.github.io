@@ -48,7 +48,7 @@ export function TitleDetail({ title, onClose }: Props) {
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm" onClick={onClose}>
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm" onClick={(e) => { e.stopPropagation(); onClose(); }}>
       <div
         className="w-full max-w-4xl bg-[#111116] rounded-2xl border border-[#27272a] shadow-2xl flex flex-col lg:flex-row overflow-hidden max-h-[90vh] relative"
         onClick={e => e.stopPropagation()}
@@ -195,7 +195,7 @@ export function TitleDetail({ title, onClose }: Props) {
       </div>
 
       {shareModalOpen && (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm" onClick={() => setShareModalOpen(false)}>
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm" onClick={(e) => { e.stopPropagation(); setShareModalOpen(false); }}>
           <div className="w-full max-w-md bg-[#111116] rounded-2xl border border-[#27272a] shadow-2xl p-6" onClick={e => e.stopPropagation()}>
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-bold text-white">Sdílet titul</h2>

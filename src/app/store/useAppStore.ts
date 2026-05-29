@@ -17,6 +17,7 @@ export type Playlist = {
   name: string;
   titleIds: string[];
   fromUsername?: string; // Informace o tom, od koho seznam je
+  fromUserId?: string;
 };
 
 export type WatchHistoryItem = {
@@ -100,8 +101,8 @@ type AppState = {
   rejectFriendRequest: (notificationId: string) => void;
   removeFriend: (friendId: string) => void;
   sharePlaylist: (friendId: string, playlist: Playlist, message?: string) => void;
+  importPlaylist: (playlist: Playlist, fromUsername: string, fromUserId?: string) => boolean; // Vrací true při úspěchu
   recommendTitle: (friendId: string, titleId: string, message?: string) => void;
-  importPlaylist: (playlist: Playlist, fromUsername: string) => boolean; // Vrací true při úspěchu
   dismissNotification: (notificationId: string) => void;
   saveSharedPlaylist: (notificationId: string) => void;
 };
@@ -475,7 +476,7 @@ export const useAppStore = create<AppState>()(
         });
       },
 
-      importPlaylist: (playlist, fromUsername) => {
+      importPlaylist: (playlist, fromUsername, fromUserId) => {
         const currentUser = get().currentUser;
         if (!currentUser) return false;
 
@@ -488,7 +489,8 @@ export const useAppStore = create<AppState>()(
           const newPlaylist: Playlist = {
             ...playlist,
             id: Math.random().toString(36).substr(2, 9),
-            fromUsername // Uložíme autora
+            fromUsername, // Uložíme autora jako fallback
+            fromUserId
           };
           return {
             playlists: {
@@ -584,7 +586,8 @@ export const useAppStore = create<AppState>()(
             id: Math.random().toString(36).substr(2, 9),
             name: notif.playlist.name,
             titleIds: notif.playlist.titleIds,
-            fromUsername: notif.fromUsername
+            fromUsername: notif.fromUsername,
+            fromUserId: notif.fromUserId
           };
 
           return {

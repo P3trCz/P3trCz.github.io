@@ -86,7 +86,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
       </aside>
 
       {showAbout && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm" onClick={() => setShowAbout(false)}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm" onClick={(e) => { e.stopPropagation(); setShowAbout(false); }}>
           <div
             className="w-full max-w-md bg-[#111116] rounded-2xl border border-[#27272a] shadow-2xl p-8 relative"
             onClick={e => e.stopPropagation()}

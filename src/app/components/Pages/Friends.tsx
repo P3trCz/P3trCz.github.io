@@ -96,6 +96,14 @@ export function Friends() {
 
   const getMovieById = (id: string) => catalog.find(m => m.id.toString() === id.toString());
 
+  const getDynamicUsername = (userId: string | undefined, fallbackName: string) => {
+    if (userId) {
+      const user = usersDb.getUsers().find(u => u.id === userId);
+      if (user) return user.username;
+    }
+    return fallbackName;
+  };
+
   return (
     <div className="p-8 pt-2 pb-24">
       <h1 className="text-3xl font-bold text-white mb-8">Přátelé</h1>
@@ -145,7 +153,7 @@ export function Friends() {
                     {notif.type === 'FRIEND_REQUEST' && (
                       <div>
                         <p className="text-sm text-gray-300 mb-3 break-words min-w-0">
-                          <strong className="text-white break-all">{notif.fromUsername}</strong> si vás chce přidat do přátel.
+                          <strong className="text-white break-all">{getDynamicUsername(notif.fromUserId, notif.fromUsername)}</strong> si vás chce přidat do přátel.
                         </p>
                         <div className="flex gap-2">
                           <button onClick={() => acceptFriendRequest(notif.id)} className="flex-1 flex items-center justify-center gap-1 bg-[#dc2626] hover:bg-[#b91c1c] text-white py-2 rounded-lg text-xs font-medium transition-colors">
@@ -161,7 +169,7 @@ export function Friends() {
                     {notif.type === 'FRIEND_REQUEST_REJECTED' && (
                       <div className="flex justify-between items-start gap-4">
                         <p className="text-sm text-gray-300">
-                          <strong className="text-white">{notif.fromUsername}</strong> zamítl/a vaši žádost o přátelství.
+                          <strong className="text-white">{getDynamicUsername(notif.fromUserId, notif.fromUsername)}</strong> zamítl/a vaši žádost o přátelství.
                         </p>
                         <button onClick={() => dismissNotification(notif.id)} className="text-gray-500 hover:text-white">
                           <X size={16} />
@@ -173,7 +181,7 @@ export function Friends() {
                       <div>
                         <div className="flex justify-between items-start mb-2">
                           <p className="text-sm text-gray-300 min-w-0 flex-1 break-words">
-                            <strong className="text-white break-all">{notif.fromUsername}</strong> s vámi sdílí seznam: <strong className="text-white break-all">{notif.playlist?.name}</strong>
+                            <strong className="text-white break-all">{getDynamicUsername(notif.fromUserId, notif.fromUsername)}</strong> s vámi sdílí seznam: <strong className="text-white break-all">{notif.playlist?.name}</strong>
                           </p>
                           <button onClick={() => dismissNotification(notif.id)} className="text-gray-500 hover:text-white shrink-0 ml-4 relative -top-1">
                             <X size={16} />
@@ -187,7 +195,7 @@ export function Friends() {
                         <div className="flex gap-2">
                           <button onClick={() => {
                             setPreviewPlaylist(notif.playlist || null);
-                            setPreviewFromUsername(notif.fromUsername);
+                            setPreviewFromUsername(getDynamicUsername(notif.fromUserId, notif.fromUsername));
                           }} className="flex-1 flex items-center justify-center gap-2 bg-[#27272a] hover:bg-[#3f3f46] text-white py-2 rounded-lg text-sm font-medium transition-colors">
                             <Eye size={16} /> Otevřít seznam
                           </button>
@@ -199,7 +207,7 @@ export function Friends() {
                       <div>
                         <div className="flex justify-between items-start mb-2">
                           <p className="text-sm text-gray-300 min-w-0 flex-1 break-words">
-                            <strong className="text-white break-all">{notif.fromUsername}</strong> vám doporučuje:
+                            <strong className="text-white break-all">{getDynamicUsername(notif.fromUserId, notif.fromUsername)}</strong> vám doporučuje:
                           </p>
                           <button onClick={() => dismissNotification(notif.id)} className="text-gray-500 hover:text-white shrink-0 ml-4 relative -top-1">
                             <X size={16} />

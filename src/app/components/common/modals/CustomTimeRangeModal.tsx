@@ -29,7 +29,7 @@ export function CustomTimeRangeModal({ onClose, onSave }: Props) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm" onClick={onClose}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm" onClick={(e) => { e.stopPropagation(); onClose(); }}>
       <div
         className="w-full max-w-md bg-[#111116] rounded-2xl border border-[#27272a] shadow-2xl flex flex-col overflow-hidden"
         onClick={e => e.stopPropagation()}

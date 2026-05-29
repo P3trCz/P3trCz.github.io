@@ -28,7 +28,10 @@ export function Modal({
   return (
     <div 
       className={`fixed inset-0 ${zIndex} flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm`} 
-      onClick={onClose}
+      onClick={(e) => {
+        e.stopPropagation();
+        onClose();
+      }}
     >
       <div 
         className={`w-full ${maxWidth} bg-[#111116] rounded-2xl border border-[#27272a] shadow-2xl flex flex-col max-h-[80vh] relative`} 
