@@ -3,6 +3,7 @@ import { Search, Film, ArrowLeft } from 'lucide-react';
 import { catalog } from '../../../data/catalog';
 import { searchTitles } from '../../../utils/searchUtils';
 import { Modal } from '../Modal';
+import { useTitleName } from '../../../hooks/useTitleName';
 
 type RecommendMovieModalProps = {
   friendName: string;
@@ -11,6 +12,7 @@ type RecommendMovieModalProps = {
 };
 
 export function RecommendMovieModal({ friendName, onClose, onRecommend }: RecommendMovieModalProps) {
+  const getTitleName = useTitleName();
   const [search, setSearch] = useState('');
   const [selectedTitleId, setSelectedTitleId] = useState<string | null>(null);
   const [message, setMessage] = useState('');
@@ -55,9 +57,9 @@ export function RecommendMovieModal({ friendName, onClose, onRecommend }: Recomm
                     onClick={() => setSelectedTitleId(title.id.toString())}
                     className="flex items-center gap-3 p-2 hover:bg-[#27272a] rounded-lg cursor-pointer transition-colors border border-transparent hover:border-[#3f3f46]"
                   >
-                    <img src={title.poster_url} alt={title.title} className="w-10 h-14 object-cover rounded" />
+                    <img src={title.poster_url} alt={getTitleName(title)} className="w-10 h-14 object-cover rounded" />
                     <div>
-                      <div className="font-bold text-white text-sm">{title.title}</div>
+                      <div className="font-bold text-white text-sm">{getTitleName(title)}</div>
                       <div className="text-xs text-gray-400">{title.release_year} • {title.type}</div>
                     </div>
                   </div>

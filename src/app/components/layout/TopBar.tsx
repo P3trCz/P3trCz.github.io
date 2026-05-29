@@ -16,6 +16,8 @@ export function TopBar({ onToggleSidebar }: Props) {
   const logout = useAppStore(state => state.logout);
   const searchQuery = useAppStore(state => state.searchQuery);
   const setSearchQuery = useAppStore(state => state.setSearchQuery);
+  const language = useAppStore(state => state.language);
+  const setLanguage = useAppStore(state => state.setLanguage);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -69,8 +71,15 @@ export function TopBar({ onToggleSidebar }: Props) {
         </div>
       </div>
 
-      {/* Right: Profile */}
-      <div className="flex items-center justify-end lg:w-10 relative" ref={popoverRef}>
+      {/* Right: Actions & Profile */}
+      <div className="flex items-center justify-end lg:w-auto gap-3 relative" ref={popoverRef}>
+        <button
+          onClick={() => setLanguage(language === 'cs' ? 'en' : 'cs')}
+          className="px-3 h-10 rounded-xl bg-[#111116] border border-[#27272a] flex items-center justify-center text-sm font-bold text-gray-300 hover:text-white hover:border-[#3f3f46] transition-colors"
+          title={language === 'cs' ? 'Změnit jazyk názvů titulů do angličtiny' : 'Změnit jazyk názvů titulů do češtiny'}
+        >
+          {language === 'cs' ? 'CS' : 'EN'}
+        </button>
         <button
           onClick={() => setIsProfileOpen(!isProfileOpen)}
           className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors border ${isProfileOpen ? 'bg-[#1c1c24] border-[#dc2626] text-white' : 'bg-[#111116] border-[#27272a] text-gray-300 hover:text-white hover:border-[#3f3f46]'}`}

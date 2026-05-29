@@ -12,8 +12,10 @@ import { PreviewPlaylistModal } from '../Common/modals/PreviewPlaylistModal';
 import { AddTitleToPlaylistModal } from '../Common/modals/AddTitleToPlaylistModal';
 import { RemoveFriendModal } from '../Common/modals/RemoveFriendModal';
 import { Snackbar } from '../Common/Snackbar';
+import { useTitleName } from '../../hooks/useTitleName';
 
 export function Friends() {
+  const getTitleName = useTitleName();
   const currentUser = useAppStore(state => state.currentUser);
   const friends = useAppStore(state => state.friends);
   const notifications = useAppStore(state => state.notifications);
@@ -216,9 +218,9 @@ export function Friends() {
                           return (
                             <div className="flex flex-col gap-3 mt-2">
                               <div className="flex items-center gap-3 bg-[#0a0a0f] p-2 rounded-lg">
-                                <img src={title.poster_url} alt={title.title} className="w-12 h-16 object-cover rounded" />
+                                <img src={title.poster_url} alt={getTitleName(title)} className="w-12 h-16 object-cover rounded" />
                                 <div>
-                                  <div className="text-sm font-bold text-white">{title.title}</div>
+                                  <div className="text-sm font-bold text-white">{getTitleName(title)}</div>
                                   <div className="text-xs text-gray-500">{title.release_year} • {title.type}</div>
                                 </div>
                               </div>

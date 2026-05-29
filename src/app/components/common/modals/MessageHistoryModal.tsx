@@ -5,6 +5,7 @@ import { catalog, Title } from '../../../data/catalog';
 import { Modal } from '../Modal';
 import { User } from '../../../data/usersDb';
 import { getUsername } from '../../../utils/userUtils';
+import { useTitleName } from '../../../hooks/useTitleName';
 
 type MessageHistoryModalProps = {
   friend: User;
@@ -23,6 +24,7 @@ export function MessageHistoryModal({
   onViewPlaylist,
   onAddMovieToPlaylist
 }: MessageHistoryModalProps) {
+  const getTitleName = useTitleName();
   const filteredHistory = history.filter(m =>
     (m.fromUserId === friend.id) || (m.toUserId === friend.id)
   ).sort((a, b) => b.timestamp - a.timestamp);
@@ -68,9 +70,9 @@ export function MessageHistoryModal({
                         if (!title) return <span className="text-xs text-red-500">Titul nenalezen</span>;
                         return (
                           <>
-                            <img src={title.poster_url} alt={title.title} className="w-10 h-14 object-cover rounded shadow-sm" />
+                            <img src={title.poster_url} alt={getTitleName(title)} className="w-10 h-14 object-cover rounded shadow-sm" />
                             <div className="min-w-0 flex-1">
-                              <div className="text-sm font-bold text-white truncate">{title.title}</div>
+                              <div className="text-sm font-bold text-white truncate">{getTitleName(title)}</div>
                               <button
                                 onClick={() => onViewMovie(title)}
                                 className="text-[10px] text-[#dc2626] font-bold hover:underline mt-1 mr-3"

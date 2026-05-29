@@ -44,6 +44,7 @@ export function TitleGrid() {
   const userSubscriptions = currentUser ? (subscriptionsState[currentUser.id] || EMPTY_ARRAY) : EMPTY_ARRAY;
   const watchHistory = useAppStore(state => state.watchHistory);
   const userWatchedTitles = currentUser ? (watchHistory[currentUser.id] || []).map(h => h.titleId) : EMPTY_ARRAY;
+  const language = useAppStore(state => state.language);
   const searchQuery = useAppStore(state => state.searchQuery);
   const setSearchQuery = useAppStore(state => state.setSearchQuery);
 
@@ -112,8 +113,8 @@ export function TitleGrid() {
   }, [selectedServices, selectedGenres, selectedTypes, selectedWatched, userSubscriptions, searchQuery, isSearchActive, userWatchedTitles]);
 
   const sortedCatalog = useMemo(() => {
-    return sortTitles(filteredCatalog, sortField, sortOrder);
-  }, [filteredCatalog, sortField, sortOrder]);
+    return sortTitles(filteredCatalog, sortField, sortOrder, language);
+  }, [filteredCatalog, sortField, sortOrder, language]);
 
   const displayedCatalog = sortedCatalog.slice((currentPage - 1) * pageSize, currentPage * pageSize);
 

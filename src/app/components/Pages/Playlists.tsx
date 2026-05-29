@@ -29,6 +29,7 @@ export function Playlists() {
   const removeFromPlaylist = useAppStore(state => state.removeFromPlaylist);
   const toggleWatchlist = useAppStore(state => state.toggleWatchlist);
   const friends = useAppStore(state => state.friends);
+  const language = useAppStore(state => state.language);
 
   const playlists = currentUser ? (playlistsState[currentUser.id] || []) : [];
   const watchlist = currentUser ? (watchlistsState[currentUser.id] || []) : [];
@@ -112,7 +113,7 @@ export function Playlists() {
 
     const title = isWatchlist ? 'Přehrát později' : isHistory ? 'Historie sledování' : playlist!.name;
     const allTitles = getMovies(isWatchlist ? watchlist : isHistory ? historytitleIds : playlist!.titleIds);
-    const sortedTitles = sortTitles(allTitles, sortField, sortOrder);
+    const sortedTitles = sortTitles(allTitles, sortField, sortOrder, language);
     const displayedTitles = sortedTitles.slice((currentPage - 1) * pageSize, currentPage * pageSize);
 
     return (

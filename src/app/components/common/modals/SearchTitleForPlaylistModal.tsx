@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Search, Check } from 'lucide-react';
 import { searchTitles } from '../../../utils/searchUtils';
 import { Modal } from '../Modal';
+import { useTitleName } from '../../../hooks/useTitleName';
 
 type SearchTitleForPlaylistModalProps = {
   playlistName: string;
@@ -11,6 +12,7 @@ type SearchTitleForPlaylistModalProps = {
 };
 
 export function SearchTitleForPlaylistModal({ playlistName, currentTitleIds, onClose, onToggleTitle }: SearchTitleForPlaylistModalProps) {
+  const getTitleName = useTitleName();
   const [search, setSearch] = useState('');
 
   const filteredMovies = searchTitles(search).slice(0, 10);
@@ -49,14 +51,16 @@ export function SearchTitleForPlaylistModal({ playlistName, currentTitleIds, onC
                 <div
                   key={`${title.type}-${title.id}`}
                   onClick={() => onToggleTitle(title.id.toString())}
-                  className={`flex items-center gap-3 p-2 rounded-lg cursor-pointer transition-colors border ${
-                    isSelected ? 'bg-[#dc2626]/10 border-[#dc2626] text-white' : 'border-transparent hover:bg-[#27272a] hover:border-[#3f3f46]'
+                  className={`flex justify-between items-center p-3 rounded-xl cursor-pointer transition-colors border ${
+                    isSelected ? 'bg-[#dc2626]/10 border-[#dc2626]/30 hover:bg-[#dc2626]/20' : 'bg-[#1c1c24] border-[#27272a] hover:bg-[#27272a]'
                   }`}
                 >
-                  <img src={title.poster_url || undefined} alt={title.title} className="w-10 h-14 object-cover rounded shadow-sm" />
-                  <div className="flex-1 min-w-0">
-                    <div className="font-bold text-white text-sm truncate">{title.title}</div>
-                    <div className="text-xs text-gray-400">{title.release_year} • {title.type}</div>
+                  <div className="flex items-center gap-3 min-w-0">
+                    <img src={title.poster_url || undefined} alt={getTitleName(title)} className="w-10 h-14 object-cover rounded shadow-sm" />
+                    <div className="min-w-0">
+                      <div className="font-bold text-white text-sm truncate">{getTitleName(title)}</div>
+                      <div className="text-xs text-gray-500 mt-0.5">{title.release_year} • {title.type}</div>
+                    </div>
                   </div>
                   {isSelected && (
                     <div className="pr-2">

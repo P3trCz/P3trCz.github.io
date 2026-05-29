@@ -3,14 +3,16 @@ import { Title } from '../data/catalog';
 export type SortField = 'title' | 'rating' | 'genres' | 'services' | null;
 export type SortOrder = 'asc' | 'desc';
 
-export function sortTitles(titles: Title[], sortField: SortField, sortOrder: SortOrder): Title[] {
+export function sortTitles(titles: Title[], sortField: SortField, sortOrder: SortOrder, language: 'cs' | 'en' = 'cs'): Title[] {
   if (!sortField) return titles;
 
   return [...titles].sort((a, b) => {
     let comparison = 0;
     
     if (sortField === 'title') {
-      comparison = a.title.localeCompare(b.title, 'cs');
+      const aTitle = language === 'en' && a.title_en ? a.title_en : a.title;
+      const bTitle = language === 'en' && b.title_en ? b.title_en : b.title;
+      comparison = aTitle.localeCompare(bTitle, 'cs');
     } else if (sortField === 'rating') {
       comparison = (a.rating || 0) - (b.rating || 0);
     } else if (sortField === 'genres') {

@@ -4,6 +4,7 @@ import { X, Star, Play, Share2, Check, Eye } from 'lucide-react';
 import { useAppStore } from '../../../store/useAppStore';
 import { usersDb } from '../../../data/usersDb';
 import { Snackbar } from '../../Common/Snackbar';
+import { useTitleName } from '../../../hooks/useTitleName';
 
 type Props = {
   title: Title;
@@ -11,6 +12,7 @@ type Props = {
 };
 
 export function TitleDetail({ title, onClose }: Props) {
+  const getTitleName = useTitleName();
   const markAsWatched = useAppStore(state => state.markAsWatched);
   const currentUser = useAppStore(state => state.currentUser);
   const setPromptWatchedTitleId = useAppStore(state => state.setPromptWatchedTitleId);
@@ -90,13 +92,13 @@ export function TitleDetail({ title, onClose }: Props) {
           {/* Backdrop for mobile (wide) */}
           <img
             src={title.backdrop_url}
-            alt={title.title}
+            alt={getTitleName(title)}
             className="w-full h-full object-cover lg:hidden"
           />
           {/* Poster for desktop (vertical) */}
           <img
             src={title.poster_url}
-            alt={title.title}
+            alt={getTitleName(title)}
             className="w-full h-full object-cover hidden lg:block"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-[#111116] via-transparent to-transparent opacity-80 lg:hidden"></div>
@@ -104,7 +106,7 @@ export function TitleDetail({ title, onClose }: Props) {
 
         {/* Content */}
         <div className="w-full lg:w-3/5 p-6 lg:p-8 flex flex-col overflow-y-auto">
-          <h2 className="text-2xl lg:text-3xl font-bold text-white leading-tight mb-2 pr-40">{title.title}</h2>
+          <h2 className="text-2xl lg:text-3xl font-bold text-white leading-tight mb-2 pr-40">{getTitleName(title)}</h2>
 
           <div className="flex items-center flex-wrap gap-4 text-sm text-gray-400 mb-8">
             <span>{title.type}</span>

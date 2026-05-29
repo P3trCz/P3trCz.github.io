@@ -56,6 +56,7 @@ export type ChatMessage = {
 
 type AppState = {
   currentUser: User | null;
+  language: 'cs' | 'en';
 
   // Data per uživatel, klíčem je userId
   watchlists: Record<string, string[]>; // Pole titleIds
@@ -74,6 +75,7 @@ type AppState = {
   // Auth akce
   login: (user: User) => void;
   logout: () => void;
+  setLanguage: (lang: 'cs' | 'en') => void;
   updateUsername: (newUsername: string) => void;
 
   // Akce seznamů
@@ -122,6 +124,7 @@ export const useAppStore = create<AppState>()(
   persist(
     (set, get) => ({
       currentUser: null,
+      language: 'cs',
       watchlists: INITIAL_WATCHLISTS,
       playlists: INITIAL_PLAYLISTS,
       subscriptions: INITIAL_SUBSCRIPTIONS,
@@ -320,6 +323,7 @@ export const useAppStore = create<AppState>()(
           };
         });
       },
+      setLanguage: (lang: 'cs' | 'en') => set({ language: lang }),
 
       toggleSubscription: (service) => {
         const userId = get().currentUser?.id;

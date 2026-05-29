@@ -3,6 +3,7 @@ import { Title, serviceColors } from '../../../data/catalog';
 import { Star, Eye } from 'lucide-react';
 import { AddToPlaylistButton } from './AddToPlaylistButton';
 import { useAppStore } from '../../../store/useAppStore';
+import { useTitleName } from '../../../hooks/useTitleName';
 
 type Props = {
   title: Title;
@@ -11,6 +12,7 @@ type Props = {
 };
 
 export function TitleCard({ title, onClick, className = '' }: Props) {
+  const getTitleName = useTitleName();
   const currentUser = useAppStore(state => state.currentUser);
   const watchHistory = useAppStore(state => state.watchHistory);
   const setPromptWatchedTitleId = useAppStore(state => state.setPromptWatchedTitleId);
@@ -52,10 +54,10 @@ export function TitleCard({ title, onClick, className = '' }: Props) {
       <div className="flex items-center gap-3 min-w-0">
         <img
           src={title.poster_url}
-          alt={title.title}
+          alt={getTitleName(title)}
           className={`w-10 h-14 lg:w-12 lg:h-16 object-cover rounded shadow shrink-0 ${isWatched ? 'opacity-50 grayscale-[0.5]' : ''}`}
         />
-        <div className={`font-medium truncate text-sm lg:text-base ${isWatched ? 'text-gray-500' : 'text-white'}`}>{title.title}</div>
+        <div className={`font-medium truncate text-sm lg:text-base ${isWatched ? 'text-gray-500' : 'text-white'}`}>{getTitleName(title)}</div>
         <div className="shrink-0 flex items-center gap-2" onClick={e => e.stopPropagation()}>
           <button
             onClick={() => {
