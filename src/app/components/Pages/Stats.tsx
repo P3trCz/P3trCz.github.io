@@ -3,6 +3,9 @@ import { useAppStore } from '../../store/useAppStore';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Sector } from 'recharts';
 import { catalog, ServiceType, serviceLogos, serviceColors } from '../../data/catalog';
 import { CustomTimeRangeModal } from '../Common/modals/CustomTimeRangeModal';
+import { StatsWatchedTitlesModal } from '../Common/modals/StatsWatchedTitlesModal';
+import { TitleDetail } from './Catalog/TitleDetail';
+import { Title } from '../../data/catalog';
 
 const renderActiveShape = (props: any) => {
   const { cx, cy, innerRadius, outerRadius, startAngle, endAngle, fill } = props;
@@ -24,7 +27,7 @@ const renderActiveShape = (props: any) => {
 
 const PieComponent = Pie as any;
 
-const timeRanges = ['5 minut', '10 minut', '1 hodina', '1 den', 'Týden', 'Měsíc', '3 měsíce', '6 měsíců', 'Rok', 'Celá doba', 'Určit vlastní rozsah'];
+const timeRanges = ['5 minut', '10 minut', '1 hodina', '1 den', 'Týden', 'Měsíc', '3 měsíce', '6 měsíců', 'Rok', 'Celá doba', 'Vlastní rozsah'];
 
 export function Stats() {
   const [range, setRange] = useState('Měsíc');
@@ -35,6 +38,9 @@ export function Stats() {
 
   const [customRange, setCustomRange] = useState<{ from: number, to: number } | null>(null);
   const [isCustomModalOpen, setIsCustomModalOpen] = useState(false);
+  const [isWatchedTitlesModalOpen, setIsWatchedTitlesModalOpen] = useState(false);
+  const [selectedTitle, setSelectedTitle] = useState<Title | null>(null);
+  const [genreFilter, setGenreFilter] = useState<'Film' | 'Seriál'>('Film');
 
   const formatTime = (totalMinutes: number) => {
     const h = Math.floor(totalMinutes / 60);
@@ -47,7 +53,7 @@ export function Stats() {
     let from = new Date(0);
     const now = Date.now();
 
-    if (range === 'Určit vlastní rozsah' && customRange) {
+    if (range === 'Vlastní rozsah' && customRange) {
       from = new Date(customRange.from);
       to.setTime(customRange.to);
     } else {
@@ -98,7 +104,7 @@ export function Stats() {
       case '6 měsíců': base = 'posledních 6 měsíců'; break;
       case 'Rok': base = 'poslední rok'; break;
       case 'Celá doba': base = 'celou dobu'; break;
-      case 'Určit vlastní rozsah':
+      case 'Vlastní rozsah':
         if (includeDates) return `od ${dates.from} do ${dates.to}`;
         else return 'vlastní období';
     }
@@ -107,14 +113,18 @@ export function Stats() {
 
   const processData = () => {
     const serviceTime: Record<string, number> = {};
-    const genreCount: Record<string, number> = {};
+    const genreCountMovie: Record<string, number> = {};
+    const genreCountSeries: Record<string, number> = {};
     let totalMinutes = 0;
     let totalFilms = 0;
+    let totalWatchedSeries = 0;
+    const watchedTitleObjects: Title[] = [];
+    const seenTitleIds = new Set<string>();
 
     // Filtrování historie na základě vybraného časového období
     const filteredHistory = history.filter(item => {
       if (range === 'Celá doba') return true;
-      if (range === 'Určit vlastní rozsah' && customRange) {
+      if (range === 'Vlastní rozsah' && customRange) {
         return item.watchedAt >= customRange.from && item.watchedAt <= customRange.to;
       }
 
@@ -151,16 +161,21 @@ export function Stats() {
       const title = catalog.find(m => m.id.toString() === item.titleId);
 
       if (title) {
+        if (!seenTitleIds.has(title.id.toString())) {
+          seenTitleIds.add(title.id.toString());
+          watchedTitleObjects.push(title);
+        }
+
         if (title.type === 'Film') {
           const svc = item.service as string;
           serviceTime[svc] = (serviceTime[svc] || 0) + item.durationMinutes;
           totalMinutes += item.durationMinutes;
           totalFilms++;
+          title.genres.forEach(g => genreCountMovie[g] = (genreCountMovie[g] || 0) + 1);
+        } else if (title.type === 'Seriál') {
+          totalWatchedSeries++;
+          title.genres.forEach(g => genreCountSeries[g] = (genreCountSeries[g] || 0) + 1);
         }
-
-        title.genres.forEach(g => {
-          genreCount[g] = (genreCount[g] || 0) + 1;
-        });
       }
     });
 
@@ -169,16 +184,21 @@ export function Stats() {
       value
     }));
 
-    const topGenre = Object.entries(genreCount).sort((a, b) => b[1] - a[1])[0];
+    const topGenreMovie = Object.entries(genreCountMovie).sort((a, b) => b[1] - a[1])[0];
+    const topGenreSeries = Object.entries(genreCountSeries).sort((a, b) => b[1] - a[1])[0];
     const topService = Object.entries(serviceTime).sort((a, b) => b[1] - a[1])[0];
 
     return {
       pieData,
       totalMinutes,
-      topGenre: topGenre ? topGenre[0] : 'N/A',
-      topGenreCount: topGenre ? topGenre[1] : 0,
+      topGenreMovie: topGenreMovie ? topGenreMovie[0] : 'N/A',
+      topGenreCountMovie: topGenreMovie ? topGenreMovie[1] : 0,
+      totalWatchedSeries,
+      topGenreSeries: topGenreSeries ? topGenreSeries[0] : 'N/A',
+      topGenreCountSeries: topGenreSeries ? topGenreSeries[1] : 0,
       totalMovies: filteredHistory.length,
       totalFilms,
+      watchedTitles: watchedTitleObjects,
       topService: topService ? topService[0] : 'N/A',
       topServiceMinutes: topService ? topService[1] : 0
     };
@@ -195,7 +215,7 @@ export function Stats() {
           <button
             key={r}
             onClick={() => {
-              if (r === 'Určit vlastní rozsah') {
+              if (r === 'Vlastní rozsah') {
                 setIsCustomModalOpen(true);
               } else {
                 setRange(r);
@@ -240,7 +260,7 @@ export function Stats() {
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 panel-container-dark">
-            <h2 className="text-lg font-medium text-white mb-6">Podíl služeb na čase sledování filmů {range === 'Určit vlastní rozsah' ? '' : 'za '}{formatRangeForSentence(range, true)}</h2>
+            <h2 className="text-lg font-medium text-white mb-6">Podíl služeb na čase sledování filmů {range === 'Vlastní rozsah' ? '' : 'za '}{formatRangeForSentence(range, true)}</h2>
 
             <div className="h-80 w-full relative">
               <ResponsiveContainer width="100%" height="100%">
@@ -277,7 +297,7 @@ export function Stats() {
               {stats.pieData.map(entry => (
                 <div key={entry.name} className="flex items-center gap-2">
                   <div className="w-3 h-3 rounded-full" style={{ backgroundColor: serviceColors[entry.name as ServiceType] }}></div>
-                  <span className="text-sm text-gray-400">{entry.name}</span>
+                  <span className="text-sm font-medium text-gray-400">{entry.name}</span>
                 </div>
               ))}
             </div>
@@ -287,19 +307,46 @@ export function Stats() {
             <div className="panel-container-dark">
               <h3 className="text-sm font-medium text-gray-400 mb-2">Celkový čas sledování filmů za {formatRangeForSentence(range, false)}</h3>
               <div className="text-4xl font-bold text-white mb-2">{formatTime(stats.totalMinutes)}</div>
-              <div className="text-sm text-gray-500">
+              <div className="text-sm text-gray-500 mb-4">
                 {stats.totalFilms} {stats.totalFilms === 1 ? 'zhlédnutý film' : stats.totalFilms >= 2 && stats.totalFilms <= 4 ? 'zhlédnuté filmy' : 'zhlédnutých filmů'}
               </div>
+              <button
+                onClick={() => setIsWatchedTitlesModalOpen(true)}
+                className="w-full bg-[#27272a] hover:bg-[#3f3f46] text-white py-2 rounded-xl text-sm font-medium transition-colors"
+              >
+                Zobrazit zhlédnuté tituly
+              </button>
             </div>
 
             <div className="panel-container-dark">
-              <h3 className="text-sm font-medium text-gray-400 mb-2">Nejsledovanější žánr</h3>
-              <div className="text-2xl font-bold text-white mb-4">{stats.topGenre}</div>
+              <div className="flex justify-between items-center mb-2">
+                <h3 className="text-sm font-medium text-gray-400">Nejsledovanější žánr</h3>
+                <div className="flex bg-[#1c1c24] rounded-full p-0.5 border border-[#27272a]">
+                  <button 
+                    onClick={() => setGenreFilter('Film')}
+                    className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${genreFilter === 'Film' ? 'bg-[#dc2626] text-white' : 'text-gray-400 hover:text-white'}`}
+                  >
+                    Filmy
+                  </button>
+                  <button 
+                    onClick={() => setGenreFilter('Seriál')}
+                    className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${genreFilter === 'Seriál' ? 'bg-[#dc2626] text-white' : 'text-gray-400 hover:text-white'}`}
+                  >
+                    Seriály
+                  </button>
+                </div>
+              </div>
+              
+              <div className="text-2xl font-bold text-white mb-4">
+                {genreFilter === 'Film' ? stats.topGenreMovie : stats.topGenreSeries}
+              </div>
 
               <div className="w-full bg-[#27272a] rounded-full h-2">
-                <div className="bg-[#2563eb] h-2 rounded-full" style={{ width: `${stats.totalMovies > 0 ? Math.round((stats.topGenreCount / stats.totalMovies) * 100) : 0}%` }}></div>
+                <div className="bg-[#2563eb] h-2 rounded-full" style={{ width: `${genreFilter === 'Film' ? (stats.totalFilms > 0 ? Math.round((stats.topGenreCountMovie / stats.totalFilms) * 100) : 0) : (stats.totalWatchedSeries > 0 ? Math.round((stats.topGenreCountSeries / stats.totalWatchedSeries) * 100) : 0)}%` }}></div>
               </div>
-              <div className="text-sm text-gray-500 mt-3">{stats.totalMovies > 0 ? Math.round((stats.topGenreCount / stats.totalMovies) * 100) : 0} % ze všech zhlédnutých filmů a seriálů</div>
+              <div className="text-sm text-gray-500 mt-3">
+                {genreFilter === 'Film' ? (stats.totalFilms > 0 ? Math.round((stats.topGenreCountMovie / stats.totalFilms) * 100) : 0) : (stats.totalWatchedSeries > 0 ? Math.round((stats.topGenreCountSeries / stats.totalWatchedSeries) * 100) : 0)} % ze všech zhlédnutých {genreFilter === 'Film' ? 'filmů' : 'seriálů'}
+              </div>
             </div>
 
             <div className="panel-container-dark">
@@ -326,9 +373,23 @@ export function Stats() {
           onClose={() => setIsCustomModalOpen(false)}
           onSave={(from, to) => {
             setCustomRange({ from, to });
-            setRange('Určit vlastní rozsah');
+            setRange('Vlastní rozsah');
             setIsCustomModalOpen(false);
           }}
+        />
+      )}
+      {isWatchedTitlesModalOpen && (
+        <StatsWatchedTitlesModal
+          titles={stats.watchedTitles}
+          rangeText={formatRangeForSentence(range, false)}
+          onClose={() => setIsWatchedTitlesModalOpen(false)}
+          onViewMovie={(title) => setSelectedTitle(title)}
+        />
+      )}
+      {selectedTitle && (
+        <TitleDetail
+          title={selectedTitle}
+          onClose={() => setSelectedTitle(null)}
         />
       )}
     </div>

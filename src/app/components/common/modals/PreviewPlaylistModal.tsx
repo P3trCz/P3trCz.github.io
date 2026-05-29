@@ -3,6 +3,7 @@ import { Download } from 'lucide-react';
 import { Playlist } from '../../../store/useAppStore';
 import { catalog, Title } from '../../../data/catalog';
 import { Modal } from '../Modal';
+import { TitleTile } from '../../Pages/Catalog/TitleTile';
 
 type PreviewPlaylistModalProps = {
   playlist: Playlist;
@@ -38,17 +39,7 @@ export function PreviewPlaylistModal({ playlist, fromUsername, onClose, onViewMo
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {titles.map(title => (
-                <div
-                  key={title.id}
-                  onClick={() => onViewMovie(title)}
-                  className="flex items-center gap-3 bg-[#1c1c24] p-3 rounded-xl border border-transparent hover:border-[#dc2626] cursor-pointer transition-all"
-                >
-                  <img src={title.poster_url} alt={title.title} className="w-12 h-18 object-cover rounded shadow-md" />
-                  <div className="min-w-0">
-                    <div className="font-bold text-white text-sm truncate">{title.title}</div>
-                    <div className="text-xs text-gray-500">{title.release_year} • {title.type}</div>
-                  </div>
-                </div>
+                <TitleTile key={title.id} title={title} onClick={onViewMovie} />
               ))}
             </div>
           )}
