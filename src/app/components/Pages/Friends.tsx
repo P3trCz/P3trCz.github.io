@@ -13,6 +13,7 @@ import { AddTitleToPlaylistModal } from '../Common/modals/AddTitleToPlaylistModa
 import { RemoveFriendModal } from '../Common/modals/RemoveFriendModal';
 import { Snackbar } from '../Common/Snackbar';
 import { useTitleName } from '../../hooks/useTitleName';
+import { useSearch } from '../../hooks/useSearch';
 
 export function Friends() {
   const getTitleName = useTitleName();
@@ -80,11 +81,11 @@ export function Friends() {
     timestamp: req.timestamp
   })).filter(item => item.user);
 
-  const filteredFriends = displayFriends.filter(item => item.user.username.toLowerCase().includes(friendSearch.toLowerCase()));
-  const filteredPending = displayPending.filter(item => item.user.username.toLowerCase().includes(friendSearch.toLowerCase()));
+  const filteredFriends = useSearch(displayFriends, friendSearch, item => item.user.username);
+  const filteredPending = useSearch(displayPending, friendSearch, item => item.user.username);
 
-  const sortedFriends = filteredFriends.sort((a, b) => b.latestMessageTime - a.latestMessageTime);
-  const sortedPending = filteredPending.sort((a, b) => b.timestamp - a.timestamp);
+  const sortedFriends = [...filteredFriends].sort((a, b) => b.latestMessageTime - a.latestMessageTime);
+  const sortedPending = [...filteredPending].sort((a, b) => b.timestamp - a.timestamp);
   const allDisplayItems = [...sortedFriends, ...sortedPending];
 
   const handleAddFriend = (e: React.FormEvent) => {
