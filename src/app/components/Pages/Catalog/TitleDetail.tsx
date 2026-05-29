@@ -37,7 +37,14 @@ export function TitleDetail({ title, onClose }: Props) {
   const handlePlay = (service: ServiceType) => {
     // Simulace zhlédnutí pro statistiky
     const duration = title.type === 'Film' ? title.runtime : 45;
-    markAsWatched(title.id.toString(), service, duration);
+    let eps: number | undefined = undefined;
+    
+    if (title.type === 'Seriál') {
+      eps = existingItem && existingItem.episodesWatched !== undefined ? existingItem.episodesWatched + 1 : 1;
+      if (title.episodes && eps > title.episodes) eps = title.episodes;
+    }
+
+    markAsWatched(title.id.toString(), service, duration, Date.now(), eps);
     
     // Zde by normálně bylo spuštění přehrávače
     if (title.watch_link) {

@@ -30,16 +30,12 @@ export const INITIAL_SUBSCRIPTIONS: Record<string, ServiceType[]> = {
 export const INITIAL_FRIENDS: Record<string, string[]> = {
   "2": [
     "3",
-    "4",
-    "5"
+    "4"
   ],
   "3": [
     "2"
   ],
   "4": [
-    "2"
-  ],
-  "5": [
     "2"
   ]
 };
@@ -48,344 +44,360 @@ export const INITIAL_WATCH_HISTORY: Record<string, WatchHistoryItem[]> = {
     {
       "titleId": "1439930",
       "watchedAt": 1777837639470.1094,
-      "service": "Netflix",
-      "durationMinutes": 103
+      "service": "Disney Plus",
+      "durationMinutes": 51
     },
     {
       "titleId": "1007757",
       "watchedAt": 1779028350203.667,
-      "service": "HBO Max",
-      "durationMinutes": 133
+      "service": "Netflix",
+      "durationMinutes": 102
     },
     {
       "titleId": "350",
       "watchedAt": 1779208989742.777,
       "service": "Disney Plus",
-      "durationMinutes": 98
+      "durationMinutes": 109
     },
     {
       "titleId": "1318447",
       "watchedAt": 1778744854624.6113,
       "service": "Netflix",
-      "durationMinutes": 144
+      "durationMinutes": 96
     },
     {
       "titleId": "1198994",
       "watchedAt": 1778100736526.377,
-      "service": "HBO Max",
-      "durationMinutes": 102
+      "service": "Disney Plus",
+      "durationMinutes": 113
     },
     {
       "titleId": "1330021",
       "watchedAt": 1779216188646.4187,
-      "service": "Disney Plus",
-      "durationMinutes": 120
+      "service": "Netflix",
+      "durationMinutes": 114
     },
     {
       "titleId": "1613798",
       "watchedAt": 1777351305053.1023,
-      "service": "Netflix",
-      "durationMinutes": 135
+      "service": "Prime Video",
+      "durationMinutes": 103
     },
     {
       "titleId": "755898",
       "watchedAt": 1779075836623.1392,
-      "service": "HBO Max",
-      "durationMinutes": 146
+      "service": "Prime Video",
+      "durationMinutes": 91
     },
     {
       "titleId": "1242898",
       "watchedAt": 1777027844008.5796,
       "service": "Disney Plus",
-      "durationMinutes": 92
+      "durationMinutes": 107
     },
     {
       "titleId": "157336",
       "watchedAt": 1777173029709.1013,
       "service": "Netflix",
-      "durationMinutes": 115
+      "durationMinutes": 169
     },
     {
       "titleId": "76479",
       "watchedAt": 1777710314980.6016,
-      "service": "Netflix",
-      "durationMinutes": 56
+      "service": "Prime Video",
+      "durationMinutes": 0,
+      "episodesWatched": 1
     },
     {
       "titleId": "124364",
       "watchedAt": 1779266175383.6555,
       "service": "HBO Max",
-      "durationMinutes": 43
+      "durationMinutes": 0,
+      "episodesWatched": 1
     },
     {
       "titleId": "79744",
       "watchedAt": 1778266616340.4895,
       "service": "Disney Plus",
-      "durationMinutes": 62
+      "durationMinutes": 0,
+      "episodesWatched": 1
     },
     {
       "titleId": "1622",
       "watchedAt": 1779240815622.3313,
-      "service": "Netflix",
-      "durationMinutes": 62
+      "service": "HBO Max",
+      "durationMinutes": 45,
+      "episodesWatched": 1
     }
   ],
   "3": [
     {
       "titleId": "1439930",
       "watchedAt": 1778644223091.8801,
-      "service": "Oneplay",
-      "durationMinutes": 118
+      "service": "Disney Plus",
+      "durationMinutes": 51
     },
     {
       "titleId": "1007757",
       "watchedAt": 1777720129959.746,
-      "service": "Prime Video",
-      "durationMinutes": 95
+      "service": "Netflix",
+      "durationMinutes": 102
     },
     {
       "titleId": "350",
       "watchedAt": 1777597153665.7224,
-      "service": "Apple TV",
-      "durationMinutes": 145
+      "service": "Disney Plus",
+      "durationMinutes": 109
     },
     {
       "titleId": "1318447",
       "watchedAt": 1778952803755.0674,
-      "service": "SkyShowtime",
-      "durationMinutes": 126
+      "service": "Netflix",
+      "durationMinutes": 96
     },
     {
       "titleId": "1198994",
       "watchedAt": 1777713091006.528,
-      "service": "Oneplay",
-      "durationMinutes": 90
+      "service": "Disney Plus",
+      "durationMinutes": 113
     },
     {
       "titleId": "1330021",
       "watchedAt": 1778202683906.9956,
-      "service": "Prime Video",
-      "durationMinutes": 130
+      "service": "Netflix",
+      "durationMinutes": 114
     },
     {
       "titleId": "1613798",
       "watchedAt": 1779309701316.0342,
-      "service": "Apple TV",
-      "durationMinutes": 94
+      "service": "Prime Video",
+      "durationMinutes": 103
     },
     {
       "titleId": "755898",
       "watchedAt": 1778630195676.2642,
-      "service": "SkyShowtime",
-      "durationMinutes": 116
+      "service": "Prime Video",
+      "durationMinutes": 91
     },
     {
       "titleId": "1242898",
       "watchedAt": 1779044524481.6091,
-      "service": "Oneplay",
-      "durationMinutes": 128
+      "service": "Disney Plus",
+      "durationMinutes": 107
     },
     {
       "titleId": "157336",
       "watchedAt": 1779419124909.412,
-      "service": "Prime Video",
-      "durationMinutes": 137
+      "service": "Netflix",
+      "durationMinutes": 169
     },
     {
       "titleId": "76479",
       "watchedAt": 1778480688054.2412,
-      "service": "Oneplay",
-      "durationMinutes": 58
+      "service": "Prime Video",
+      "durationMinutes": 0,
+      "episodesWatched": 1
     },
     {
       "titleId": "124364",
       "watchedAt": 1777542531303.0566,
-      "service": "Prime Video",
-      "durationMinutes": 41
+      "service": "HBO Max",
+      "durationMinutes": 0,
+      "episodesWatched": 1
     },
     {
       "titleId": "79744",
       "watchedAt": 1779300217886.732,
-      "service": "Apple TV",
-      "durationMinutes": 58
+      "service": "Netflix",
+      "durationMinutes": 0,
+      "episodesWatched": 1
     },
     {
       "titleId": "1622",
       "watchedAt": 1777451999507.3276,
-      "service": "SkyShowtime",
-      "durationMinutes": 69
+      "service": "HBO Max",
+      "durationMinutes": 45,
+      "episodesWatched": 1
     }
   ],
   "4": [
     {
       "titleId": "1439930",
       "watchedAt": 1777397560150.9868,
-      "service": "Netflix",
-      "durationMinutes": 120
+      "service": "Disney Plus",
+      "durationMinutes": 51
     },
     {
       "titleId": "1007757",
       "watchedAt": 1778882220751.9553,
-      "service": "HBO Max",
-      "durationMinutes": 134
+      "service": "Netflix",
+      "durationMinutes": 102
     },
     {
       "titleId": "350",
       "watchedAt": 1778763716525.674,
-      "service": "Prime Video",
-      "durationMinutes": 125
+      "service": "Disney Plus",
+      "durationMinutes": 109
     },
     {
       "titleId": "1318447",
       "watchedAt": 1777462886903.624,
-      "service": "Disney Plus",
-      "durationMinutes": 107
+      "service": "Netflix",
+      "durationMinutes": 96
     },
     {
       "titleId": "1198994",
       "watchedAt": 1779560140828.8835,
-      "service": "Oneplay",
-      "durationMinutes": 124
+      "service": "Disney Plus",
+      "durationMinutes": 113
     },
     {
       "titleId": "1330021",
       "watchedAt": 1778980232959.399,
       "service": "Netflix",
-      "durationMinutes": 139
+      "durationMinutes": 114
     },
     {
       "titleId": "1613798",
       "watchedAt": 1778960440529.4453,
-      "service": "HBO Max",
-      "durationMinutes": 143
+      "service": "Prime Video",
+      "durationMinutes": 103
     },
     {
       "titleId": "755898",
       "watchedAt": 1777942673276.167,
       "service": "Prime Video",
-      "durationMinutes": 111
+      "durationMinutes": 91
     },
     {
       "titleId": "1242898",
       "watchedAt": 1779118072336.472,
       "service": "Disney Plus",
-      "durationMinutes": 91
+      "durationMinutes": 107
     },
     {
       "titleId": "157336",
       "watchedAt": 1779028705090.8972,
-      "service": "Oneplay",
-      "durationMinutes": 108
+      "service": "Netflix",
+      "durationMinutes": 169
     },
     {
       "titleId": "76479",
       "watchedAt": 1778275585028.1904,
-      "service": "Netflix",
-      "durationMinutes": 62
+      "service": "Prime Video",
+      "durationMinutes": 0,
+      "episodesWatched": 1
     },
     {
       "titleId": "124364",
       "watchedAt": 1777736711639.7153,
       "service": "HBO Max",
-      "durationMinutes": 57
+      "durationMinutes": 0,
+      "episodesWatched": 1
     },
     {
       "titleId": "79744",
       "watchedAt": 1778887916584.683,
-      "service": "Prime Video",
-      "durationMinutes": 51
+      "service": "Netflix",
+      "durationMinutes": 0,
+      "episodesWatched": 1
     },
     {
       "titleId": "1622",
       "watchedAt": 1778748698745.4736,
-      "service": "Disney Plus",
-      "durationMinutes": 65
+      "service": "HBO Max",
+      "durationMinutes": 45,
+      "episodesWatched": 1
     }
   ],
   "5": [
     {
       "titleId": "1439930",
       "watchedAt": 1778214648685.0955,
-      "service": "Netflix",
-      "durationMinutes": 142
+      "service": "Disney Plus",
+      "durationMinutes": 51
     },
     {
       "titleId": "1007757",
       "watchedAt": 1778580150682.3506,
-      "service": "SkyShowtime",
-      "durationMinutes": 109
+      "service": "Netflix",
+      "durationMinutes": 102
     },
     {
       "titleId": "350",
       "watchedAt": 1776984252689.9624,
-      "service": "Apple TV",
-      "durationMinutes": 106
+      "service": "Disney Plus",
+      "durationMinutes": 109
     },
     {
       "titleId": "1318447",
       "watchedAt": 1777560855282.813,
       "service": "Netflix",
-      "durationMinutes": 102
+      "durationMinutes": 96
     },
     {
       "titleId": "1198994",
       "watchedAt": 1779446073709.2952,
-      "service": "SkyShowtime",
-      "durationMinutes": 118
+      "service": "Disney Plus",
+      "durationMinutes": 113
     },
     {
       "titleId": "1330021",
       "watchedAt": 1777385344310.752,
-      "service": "Apple TV",
-      "durationMinutes": 102
+      "service": "Netflix",
+      "durationMinutes": 114
     },
     {
       "titleId": "1613798",
       "watchedAt": 1779518490592.6145,
-      "service": "Netflix",
-      "durationMinutes": 148
+      "service": "Prime Video",
+      "durationMinutes": 103
     },
     {
       "titleId": "755898",
       "watchedAt": 1777092737012.9414,
-      "service": "SkyShowtime",
-      "durationMinutes": 112
+      "service": "Prime Video",
+      "durationMinutes": 91
     },
     {
       "titleId": "1242898",
       "watchedAt": 1778764409855.3533,
-      "service": "Apple TV",
-      "durationMinutes": 126
+      "service": "Disney Plus",
+      "durationMinutes": 107
     },
     {
       "titleId": "157336",
       "watchedAt": 1777039816794.4539,
       "service": "Netflix",
-      "durationMinutes": 112
+      "durationMinutes": 169
     },
     {
       "titleId": "76479",
       "watchedAt": 1778060576141.1287,
-      "service": "Netflix",
-      "durationMinutes": 66
+      "service": "Prime Video",
+      "durationMinutes": 0,
+      "episodesWatched": 1
     },
     {
       "titleId": "124364",
       "watchedAt": 1777779178599.902,
-      "service": "SkyShowtime",
-      "durationMinutes": 65
+      "service": "HBO Max",
+      "durationMinutes": 0,
+      "episodesWatched": 1
     },
     {
       "titleId": "79744",
       "watchedAt": 1778835507848.3616,
-      "service": "Apple TV",
-      "durationMinutes": 59
+      "service": "Netflix",
+      "durationMinutes": 0,
+      "episodesWatched": 1
     },
     {
       "titleId": "1622",
       "watchedAt": 1779353340420.633,
-      "service": "Netflix",
-      "durationMinutes": 43
+      "service": "HBO Max",
+      "durationMinutes": 45,
+      "episodesWatched": 1
     }
   ]
 };
@@ -734,6 +746,23 @@ export const INITIAL_MESSAGE_HISTORY: Record<string, ChatMessage[]> = {
     }
   ]
 };
-export const INITIAL_NOTIFICATIONS: Record<string, Notification[]> = {};
+export const INITIAL_NOTIFICATIONS: Record<string, Notification[]> = {
+  "2": [
+    {
+      "id": "notif-test-1",
+      "type": "FRIEND_REQUEST",
+      "fromUserId": "5",
+      "timestamp": 1780094077094
+    }
+  ],
+  "5": [
+    {
+      "id": "notif-test-2",
+      "type": "FRIEND_REQUEST",
+      "fromUserId": "2",
+      "timestamp": 1780094127094
+    }
+  ]
+};
 
 
