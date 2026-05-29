@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { Search, Film, ArrowLeft } from 'lucide-react';
 import { catalog } from '../../../data/catalog';
-import { searchTitles } from '../../../utils/searchUtils';
 import { Modal } from '../Modal';
 import { useTitleName } from '../../../hooks/useTitleName';
+import { useSearch } from '../../../hooks/useSearch';
 
 type RecommendMovieModalProps = {
   friendName: string;
@@ -17,7 +17,8 @@ export function RecommendMovieModal({ friendName, onClose, onRecommend }: Recomm
   const [selectedTitleId, setSelectedTitleId] = useState<string | null>(null);
   const [message, setMessage] = useState('');
 
-  const filteredMovies = searchTitles(search).slice(0, 10);
+  const searchedMovies = useSearch(catalog, search, title => [title.title, title.title_en], { minQueryLength: 3, returnEmptyIfBelowMinLength: true });
+  const filteredMovies = searchedMovies.slice(0, 10);
 
   const selectedTitle = selectedTitleId ? catalog.find(m => m.id.toString() === selectedTitleId.toString()) : null;
 

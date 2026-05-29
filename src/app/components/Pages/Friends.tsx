@@ -81,8 +81,8 @@ export function Friends() {
     timestamp: req.timestamp
   })).filter(item => item.user);
 
-  const filteredFriends = useSearch(displayFriends, friendSearch, item => item.user.username);
-  const filteredPending = useSearch(displayPending, friendSearch, item => item.user.username);
+  const filteredFriends = useSearch(displayFriends, friendSearch, item => [item.user.username]);
+  const filteredPending = useSearch(displayPending, friendSearch, item => [item.user.username]);
 
   const sortedFriends = [...filteredFriends].sort((a, b) => b.latestMessageTime - a.latestMessageTime);
   const sortedPending = [...filteredPending].sort((a, b) => b.timestamp - a.timestamp);

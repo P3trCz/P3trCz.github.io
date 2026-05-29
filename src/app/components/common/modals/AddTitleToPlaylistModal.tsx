@@ -13,6 +13,7 @@ type AddTitleToPlaylistModalProps = {
 
 export function AddTitleToPlaylistModal({ titleId, onClose }: AddTitleToPlaylistModalProps) {
   const getTitleName = useTitleName();
+  
   const currentUser = useAppStore(state => state.currentUser);
   const playlists = useAppStore(state => state.playlists);
   const addToPlaylist = useAppStore(state => state.addToPlaylist);

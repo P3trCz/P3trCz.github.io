@@ -6,7 +6,7 @@ import { Pagination } from '../../Common/Pagination';
 import { Filter, RefreshCw, Search, X } from 'lucide-react';
 import { FilterDropdown, AdvancedFilterState } from './FilterDropdown';
 import { useAppStore } from '../../../store/useAppStore';
-import { searchTitles } from '../../../utils/searchUtils';
+import { useSearch } from '../../../hooks/useSearch';
 import { SortField, SortOrder, sortTitles } from '../../../utils/sortUtils';
 import { SortableHeader } from '../../Common/SortableHeader';
 
@@ -71,13 +71,12 @@ export function TitleGrid() {
   const allCountries = useMemo(() => Array.from(new Set(availableTitles.flatMap(m => m.origin_countries || []))).sort((a, b) => a.localeCompare(b, 'cs')), [availableTitles]);
   const allTypes = ['Film', 'Seriál'];
 
-  const filteredCatalog = useMemo(() => {
-    // 1. Získání základu (vyhledávání nebo celý katalog)
-    const baseCatalog = isSearchActive ? searchTitles(searchQuery, catalog) : catalog;
+  const searchedCatalog = useSearch(catalog, searchQuery, title => [title.title, title.title_en], { minQueryLength: 3 });
 
-    return baseCatalog.filter(title => {
+  const filteredCatalog = useMemo(() => {
+    return searchedCatalog.filter(title => {
       // 2. Základní filtr - film musí být dostupný na některé ze služeb, které uživatel vlastní
-      if (!isSearchActive) {
+      if (searchQuery.length < 3) {
         const hasSubscribedService = title.streaming_services && title.streaming_services.some(service => userSubscriptions.includes(service));
         if (!hasSubscribedService) return false;
       }

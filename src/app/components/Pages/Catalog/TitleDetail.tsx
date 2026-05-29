@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { Title, ServiceType, serviceColors } from '../../../data/catalog';
-import { X, Star, Play, Share2, Check, Eye } from 'lucide-react';
+import { X, Star, Play, Share2, Check, Eye, Search } from 'lucide-react';
 import { useAppStore } from '../../../store/useAppStore';
 import { usersDb } from '../../../data/usersDb';
 import { Snackbar } from '../../Common/Snackbar';
 import { useTitleName } from '../../../hooks/useTitleName';
+import { useSearch } from '../../../hooks/useSearch';
 
 type Props = {
   title: Title;
@@ -32,7 +33,11 @@ export function TitleDetail({ title, onClose }: Props) {
   const [shareModalOpen, setShareModalOpen] = useState(false);
   const [shareSelectedFriendId, setShareSelectedFriendId] = useState('');
   const [shareMessage, setShareMessage] = useState('');
+  const [shareSearchQuery, setShareSearchQuery] = useState('');
   const [snackbarMsg, setSnackbarMsg] = useState('');
+
+  const validMyFriends = myFriends.filter((f): f is { id: string; username: string; email: string; avatarUrl?: string } => Boolean(f));
+  const filteredMyFriends = useSearch(validMyFriends, shareSearchQuery, f => [f.username]);
 
   const handlePlay = (service: ServiceType) => {
     // Simulace zhlédnutí pro statistiky
@@ -228,8 +233,25 @@ export function TitleDetail({ title, onClose }: Props) {
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-400 mb-2">Vyberte přítele</label>
+                  
+                  <div className="relative mb-3">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+                      <Search size={16} />
+                    </div>
+                    <input
+                      type="text"
+                      placeholder="Hledat přítele..."
+                      value={shareSearchQuery}
+                      onChange={(e) => setShareSearchQuery(e.target.value)}
+                      className="w-full pl-9 pr-3 py-2 bg-[#1c1c24] border border-[#27272a] rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[#dc2626] transition-colors text-sm"
+                    />
+                  </div>
+
                   <div className="flex flex-col gap-2 max-h-[250px] overflow-y-auto pr-2 custom-scrollbar">
-                    {myFriends.map(friend => {
+                    {filteredMyFriends.length === 0 ? (
+                      <div className="text-center text-gray-500 py-4 text-sm">Žádný přítel nenalezen.</div>
+                    ) : (
+                      filteredMyFriends.map(friend => {
                       if (!friend) return null;
                       const isSelected = shareSelectedFriendId === friend.id;
                       return (
@@ -253,7 +275,7 @@ export function TitleDetail({ title, onClose }: Props) {
                           {isSelected && <Check size={16} className="text-[#dc2626]" />}
                         </div>
                       );
-                    })}
+                    }))}
                   </div>
                 </div>
 

@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { Search, Check } from 'lucide-react';
-import { searchTitles } from '../../../utils/searchUtils';
+import { catalog } from '../../../data/catalog';
 import { Modal } from '../Modal';
 import { useTitleName } from '../../../hooks/useTitleName';
+import { useSearch } from '../../../hooks/useSearch';
 
 type SearchTitleForPlaylistModalProps = {
   playlistName: string;
@@ -15,7 +16,8 @@ export function SearchTitleForPlaylistModal({ playlistName, currentTitleIds, onC
   const getTitleName = useTitleName();
   const [search, setSearch] = useState('');
 
-  const filteredMovies = searchTitles(search).slice(0, 10);
+  const searchedMovies = useSearch(catalog, search, title => [title.title, title.title_en], { minQueryLength: 3, returnEmptyIfBelowMinLength: true });
+  const filteredMovies = searchedMovies.slice(0, 10);
 
   return (
     <Modal

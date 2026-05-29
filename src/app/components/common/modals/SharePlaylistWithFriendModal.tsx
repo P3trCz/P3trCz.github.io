@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Share2, Check } from 'lucide-react';
 import { Modal } from '../Modal';
+import { useSearch } from '../../../hooks/useSearch';
+import { Search } from 'lucide-react';
 
 type SharePlaylistWithFriendModalProps = {
   friends: { id: string; username: string }[];
@@ -11,6 +13,10 @@ type SharePlaylistWithFriendModalProps = {
 export function SharePlaylistWithFriendModal({ friends, onClose, onShare }: SharePlaylistWithFriendModalProps) {
   const [selectedFriendId, setSelectedFriendId] = useState('');
   const [message, setMessage] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const validFriends = friends.filter((f): f is { id: string; username: string } => Boolean(f));
+  const filteredFriends = useSearch(validFriends, searchQuery, f => [f.username]);
 
   return (
     <Modal
@@ -24,8 +30,25 @@ export function SharePlaylistWithFriendModal({ friends, onClose, onShare }: Shar
         <div className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-400 mb-2">Vyberte přítele</label>
+            
+            <div className="relative mb-3">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+                <Search size={16} />
+              </div>
+              <input
+                type="text"
+                placeholder="Hledat přítele..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-9 pr-3 py-2 bg-[#1c1c24] border border-[#27272a] rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[#dc2626] transition-colors text-sm"
+              />
+            </div>
+
             <div className="flex flex-col gap-2 max-h-[250px] overflow-y-auto pr-2 custom-scrollbar">
-              {friends.map(friend => {
+              {filteredFriends.length === 0 ? (
+                <div className="text-center text-gray-500 py-4 text-sm">Žádný přítel nenalezen.</div>
+              ) : (
+                filteredFriends.map(friend => {
                 if (!friend) return null;
                 const isSelected = selectedFriendId === friend.id;
                 return (
@@ -49,7 +72,7 @@ export function SharePlaylistWithFriendModal({ friends, onClose, onShare }: Shar
                     {isSelected && <Check size={16} className="text-[#dc2626]" />}
                   </div>
                 );
-              })}
+              }))}
             </div>
           </div>
 
