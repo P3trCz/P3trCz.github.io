@@ -42,8 +42,8 @@ export function Settings() {
   const handleUsernameChange = () => {
     setUsernameError('');
 
-    if (newUsername.length < 3) {
-      setUsernameError('Uživatelské jméno musí mít alespoň 3 znaky!');
+    if (newUsername.length < 1) {
+      setUsernameError('Uživatelské jméno musí mít alespoň 1 znak!');
       return;
     }
 
