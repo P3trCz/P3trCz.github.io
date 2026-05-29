@@ -7,6 +7,7 @@ import { StatsWatchedTitlesModal } from '../Common/modals/StatsWatchedTitlesModa
 import { TitleDetail } from './Catalog/TitleDetail';
 import { Title } from '../../data/catalog';
 import { X } from 'lucide-react';
+import { TIME_RANGES, TITLE_FILTER_OPTIONS } from '../../data/constants';
 
 const renderActiveShape = (props: any) => {
   const { cx, cy, innerRadius, outerRadius, startAngle, endAngle, fill } = props;
@@ -27,8 +28,6 @@ const renderActiveShape = (props: any) => {
 };
 
 const PieComponent = Pie as any;
-
-const timeRanges = ['5 minut', '10 minut', '1 hodina', '1 den', 'Týden', 'Měsíc', '3 měsíce', '6 měsíců', 'Rok', 'Celá doba', 'Vlastní rozsah'];
 
 export function Stats() {
   const [range, setRange] = useState('Měsíc');
@@ -220,7 +219,7 @@ export function Stats() {
       <h1 className="text-3xl font-bold text-white mb-8">Vaše statistiky sledování</h1>
 
       <div className="flex flex-wrap gap-2 mb-8 bg-[#111116] border border-[#27272a] rounded-xl p-1 w-fit">
-        {timeRanges.map(r => (
+        {TIME_RANGES.map(r => (
           <button
             key={r}
             onClick={() => {
@@ -340,24 +339,15 @@ export function Stats() {
               <div className="flex flex-col 2xl:flex-row justify-between items-start 2xl:items-center gap-3 mb-3">
                 <h3 className="text-sm font-medium text-gray-400">Nejsledovanější žánr</h3>
                 <div className="flex bg-[#1c1c24] rounded-full p-0.5 border border-[#27272a]">
-                  <button
-                    onClick={() => setGenreFilter('Vše')}
-                    className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${genreFilter === 'Vše' ? 'bg-[#dc2626] text-white' : 'text-gray-400 hover:text-white'}`}
-                  >
-                    Vše
-                  </button>
-                  <button
-                    onClick={() => setGenreFilter('Film')}
-                    className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${genreFilter === 'Film' ? 'bg-[#dc2626] text-white' : 'text-gray-400 hover:text-white'}`}
-                  >
-                    Filmy
-                  </button>
-                  <button
-                    onClick={() => setGenreFilter('Seriál')}
-                    className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${genreFilter === 'Seriál' ? 'bg-[#dc2626] text-white' : 'text-gray-400 hover:text-white'}`}
-                  >
-                    Seriály
-                  </button>
+                  {TITLE_FILTER_OPTIONS.map(opt => (
+                    <button
+                      key={opt.value}
+                      onClick={() => setGenreFilter(opt.value as any)}
+                      className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${genreFilter === opt.value ? 'bg-[#dc2626] text-white' : 'text-gray-400 hover:text-white'}`}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
                 </div>
               </div>
 

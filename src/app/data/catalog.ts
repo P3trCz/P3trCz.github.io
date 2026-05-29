@@ -21,27 +21,15 @@ export type Title = {
   origin_countries: string[];
 };
 
-export const serviceLogos: Record<ServiceType, string> = {
-  'Netflix': '/src/app/Logos/netflix_logo.svg',
-  'HBO Max': '/src/app/Logos/hbo_max_logo.png',
-  'Disney Plus': '/src/app/Logos/Disney_plus_logo.png',
-  'Prime Video': '/src/app/Logos/prime_video_logo.png',
-  'Apple TV': '/src/app/Logos/apple_tv_logo.png',
-  'SkyShowtime': '/src/app/Logos/skyshowtime_logo.png',
-  'Oneplay': '/src/app/Logos/oneplay_logo.png',
-  'Prima+': '/src/app/Logos/prima_plus.png'
-};
+import { AVAILABLE_SERVICES } from './constants';
 
-export const serviceColors: Record<ServiceType, string> = {
-  'Netflix': '#e50914',
-  'HBO Max': '#7c3aed',
-  'Disney Plus': '#0063e5',
-  'Prime Video': '#00a8e1',
-  'Apple TV': '#444444',
-  'SkyShowtime': '#4f46e5',
-  'Oneplay': '#F2B705',
-  'Prima+': '#04BFAD'
-};
+export const serviceLogos: Record<ServiceType, string> = Object.fromEntries(
+  AVAILABLE_SERVICES.map(s => [s.id, s.logoUrl])
+) as Record<ServiceType, string>;
+
+export const serviceColors: Record<ServiceType, string> = Object.fromEntries(
+  AVAILABLE_SERVICES.map(s => [s.id, s.color])
+) as Record<ServiceType, string>;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const rawData = tmdbData as any[];

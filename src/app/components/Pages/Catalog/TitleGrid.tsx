@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { catalog, Title, ServiceType } from '../../../data/catalog';
+import { TITLE_TYPES } from '../../../data/constants';
 import { TitleCard } from './TitleCard';
 import { TitleDetail } from './TitleDetail';
 import { Pagination } from '../../Common/Pagination';
@@ -69,7 +70,6 @@ export function TitleGrid() {
 
   const allGenres = useMemo(() => Array.from(new Set(availableTitles.flatMap(m => m.genres))).sort((a, b) => a.localeCompare(b, 'cs')), [availableTitles]);
   const allCountries = useMemo(() => Array.from(new Set(availableTitles.flatMap(m => m.origin_countries || []))).sort((a, b) => a.localeCompare(b, 'cs')), [availableTitles]);
-  const allTypes = ['Film', 'Seriál'];
 
   const searchedCatalog = useSearch(catalog, searchQuery, title => [title.title, title.title_en], { minQueryLength: 3 });
 
@@ -165,7 +165,7 @@ export function TitleGrid() {
           </div>
           <FilterDropdown
             label="Typ"
-            options={allTypes}
+            options={[...TITLE_TYPES]}
             selected={selectedTypes}
             onChange={setSelectedTypes}
           />

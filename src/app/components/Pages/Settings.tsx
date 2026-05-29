@@ -6,16 +6,7 @@ import { User, LogOut, Key, Edit2 } from 'lucide-react';
 import { Modal } from '../Common/Modal';
 import { Snackbar } from '../Common/Snackbar';
 
-const availableServices: { id: ServiceType; name: string }[] = [
-  { id: 'Netflix', name: 'Netflix' },
-  { id: 'HBO Max', name: 'HBO Max' },
-  { id: 'Disney Plus', name: 'Disney Plus' },
-  { id: 'Prime Video', name: 'Prime Video' },
-  { id: 'Apple TV', name: 'Apple TV' },
-  { id: 'SkyShowtime', name: 'SkyShowtime' },
-  { id: 'Oneplay', name: 'Oneplay' },
-  { id: 'Prima+', name: 'Prima+' }
-];
+import { AVAILABLE_SERVICES } from '../../data/constants';
 
 export function Settings() {
   const currentUser = useAppStore(state => state.currentUser);
@@ -151,7 +142,7 @@ export function Settings() {
             <p className="text-sm text-gray-400 mb-6">Vyberte služby, které si aktuálně předplácíte. Obsah z těchto služeb bude primárně doporučován a označen jako dostupný.</p>
 
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {availableServices.map(service => {
+              {AVAILABLE_SERVICES.map(service => {
                 const isSubscribed = subscriptions.includes(service.id);
                 return (
                   <button

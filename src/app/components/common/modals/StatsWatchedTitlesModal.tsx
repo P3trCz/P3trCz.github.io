@@ -3,6 +3,7 @@ import { Title } from '../../../data/catalog';
 import { WatchHistoryItem } from '../../../store/useAppStore';
 import { Modal } from '../Modal';
 import { TitleTile } from '../../Pages/Catalog/TitleTile';
+import { TITLE_FILTER_OPTIONS } from '../../../data/constants';
 
 type Props = {
   titles: Title[];
@@ -14,13 +15,12 @@ type Props = {
 
 export function StatsWatchedTitlesModal({ titles, history, rangeText, onClose, onViewMovie }: Props) {
   const [displayedCount, setDisplayedCount] = useState(24);
-  const [filter, setFilter] = useState<'Vše' | 'Filmy' | 'Seriály'>('Filmy');
+  const [filter, setFilter] = useState<'Vše' | 'Film' | 'Seriál'>('Film');
   const [onlyWithService, setOnlyWithService] = useState(false);
 
   const filteredTitles = titles.filter(t => {
-    if (filter !== 'Vše') {
-      if (filter === 'Filmy' && t.type !== 'Film') return false;
-      if (filter === 'Seriály' && t.type !== 'Seriál') return false;
+    if (filter !== 'Vše' && t.type !== filter) {
+      return false;
     }
     if (onlyWithService) {
       // Check if ANY history item for this title has a known service
@@ -47,15 +47,15 @@ export function StatsWatchedTitlesModal({ titles, history, rangeText, onClose, o
         <div className="px-6 py-3 border-b border-[#27272a] bg-[#111116] flex items-center justify-between">
           <div className="flex flex-wrap gap-4 items-center">
             <div className="flex gap-2">
-              {['Vše', 'Filmy', 'Seriály'].map(f => (
+              {TITLE_FILTER_OPTIONS.map(opt => (
                 <button
-                  key={f}
-                  onClick={() => { setFilter(f as any); setDisplayedCount(24); }}
+                  key={opt.value}
+                  onClick={() => { setFilter(opt.value as any); setDisplayedCount(24); }}
                   className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
-                    filter === f ? 'bg-[#dc2626] text-white' : 'bg-[#1c1c24] border border-[#27272a] text-gray-400 hover:text-white'
+                    filter === opt.value ? 'bg-[#dc2626] text-white' : 'bg-[#1c1c24] border border-[#27272a] text-gray-400 hover:text-white'
                   }`}
                 >
-                  {f}
+                  {opt.label}
                 </button>
               ))}
             </div>
