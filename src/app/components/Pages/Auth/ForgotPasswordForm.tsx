@@ -9,11 +9,18 @@ type Props = {
 export function ForgotPasswordForm({ onNavigate }: Props) {
   const [email, setEmail] = useState('');
   const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [message, setMessage] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (newPassword !== confirmPassword) {
+      setStatus('error');
+      setMessage('Hesla se neshodují.');
+      return;
+    }
     
     const user = usersDb.findUserByEmail(email);
     if (!user) {
@@ -90,6 +97,19 @@ export function ForgotPasswordForm({ onNavigate }: Props) {
               onChange={e => setNewPassword(e.target.value)}
               className="w-full bg-[#0a0a0f] border border-[#27272a] rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-[#dc2626] transition-colors"
               placeholder="Zadejte nové heslo"
+              minLength={6}
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-400 mb-1">Potvrzení nového hesla</label>
+            <input
+              type="password"
+              required
+              value={confirmPassword}
+              onChange={e => setConfirmPassword(e.target.value)}
+              className="w-full bg-[#0a0a0f] border border-[#27272a] rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-[#dc2626] transition-colors"
+              placeholder="Zadejte nové heslo znovu"
               minLength={6}
             />
           </div>

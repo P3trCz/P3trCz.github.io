@@ -11,11 +11,17 @@ export function RegisterForm({ onNavigate }: Props) {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const login = useAppStore(state => state.login);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (password !== confirmPassword) {
+      setError('Hesla se neshodují.');
+      return;
+    }
+    
     setTimeout(() => {
       if (usersDb.findUserByEmail(email)) {
         setError('Uživatel s tímto emailem již existuje.');
@@ -86,6 +92,19 @@ export function RegisterForm({ onNavigate }: Props) {
             onChange={e => setPassword(e.target.value)}
             className="w-full bg-[#0a0a0f] border border-[#27272a] rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-[#dc2626] transition-colors"
             placeholder="Zvolte si bezpečné heslo"
+            minLength={6}
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-400 mb-1">Potvrzení hesla</label>
+          <input
+            type="password"
+            required
+            value={confirmPassword}
+            onChange={e => setConfirmPassword(e.target.value)}
+            className="w-full bg-[#0a0a0f] border border-[#27272a] rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-[#dc2626] transition-colors"
+            placeholder="Zadejte heslo znovu"
             minLength={6}
           />
         </div>
