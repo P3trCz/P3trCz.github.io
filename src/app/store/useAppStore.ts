@@ -85,7 +85,7 @@ type AppState = {
   // Watchlist akce
   toggleWatchlist: (titleId: string) => void;
   toggleWatchedTitle: (titleId: string) => void;
-  markAsWatched: (titleId: string, service?: ServiceType | 'Unknown', durationMinutes?: number) => void;
+  markAsWatched: (titleId: string, service?: ServiceType | 'Unknown', durationMinutes?: number, watchedAt?: number) => void;
 
   // Subscriptions akce
   toggleSubscription: (service: ServiceType) => void;
@@ -102,6 +102,10 @@ type AppState = {
   recommendTitle: (friendId: string, titleId: string, message?: string) => void;
   dismissNotification: (notificationId: string) => void;
   saveSharedPlaylist: (notificationId: string) => void;
+
+  // Modální okno pro detail zhlédnutí
+  promptWatchedTitleId: string | null;
+  setPromptWatchedTitleId: (titleId: string | null) => void;
 };
 
 const isDuplicatePlaylist = (userPlaylists: Playlist[], playlistToCheck: Playlist) => {
@@ -272,7 +276,10 @@ export const useAppStore = create<AppState>()(
         });
       },
 
-      markAsWatched: (titleId, service = 'Unknown', durationMinutes = 0) => {
+      promptWatchedTitleId: null,
+      setPromptWatchedTitleId: (titleId) => set({ promptWatchedTitleId: titleId }),
+
+      markAsWatched: (titleId, service = 'Unknown', durationMinutes = 0, watchedAt?: number) => {
         const userId = get().currentUser?.id;
         if (!userId) return;
 
@@ -287,8 +294,8 @@ export const useAppStore = create<AppState>()(
 
             const updatedItem = {
               ...existingItem,
-              // Pokud přehráváme přes službu, aktualizujeme čas a službu
-              watchedAt: service !== 'Unknown' ? Date.now() : (existingItem.watchedAt || Date.now()),
+              // Pokud přehráváme přes službu nebo manuálně měníme
+              watchedAt: watchedAt ?? (service !== 'Unknown' ? Date.now() : (existingItem.watchedAt || Date.now())),
               service: service !== 'Unknown' ? service : existingItem.service,
               durationMinutes: service !== 'Unknown' ? durationMinutes : existingItem.durationMinutes
             };

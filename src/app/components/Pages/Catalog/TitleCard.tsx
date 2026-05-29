@@ -13,7 +13,7 @@ type Props = {
 export function TitleCard({ title, onClick, className = '' }: Props) {
   const currentUser = useAppStore(state => state.currentUser);
   const watchHistory = useAppStore(state => state.watchHistory);
-  const toggleWatchedTitle = useAppStore(state => state.toggleWatchedTitle);
+  const setPromptWatchedTitleId = useAppStore(state => state.setPromptWatchedTitleId);
   
   const isWatched = currentUser && (watchHistory[currentUser.id] || []).some(h => h.titleId === title.id.toString());
 
@@ -59,7 +59,7 @@ export function TitleCard({ title, onClick, className = '' }: Props) {
         <div className="shrink-0 flex items-center gap-2" onClick={e => e.stopPropagation()}>
           <button
             onClick={() => {
-              if (currentUser) toggleWatchedTitle(title.id.toString());
+              if (currentUser) setPromptWatchedTitleId(title.id.toString());
             }}
             className={`w-8 h-8 rounded-full border flex items-center justify-center transition-colors ${
               isWatched

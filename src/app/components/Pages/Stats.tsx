@@ -40,7 +40,7 @@ export function Stats() {
   const [isCustomModalOpen, setIsCustomModalOpen] = useState(false);
   const [isWatchedTitlesModalOpen, setIsWatchedTitlesModalOpen] = useState(false);
   const [selectedTitle, setSelectedTitle] = useState<Title | null>(null);
-  const [genreFilter, setGenreFilter] = useState<'Film' | 'Seriál'>('Film');
+  const [genreFilter, setGenreFilter] = useState<'Film' | 'Seriál' | 'Vše'>('Vše');
 
   const formatTime = (totalMinutes: number) => {
     const h = Math.floor(totalMinutes / 60);
@@ -115,6 +115,7 @@ export function Stats() {
     const serviceTime: Record<string, number> = {};
     const genreCountMovie: Record<string, number> = {};
     const genreCountSeries: Record<string, number> = {};
+    const genreCountAll: Record<string, number> = {};
     let totalMinutes = 0;
     let totalFilms = 0;
     let totalWatchedSeries = 0;
@@ -176,6 +177,7 @@ export function Stats() {
           totalWatchedSeries++;
           title.genres.forEach(g => genreCountSeries[g] = (genreCountSeries[g] || 0) + 1);
         }
+        title.genres.forEach(g => genreCountAll[g] = (genreCountAll[g] || 0) + 1);
       }
     });
 
@@ -186,6 +188,7 @@ export function Stats() {
 
     const topGenreMovie = Object.entries(genreCountMovie).sort((a, b) => b[1] - a[1])[0];
     const topGenreSeries = Object.entries(genreCountSeries).sort((a, b) => b[1] - a[1])[0];
+    const topGenreAll = Object.entries(genreCountAll).sort((a, b) => b[1] - a[1])[0];
     const topService = Object.entries(serviceTime).sort((a, b) => b[1] - a[1])[0];
 
     return {
@@ -196,6 +199,8 @@ export function Stats() {
       totalWatchedSeries,
       topGenreSeries: topGenreSeries ? topGenreSeries[0] : 'N/A',
       topGenreCountSeries: topGenreSeries ? topGenreSeries[1] : 0,
+      topGenreAll: topGenreAll ? topGenreAll[0] : 'N/A',
+      topGenreCountAll: topGenreAll ? topGenreAll[1] : 0,
       totalMovies: filteredHistory.length,
       totalFilms,
       watchedTitles: watchedTitleObjects,
@@ -323,6 +328,12 @@ export function Stats() {
                 <h3 className="text-sm font-medium text-gray-400">Nejsledovanější žánr</h3>
                 <div className="flex bg-[#1c1c24] rounded-full p-0.5 border border-[#27272a]">
                   <button 
+                    onClick={() => setGenreFilter('Vše')}
+                    className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${genreFilter === 'Vše' ? 'bg-[#dc2626] text-white' : 'text-gray-400 hover:text-white'}`}
+                  >
+                    Vše
+                  </button>
+                  <button 
                     onClick={() => setGenreFilter('Film')}
                     className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${genreFilter === 'Film' ? 'bg-[#dc2626] text-white' : 'text-gray-400 hover:text-white'}`}
                   >
@@ -338,14 +349,14 @@ export function Stats() {
               </div>
               
               <div className="text-2xl font-bold text-white mb-4">
-                {genreFilter === 'Film' ? stats.topGenreMovie : stats.topGenreSeries}
+                {genreFilter === 'Film' ? stats.topGenreMovie : genreFilter === 'Seriál' ? stats.topGenreSeries : stats.topGenreAll}
               </div>
 
               <div className="w-full bg-[#27272a] rounded-full h-2">
-                <div className="bg-[#2563eb] h-2 rounded-full" style={{ width: `${genreFilter === 'Film' ? (stats.totalFilms > 0 ? Math.round((stats.topGenreCountMovie / stats.totalFilms) * 100) : 0) : (stats.totalWatchedSeries > 0 ? Math.round((stats.topGenreCountSeries / stats.totalWatchedSeries) * 100) : 0)}%` }}></div>
+                <div className="bg-[#2563eb] h-2 rounded-full" style={{ width: `${genreFilter === 'Film' ? (stats.totalFilms > 0 ? Math.round((stats.topGenreCountMovie / stats.totalFilms) * 100) : 0) : genreFilter === 'Seriál' ? (stats.totalWatchedSeries > 0 ? Math.round((stats.topGenreCountSeries / stats.totalWatchedSeries) * 100) : 0) : (stats.totalFilms + stats.totalWatchedSeries > 0 ? Math.round((stats.topGenreCountAll / (stats.totalFilms + stats.totalWatchedSeries)) * 100) : 0)}%` }}></div>
               </div>
               <div className="text-sm text-gray-500 mt-3">
-                {genreFilter === 'Film' ? (stats.totalFilms > 0 ? Math.round((stats.topGenreCountMovie / stats.totalFilms) * 100) : 0) : (stats.totalWatchedSeries > 0 ? Math.round((stats.topGenreCountSeries / stats.totalWatchedSeries) * 100) : 0)} % ze všech zhlédnutých {genreFilter === 'Film' ? 'filmů' : 'seriálů'}
+                {genreFilter === 'Film' ? (stats.totalFilms > 0 ? Math.round((stats.topGenreCountMovie / stats.totalFilms) * 100) : 0) : genreFilter === 'Seriál' ? (stats.totalWatchedSeries > 0 ? Math.round((stats.topGenreCountSeries / stats.totalWatchedSeries) * 100) : 0) : (stats.totalFilms + stats.totalWatchedSeries > 0 ? Math.round((stats.topGenreCountAll / (stats.totalFilms + stats.totalWatchedSeries)) * 100) : 0)} % ze všech zhlédnutých {genreFilter === 'Film' ? 'filmů' : genreFilter === 'Seriál' ? 'seriálů' : 'titulů'}
               </div>
             </div>
 

@@ -13,7 +13,7 @@ type Props = {
 export function TitleDetail({ title, onClose }: Props) {
   const markAsWatched = useAppStore(state => state.markAsWatched);
   const currentUser = useAppStore(state => state.currentUser);
-  const toggleWatchedTitle = useAppStore(state => state.toggleWatchedTitle);
+  const setPromptWatchedTitleId = useAppStore(state => state.setPromptWatchedTitleId);
   const subscriptionsState = useAppStore(state => state.subscriptions);
   const userSubscriptions = currentUser ? (subscriptionsState[currentUser.id] || []) : [];
   const watchHistory = useAppStore(state => state.watchHistory);
@@ -57,7 +57,7 @@ export function TitleDetail({ title, onClose }: Props) {
         <div className="absolute top-4 right-4 flex items-center gap-2 z-50">
           <button
             onClick={() => {
-              if (currentUser) toggleWatchedTitle(title.id.toString());
+              if (currentUser) setPromptWatchedTitleId(title.id.toString());
             }}
             className={`w-10 h-10 flex items-center justify-center rounded-full backdrop-blur-md transition-colors ${isWatched
               ? 'bg-red-500/20 text-[#dc2626] border border-[#dc2626]/50'

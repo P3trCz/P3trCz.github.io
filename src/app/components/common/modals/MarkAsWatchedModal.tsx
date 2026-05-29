@@ -1,0 +1,124 @@
+import React, { useState, useEffect } from 'react';
+import { useAppStore } from '../../../store/useAppStore';
+import { catalog } from '../../../data/catalog';
+import { Modal } from '../Modal';
+
+export function MarkAsWatchedModal() {
+  const promptWatchedTitleId = useAppStore(state => state.promptWatchedTitleId);
+  const setPromptWatchedTitleId = useAppStore(state => state.setPromptWatchedTitleId);
+  const markAsWatched = useAppStore(state => state.markAsWatched);
+  const toggleWatchedTitle = useAppStore(state => state.toggleWatchedTitle);
+  const currentUser = useAppStore(state => state.currentUser);
+  const subscriptionsState = useAppStore(state => state.subscriptions);
+  const watchHistory = useAppStore(state => state.watchHistory);
+
+  const [date, setDate] = useState<string>('');
+  const [service, setService] = useState<string>('Unknown');
+
+  const title = catalog.find(t => t.id.toString() === promptWatchedTitleId);
+
+  const userSubscriptions = currentUser ? (subscriptionsState[currentUser.id] || []) : [];
+  const currentHistory = currentUser ? (watchHistory[currentUser.id] || []) : [];
+  const existingItem = currentHistory.find(h => h.titleId === promptWatchedTitleId);
+
+  useEffect(() => {
+    if (promptWatchedTitleId) {
+      if (existingItem) {
+        // Formátujeme existující timestamp na YYYY-MM-DD
+        const d = new Date(existingItem.watchedAt || Date.now());
+        const dateString = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+        setDate(dateString);
+        setService(existingItem.service);
+      } else {
+        // Dnešní datum
+        const d = new Date();
+        const dateString = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+        setDate(dateString);
+        setService('Unknown');
+      }
+    }
+  }, [promptWatchedTitleId, existingItem]);
+
+  if (!promptWatchedTitleId || !title) return null;
+
+  const handleSave = () => {
+    const timestamp = date ? new Date(date).getTime() : Date.now();
+    markAsWatched(promptWatchedTitleId, service as any, 0, timestamp);
+    setPromptWatchedTitleId(null);
+  };
+
+  const handleRemove = () => {
+    toggleWatchedTitle(promptWatchedTitleId);
+    setPromptWatchedTitleId(null);
+  };
+
+  return (
+    <Modal
+      isOpen={true}
+      onClose={() => setPromptWatchedTitleId(null)}
+      title="Detail zhlédnutí"
+      zIndex="z-[999]"
+    >
+      <div className="flex flex-col gap-4">
+        <div className="flex items-center gap-3 bg-[#1c1c24] p-3 rounded-xl border border-[#27272a]">
+          <img src={title.poster_url} alt={title.title} className="w-12 h-18 object-cover rounded shadow-md" />
+          <div className="min-w-0">
+            <div className="font-bold text-white text-sm truncate">{title.title}</div>
+            <div className="text-xs text-gray-500">{title.release_year} • {title.type}</div>
+          </div>
+        </div>
+
+        <div>
+          <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">
+            Kdy jste titul viděli?
+          </label>
+          <input
+            type="date"
+            value={date}
+            onChange={(e) => setDate(e.target.value)}
+            className="w-full bg-[#1c1c24] border border-[#27272a] text-white px-4 py-3 rounded-xl focus:outline-none focus:border-[#dc2626] transition-colors"
+          />
+        </div>
+
+        <div>
+          <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">
+            Na jaké platformě?
+          </label>
+          <select
+            value={service}
+            onChange={(e) => setService(e.target.value)}
+            className="w-full bg-[#1c1c24] border border-[#27272a] text-white px-4 py-3 rounded-xl focus:outline-none focus:border-[#dc2626] transition-colors appearance-none"
+          >
+            <option value="Unknown">Jiná</option>
+            {(title.streaming_services || []).map(sub => (
+              <option key={sub} value={sub}>{sub}</option>
+            ))}
+          </select>
+        </div>
+
+        <div className="flex flex-col sm:flex-row justify-end gap-3 mt-4">
+          <button
+            onClick={() => setPromptWatchedTitleId(null)}
+            className="px-6 py-2.5 rounded-xl font-medium transition-colors bg-[#27272a] hover:bg-[#3f3f46] text-white"
+          >
+            Zrušit
+          </button>
+          {existingItem && (
+            <button
+              onClick={handleRemove}
+              className="px-6 py-2.5 rounded-xl font-medium transition-colors border border-[#dc2626]/50 text-[#dc2626] hover:bg-[#dc2626]/10"
+            >
+              Odebrat z historie
+            </button>
+          )}
+          <button
+            onClick={handleSave}
+            className="btn-action-primary"
+          >
+            Uložit
+          </button>
+        </div>
+      </div>
+    </Modal>
+  );
+}

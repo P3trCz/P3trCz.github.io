@@ -8,6 +8,7 @@ import { Playlists } from './components/Pages/Playlists';
 import { Stats } from './components/Pages/Stats';
 import { Settings } from './components/Pages/Settings';
 import { Friends } from './components/Pages/Friends';
+import { MarkAsWatchedModal } from './components/Common/modals/MarkAsWatchedModal';
 
 export default function App() {
   const currentUser = useAppStore(state => state.currentUser);
@@ -28,6 +29,7 @@ export default function App() {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
       </Routes>
+      <MarkAsWatchedModal />
     </BrowserRouter>
   );
 }
