@@ -16,7 +16,6 @@ export type Playlist = {
   id: string;
   name: string;
   titleIds: string[];
-  fromUsername?: string; // Informace o tom, od koho seznam je
   fromUserId?: string;
 };
 
@@ -37,7 +36,6 @@ export type Notification = {
   id: string;
   type: NotificationType;
   fromUserId: string;
-  fromUsername: string;
   timestamp: number;
   message?: string;
   playlist?: Playlist;
@@ -47,7 +45,6 @@ export type Notification = {
 export type ChatMessage = {
   id: string;
   fromUserId: string;
-  fromUsername: string;
   toUserId: string;
   timestamp: number;
   type: 'SHARED_PLAYLIST' | 'RECOMMENDED_TITLE';
@@ -101,7 +98,7 @@ type AppState = {
   rejectFriendRequest: (notificationId: string) => void;
   removeFriend: (friendId: string) => void;
   sharePlaylist: (friendId: string, playlist: Playlist, message?: string) => void;
-  importPlaylist: (playlist: Playlist, fromUsername: string, fromUserId?: string) => boolean; // Vrací true při úspěchu
+  importPlaylist: (playlist: Playlist, fromUserId?: string) => boolean; // Vrací true při úspěchu
   recommendTitle: (friendId: string, titleId: string, message?: string) => void;
   dismissNotification: (notificationId: string) => void;
   saveSharedPlaylist: (notificationId: string) => void;
@@ -344,7 +341,6 @@ export const useAppStore = create<AppState>()(
             id: Math.random().toString(36).substr(2, 9),
             type: 'FRIEND_REQUEST',
             fromUserId: currentUser.id,
-            fromUsername: currentUser.username,
             timestamp: Date.now()
           };
 
@@ -400,7 +396,6 @@ export const useAppStore = create<AppState>()(
             id: Math.random().toString(36).substr(2, 9),
             type: 'FRIEND_REQUEST_REJECTED',
             fromUserId: currentUser.id,
-            fromUsername: currentUser.username,
             timestamp: Date.now()
           };
 
@@ -442,7 +437,6 @@ export const useAppStore = create<AppState>()(
             id: Math.random().toString(36).substr(2, 9),
             type: 'SHARED_PLAYLIST',
             fromUserId: currentUser.id,
-            fromUsername: currentUser.username,
             timestamp: Date.now(),
             message,
             playlist
@@ -451,7 +445,6 @@ export const useAppStore = create<AppState>()(
           const newMessage: ChatMessage = {
             id: newNotif.id,
             fromUserId: currentUser.id,
-            fromUsername: currentUser.username,
             toUserId: friendId,
             timestamp: newNotif.timestamp,
             type: 'SHARED_PLAYLIST',
@@ -476,7 +469,7 @@ export const useAppStore = create<AppState>()(
         });
       },
 
-      importPlaylist: (playlist, fromUsername, fromUserId) => {
+      importPlaylist: (playlist, fromUserId) => {
         const currentUser = get().currentUser;
         if (!currentUser) return false;
 
@@ -489,7 +482,6 @@ export const useAppStore = create<AppState>()(
           const newPlaylist: Playlist = {
             ...playlist,
             id: Math.random().toString(36).substr(2, 9),
-            fromUsername, // Uložíme autora jako fallback
             fromUserId
           };
           return {
@@ -512,7 +504,6 @@ export const useAppStore = create<AppState>()(
             id: Math.random().toString(36).substr(2, 9),
             type: 'RECOMMENDED_TITLE',
             fromUserId: currentUser.id,
-            fromUsername: currentUser.username,
             timestamp: Date.now(),
             message,
             titleId
@@ -521,7 +512,6 @@ export const useAppStore = create<AppState>()(
           const newMessage: ChatMessage = {
             id: newNotif.id,
             fromUserId: currentUser.id,
-            fromUsername: currentUser.username,
             toUserId: friendId,
             timestamp: newNotif.timestamp,
             type: 'RECOMMENDED_TITLE',
@@ -586,7 +576,6 @@ export const useAppStore = create<AppState>()(
             id: Math.random().toString(36).substr(2, 9),
             name: notif.playlist.name,
             titleIds: notif.playlist.titleIds,
-            fromUsername: notif.fromUsername,
             fromUserId: notif.fromUserId
           };
 

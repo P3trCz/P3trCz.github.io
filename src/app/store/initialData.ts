@@ -491,7 +491,6 @@ export const INITIAL_MESSAGE_HISTORY: Record<string, ChatMessage[]> = {
     {
       "id": "8de7ebaqh",
       "fromUserId": "2",
-      "fromUsername": "jan.novak",
       "toUserId": "3",
       "timestamp": 1779114291674.743,
       "type": "RECOMMENDED_TITLE",
@@ -501,7 +500,6 @@ export const INITIAL_MESSAGE_HISTORY: Record<string, ChatMessage[]> = {
     {
       "id": "fbfpd6ygl",
       "fromUserId": "3",
-      "fromUsername": "petra.svobodova",
       "toUserId": "2",
       "timestamp": 1779084630469.6191,
       "type": "RECOMMENDED_TITLE",
@@ -511,7 +509,6 @@ export const INITIAL_MESSAGE_HISTORY: Record<string, ChatMessage[]> = {
     {
       "id": "gej0yk86c",
       "fromUserId": "2",
-      "fromUsername": "jan.novak",
       "toUserId": "4",
       "timestamp": 1779159674184.2866,
       "type": "RECOMMENDED_TITLE",
@@ -521,7 +518,6 @@ export const INITIAL_MESSAGE_HISTORY: Record<string, ChatMessage[]> = {
     {
       "id": "nx3vsloqt",
       "fromUserId": "4",
-      "fromUsername": "martin.dvorak",
       "toUserId": "2",
       "timestamp": 1779139500027.9846,
       "type": "RECOMMENDED_TITLE",
@@ -531,7 +527,6 @@ export const INITIAL_MESSAGE_HISTORY: Record<string, ChatMessage[]> = {
     {
       "id": "fs03r2e8y",
       "fromUserId": "2",
-      "fromUsername": "jan.novak",
       "toUserId": "5",
       "timestamp": 1778973350299.327,
       "type": "RECOMMENDED_TITLE",
@@ -541,7 +536,6 @@ export const INITIAL_MESSAGE_HISTORY: Record<string, ChatMessage[]> = {
     {
       "id": "8hq5tu0aa",
       "fromUserId": "5",
-      "fromUsername": "lucie.kralova",
       "toUserId": "2",
       "timestamp": 1779415743112.35,
       "type": "RECOMMENDED_TITLE",
@@ -551,7 +545,6 @@ export const INITIAL_MESSAGE_HISTORY: Record<string, ChatMessage[]> = {
     {
       "id": "kqgcwdk5z",
       "fromUserId": "2",
-      "fromUsername": "jan.novak",
       "toUserId": "3",
       "timestamp": 1779177832775.569,
       "type": "SHARED_PLAYLIST",
@@ -569,7 +562,6 @@ export const INITIAL_MESSAGE_HISTORY: Record<string, ChatMessage[]> = {
     {
       "id": "smrxwwypd",
       "fromUserId": "3",
-      "fromUsername": "petra.svobodova",
       "toUserId": "2",
       "timestamp": 1779382495457.234,
       "type": "SHARED_PLAYLIST",
@@ -586,7 +578,6 @@ export const INITIAL_MESSAGE_HISTORY: Record<string, ChatMessage[]> = {
     {
       "id": "2hc2k85mg",
       "fromUserId": "4",
-      "fromUsername": "martin.dvorak",
       "toUserId": "2",
       "timestamp": 1779560053215.5374,
       "type": "SHARED_PLAYLIST",
@@ -603,7 +594,6 @@ export const INITIAL_MESSAGE_HISTORY: Record<string, ChatMessage[]> = {
     {
       "id": "e7acg8twx",
       "fromUserId": "5",
-      "fromUsername": "lucie.kralova",
       "toUserId": "2",
       "timestamp": 1779066179253.629,
       "type": "SHARED_PLAYLIST",
@@ -622,7 +612,6 @@ export const INITIAL_MESSAGE_HISTORY: Record<string, ChatMessage[]> = {
     {
       "id": "8de7ebaqh",
       "fromUserId": "2",
-      "fromUsername": "jan.novak",
       "toUserId": "3",
       "timestamp": 1779114291674.743,
       "type": "RECOMMENDED_TITLE",
@@ -632,7 +621,6 @@ export const INITIAL_MESSAGE_HISTORY: Record<string, ChatMessage[]> = {
     {
       "id": "fbfpd6ygl",
       "fromUserId": "3",
-      "fromUsername": "petra.svobodova",
       "toUserId": "2",
       "timestamp": 1779084630469.6191,
       "type": "RECOMMENDED_TITLE",
@@ -642,7 +630,6 @@ export const INITIAL_MESSAGE_HISTORY: Record<string, ChatMessage[]> = {
     {
       "id": "kqgcwdk5z",
       "fromUserId": "2",
-      "fromUsername": "jan.novak",
       "toUserId": "3",
       "timestamp": 1779177832775.569,
       "type": "SHARED_PLAYLIST",
@@ -660,7 +647,6 @@ export const INITIAL_MESSAGE_HISTORY: Record<string, ChatMessage[]> = {
     {
       "id": "smrxwwypd",
       "fromUserId": "3",
-      "fromUsername": "petra.svobodova",
       "toUserId": "2",
       "timestamp": 1779382495457.234,
       "type": "SHARED_PLAYLIST",
@@ -679,7 +665,6 @@ export const INITIAL_MESSAGE_HISTORY: Record<string, ChatMessage[]> = {
     {
       "id": "gej0yk86c",
       "fromUserId": "2",
-      "fromUsername": "jan.novak",
       "toUserId": "4",
       "timestamp": 1779159674184.2866,
       "type": "RECOMMENDED_TITLE",
@@ -689,7 +674,6 @@ export const INITIAL_MESSAGE_HISTORY: Record<string, ChatMessage[]> = {
     {
       "id": "nx3vsloqt",
       "fromUserId": "4",
-      "fromUsername": "martin.dvorak",
       "toUserId": "2",
       "timestamp": 1779139500027.9846,
       "type": "RECOMMENDED_TITLE",
@@ -699,7 +683,6 @@ export const INITIAL_MESSAGE_HISTORY: Record<string, ChatMessage[]> = {
     {
       "id": "2hc2k85mg",
       "fromUserId": "4",
-      "fromUsername": "martin.dvorak",
       "toUserId": "2",
       "timestamp": 1779560053215.5374,
       "type": "SHARED_PLAYLIST",
@@ -718,7 +701,6 @@ export const INITIAL_MESSAGE_HISTORY: Record<string, ChatMessage[]> = {
     {
       "id": "fs03r2e8y",
       "fromUserId": "2",
-      "fromUsername": "jan.novak",
       "toUserId": "5",
       "timestamp": 1778973350299.327,
       "type": "RECOMMENDED_TITLE",
@@ -728,7 +710,6 @@ export const INITIAL_MESSAGE_HISTORY: Record<string, ChatMessage[]> = {
     {
       "id": "8hq5tu0aa",
       "fromUserId": "5",
-      "fromUsername": "lucie.kralova",
       "toUserId": "2",
       "timestamp": 1779415743112.35,
       "type": "RECOMMENDED_TITLE",
@@ -738,7 +719,6 @@ export const INITIAL_MESSAGE_HISTORY: Record<string, ChatMessage[]> = {
     {
       "id": "e7acg8twx",
       "fromUserId": "5",
-      "fromUsername": "lucie.kralova",
       "toUserId": "2",
       "timestamp": 1779066179253.629,
       "type": "SHARED_PLAYLIST",

@@ -4,16 +4,16 @@ import { Playlist } from '../../../store/useAppStore';
 import { catalog, Title } from '../../../data/catalog';
 import { Modal } from '../Modal';
 import { TitleTile } from '../../Pages/Catalog/TitleTile';
+import { getUsername } from '../../../utils/userUtils';
 
 type PreviewPlaylistModalProps = {
   playlist: Playlist;
-  fromUsername: string;
   onClose: () => void;
   onViewMovie: (title: Title) => void;
   onSave: () => void;
 };
 
-export function PreviewPlaylistModal({ playlist, fromUsername, onClose, onViewMovie, onSave }: PreviewPlaylistModalProps) {
+export function PreviewPlaylistModal({ playlist, onClose, onViewMovie, onSave }: PreviewPlaylistModalProps) {
   const titleIds = playlist.titleIds;
   const titles = titleIds.map(id => catalog.find(m => m.id.toString() === id.toString())).filter(Boolean) as Title[];
 
@@ -30,7 +30,7 @@ export function PreviewPlaylistModal({ playlist, fromUsername, onClose, onViewMo
         <div className="px-6 py-2 border-b border-[#27272a] bg-[#111116] flex items-center gap-2">
           <span className="text-xs text-gray-500">{titles.length} {titles.length === 1 ? 'položka' : titles.length >= 2 && titles.length <= 4 ? 'položky' : 'položek'}</span>
           <span className="text-xs text-gray-500">•</span>
-          <span className="text-xs text-[#dc2626] font-medium">Od uživatele: {fromUsername}</span>
+          <span className="text-xs text-[#dc2626] font-medium">Od uživatele: {getUsername(playlist.fromUserId)}</span>
         </div>
 
         <div className="flex-1 overflow-y-auto p-4 custom-scrollbar bg-[#0a0a0f]">

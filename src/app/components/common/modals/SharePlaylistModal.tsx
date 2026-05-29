@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { ListVideo, Check, Share2 } from 'lucide-react';
 import { Playlist } from '../../../store/useAppStore';
 import { Modal } from '../Modal';
-import { getDynamicUsername } from '../../../utils/userUtils';
+import { getUsername } from '../../../utils/userUtils';
 
 type SharePlaylistModalProps = {
   friendName: string;
@@ -52,9 +52,9 @@ export function SharePlaylistModal({ friendName, playlists, onClose, onShare }: 
                     </div>
                   </div>
                   <div className="flex items-center gap-2 shrink-0">
-                    {pl.fromUsername && (
-                      <span className="text-[10px] bg-[#dc2626]/20 text-[#dc2626] px-1.5 py-0.5 rounded uppercase tracking-wider font-normal truncate max-w-[100px]" title={`Od: ${getDynamicUsername(pl.fromUserId, pl.fromUsername)}`}>
-                        Od: {getDynamicUsername(pl.fromUserId, pl.fromUsername)}
+                    {pl.fromUserId && (
+                      <span className="text-[10px] bg-[#dc2626]/20 text-[#dc2626] px-1.5 py-0.5 rounded uppercase tracking-wider font-normal truncate max-w-[100px]" title={`Od: ${getUsername(pl.fromUserId)}`}>
+                        Od: {getUsername(pl.fromUserId)}
                       </span>
                     )}
                     {selectedList === pl.id && <Check size={18} className="text-[#dc2626]" />}
