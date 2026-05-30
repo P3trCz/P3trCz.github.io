@@ -428,10 +428,10 @@ export function Friends() {
         />
       )}
 
-      {/* MODAL: Náhled seznamu */}
       {previewPlaylist && (
         <PreviewPlaylistModal
           playlist={previewPlaylist}
+          fromUserId={previewFromUserId}
           onClose={() => {
             setPreviewPlaylist(null);
             setPreviewFromUserId('');
@@ -444,7 +444,7 @@ export function Friends() {
               setPreviewFromUserId('');
               setAddSuccess('Seznam byl uložen do vašich seznamů!');
             } else {
-              setAddError('Tento seznam už ve svých seznamech máte!');
+              setAddError('Nelze uložit: seznam se stejnými tituly již existuje!');
             }
           }}
         />

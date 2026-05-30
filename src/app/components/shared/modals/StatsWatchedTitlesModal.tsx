@@ -69,7 +69,7 @@ export function StatsWatchedTitlesModal({ titles, history, rangeText, onClose, o
                 {onlyWithService && <div className="w-3 h-3 bg-[#dc2626] rounded-sm" />}
               </div>
               <span className="text-sm font-medium text-gray-400 group-hover:text-white transition-colors">
-                Pouze na službách
+                Pouze se službami
               </span>
             </label>
           </div>

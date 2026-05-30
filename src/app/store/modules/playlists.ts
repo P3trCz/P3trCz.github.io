@@ -2,10 +2,11 @@ import { StateCreator } from 'zustand';
 import { AppState, PlaylistsState, Playlist } from '../types';
 import { INITIAL_PLAYLISTS } from '../../data/initialData';
 
-const isDuplicatePlaylist = (userPlaylists: Playlist[], playlistToCheck: Playlist) => {
+const isDuplicatePlaylist = (userPlaylists: Playlist[], playlistToCheck: Playlist, fromUserIdToCheck?: string) => {
   const sortedNewIds = JSON.stringify([...playlistToCheck.titleIds].sort());
   const hasIdenticalContent = userPlaylists.some(p =>
-    JSON.stringify([...p.titleIds].sort()) === sortedNewIds
+    JSON.stringify([...p.titleIds].sort()) === sortedNewIds &&
+    p.fromUserId === fromUserIdToCheck
   );
 
   return hasIdenticalContent;
@@ -111,14 +112,15 @@ export const createPlaylistsModule: StateCreator<AppState, [], [], PlaylistsStat
     if (!currentUser) return false;
 
     const userPlaylists = get().playlists[currentUser.id] || [];
-    if (isDuplicatePlaylist(userPlaylists, playlist)) return false;
+    const finalFromUserId = fromUserId === currentUser.id ? undefined : fromUserId;
+    if (isDuplicatePlaylist(userPlaylists, playlist, finalFromUserId)) return false;
 
     set(state => {
       const newUserPlaylists = state.playlists[currentUser.id] || [];
       const newPlaylist: Playlist = {
         ...playlist,
         id: Math.random().toString(36).substr(2, 9),
-        fromUserId: fromUserId === currentUser.id ? undefined : fromUserId
+        fromUserId: finalFromUserId
       };
       return {
         playlists: {

@@ -2,9 +2,12 @@ import { StateCreator } from 'zustand';
 import { AppState, FriendsState, Notification, ChatMessage, Playlist } from '../types';
 import { INITIAL_FRIENDS, INITIAL_NOTIFICATIONS, INITIAL_MESSAGE_HISTORY } from '../../data/initialData';
 
-const isDuplicatePlaylist = (userPlaylists: Playlist[], playlistToCheck: Playlist) => {
+const isDuplicatePlaylist = (userPlaylists: Playlist[], playlistToCheck: Playlist, fromUserIdToCheck?: string) => {
   const sortedNewIds = JSON.stringify([...playlistToCheck.titleIds].sort());
-  return userPlaylists.some(p => JSON.stringify([...p.titleIds].sort()) === sortedNewIds);
+  return userPlaylists.some(p => 
+    JSON.stringify([...p.titleIds].sort()) === sortedNewIds &&
+    p.fromUserId === fromUserIdToCheck
+  );
 };
 
 export const createFriendsModule: StateCreator<AppState, [], [], FriendsState> = (set, get) => ({
@@ -46,7 +49,7 @@ export const createFriendsModule: StateCreator<AppState, [], [], FriendsState> =
         }
       };
     });
-    
+
     return 'SUCCESS';
   },
 
@@ -67,7 +70,7 @@ export const createFriendsModule: StateCreator<AppState, [], [], FriendsState> =
         notifications: {
           ...state.notifications,
           [currentUser.id]: currentNotifs.filter(n => n.id !== notificationId),
-          [friendId]: (state.notifications[friendId] || []).filter(n => 
+          [friendId]: (state.notifications[friendId] || []).filter(n =>
             !(n.type === 'FRIEND_REQUEST' && n.fromUserId === currentUser.id)
           )
         },
@@ -236,8 +239,9 @@ export const createFriendsModule: StateCreator<AppState, [], [], FriendsState> =
       if (!notif || notif.type !== 'SHARED_PLAYLIST' || !notif.playlist) return state;
 
       const userPlaylists = state.playlists[currentUser.id] || [];
+      const finalFromUserId = notif.fromUserId === currentUser.id ? undefined : notif.fromUserId;
 
-      if (isDuplicatePlaylist(userPlaylists, notif.playlist)) {
+      if (isDuplicatePlaylist(userPlaylists, notif.playlist, finalFromUserId)) {
         return {
           notifications: {
             ...state.notifications,
@@ -250,7 +254,7 @@ export const createFriendsModule: StateCreator<AppState, [], [], FriendsState> =
         id: Math.random().toString(36).substr(2, 9),
         name: notif.playlist.name,
         titleIds: notif.playlist.titleIds,
-        fromUserId: notif.fromUserId
+        fromUserId: finalFromUserId
       };
 
       return {
