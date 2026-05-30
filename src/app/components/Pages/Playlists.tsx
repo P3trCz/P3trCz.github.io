@@ -1,7 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { useAppStore } from '../../store/useAppStore';
 import { catalog, Title } from '../../data/catalog';
-import { usersDb, User } from '../../data/usersDb';
 import { MoreHorizontal, ArrowLeft, Edit2, Trash2, Share2, Plus } from 'lucide-react';
 import { useOnClickOutside } from '../../hooks/useOnClickOutside';
 import { TitleDetail } from './Catalog/TitleDetail';
@@ -15,6 +14,8 @@ import { SharePlaylistWithFriendModal } from '../Common/modals/SharePlaylistWith
 import { Snackbar } from '../Common/Snackbar';
 import { SortField, SortOrder, sortTitles } from '../../utils/sortUtils';
 import { SortableHeader } from '../Common/SortableHeader';
+import { useMyFriends } from '../../hooks/useMyFriends';
+import { pluralizeItems } from '../../utils/formatUtils';
 
 export function Playlists() {
   const currentUser = useAppStore(state => state.currentUser);
@@ -27,8 +28,8 @@ export function Playlists() {
   const addToPlaylist = useAppStore(state => state.addToPlaylist);
   const removeFromPlaylist = useAppStore(state => state.removeFromPlaylist);
   const toggleWatchlist = useAppStore(state => state.toggleWatchlist);
-  const friends = useAppStore(state => state.friends);
   const language = useAppStore(state => state.language);
+  const myFriends = useMyFriends();
 
   const playlists = currentUser ? (playlistsState[currentUser.id] || []) : [];
   const watchlist = currentUser ? (watchlistsState[currentUser.id] || []) : [];
@@ -69,15 +70,12 @@ export function Playlists() {
   const [isCreating, setIsCreating] = useState(false);
   const [newPlaylistName, setNewPlaylistName] = useState('');
 
-  const myFriendsIds = currentUser ? (friends[currentUser.id] || []) : [];
-  const myFriends = myFriendsIds.map(id => usersDb.getUsers().find(u => u.id === id)).filter((u): u is User => Boolean(u));
-
   const [shareModalPlaylistId, setShareModalPlaylistId] = useState<string | null>(null);
   const [renameModalPlaylistId, setRenameModalPlaylistId] = useState<string | null>(null);
   const [deleteModalPlaylistId, setDeleteModalPlaylistId] = useState<string | null>(null);
   const [addTitleModalPlaylistId, setAddTitleModalPlaylistId] = useState<string | null>(null);
-  const [renamePlaylistName, setRenamePlaylistName] = useState('');
   const [snackbarMsg, setSnackbarMsg] = useState('');
+  const [renamePlaylistName, setRenamePlaylistName] = useState('');
 
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -297,7 +295,7 @@ export function Playlists() {
         {renderPreview(pl.titleIds)}
 
         <div className="text-sm text-gray-500 mt-auto pt-2 border-t border-[#27272a]/50 flex justify-between items-center gap-2">
-          <span className="whitespace-nowrap shrink-0">{pl.titleIds.length} {pl.titleIds.length === 1 ? 'položka' : pl.titleIds.length >= 2 && pl.titleIds.length <= 4 ? 'položky' : 'položek'}</span>
+          <span className="whitespace-nowrap shrink-0">{pl.titleIds.length} {pluralizeItems(pl.titleIds.length)}</span>
           {pl.fromUserId && (
             <span className="text-[10px] bg-[#dc2626]/20 text-[#dc2626] px-1.5 py-0.5 rounded uppercase tracking-wider truncate min-w-0" title={`Od: ${getUsername(pl.fromUserId)}`}>
               Od: {getUsername(pl.fromUserId)}
@@ -387,7 +385,7 @@ export function Playlists() {
             {renderPreview(historytitleIds)}
 
             <div className="text-sm text-gray-500 mt-auto pt-2 border-t border-[#27272a]/50">
-              {historytitleIds.length} {historytitleIds.length === 1 ? 'položka' : historytitleIds.length >= 2 && historytitleIds.length <= 4 ? 'položky' : 'položek'}
+              {historytitleIds.length} {pluralizeItems(historytitleIds.length)}
             </div>
           </div>
 
@@ -402,7 +400,7 @@ export function Playlists() {
             {renderPreview(watchlist)}
 
             <div className="text-sm text-gray-500 mt-auto pt-2 border-t border-[#27272a]/50">
-              {watchlist.length} {watchlist.length === 1 ? 'položka' : watchlist.length >= 2 && watchlist.length <= 4 ? 'položky' : 'položek'}
+              {watchlist.length} {pluralizeItems(watchlist.length)}
             </div>
           </div>
 

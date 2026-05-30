@@ -56,11 +56,11 @@ export function MarkAsWatchedModal() {
     if (date) {
       const d = new Date();
       const todayString = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-      
+
       if (existingItem) {
         const existingD = new Date(existingItem.watchedAt || Date.now());
         const existingDateString = `${existingD.getFullYear()}-${String(existingD.getMonth() + 1).padStart(2, '0')}-${String(existingD.getDate()).padStart(2, '0')}`;
-        
+
         if (date === existingDateString) {
           timestamp = existingItem.watchedAt;
         } else if (date === todayString) {
@@ -78,13 +78,13 @@ export function MarkAsWatchedModal() {
     }
     const duration = (title.type === 'Film' && service !== 'Unknown') ? title.runtime : 0;
     let eps: number | undefined = undefined;
-    
+
     if (title.type === 'Seriál' && title.episodes !== null) {
       eps = episodesWatched === '' ? undefined : Number(episodesWatched);
       if (eps !== undefined && eps > title.episodes) eps = title.episodes;
       if (eps !== undefined && eps < 0) eps = 0;
     }
-    
+
     markAsWatched(promptWatchedTitleId, service as "Unknown" | ServiceType, duration, timestamp, eps);
     setPromptWatchedTitleId(null);
   };
@@ -166,7 +166,7 @@ export function MarkAsWatchedModal() {
               onClick={handleRemove}
               className="btn-sm-primary border border-[#dc2626]/50 bg-transparent hover:bg-[#dc2626]/10 text-[#dc2626]"
             >
-              Odebrat z historie
+              Odebrat ze zhlédnutých
             </button>
           )}
           <button

@@ -8,6 +8,7 @@ import { TitleDetail } from './Catalog/TitleDetail';
 import { Title } from '../../data/catalog';
 import { X } from 'lucide-react';
 import { TIME_RANGES, TITLE_FILTER_OPTIONS } from '../../data/constants';
+import { formatMinutes } from '../../utils/formatUtils';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const renderActiveShape = (props: any) => {
@@ -44,42 +45,42 @@ export function Stats() {
   const [selectedTitle, setSelectedTitle] = useState<Title | null>(null);
   const [genreFilter, setGenreFilter] = useState<'Film' | 'Seriál' | 'Vše'>('Vše');
 
-  const formatTime = (totalMinutes: number) => {
-    const h = Math.floor(totalMinutes / 60);
-    const m = totalMinutes % 60;
-    return `${h} h ${m} min`;
+  // eslint-disable-next-line react-hooks/purity
+  const now = Date.now();
+
+  /**
+   * Vrátí timestamp začátku daného časového rozsahu.
+   * Sdílená logika pro getRangeDates() i processData().
+   */
+  const getRangeStartMs = (): number => {
+    switch (range) {
+      case '5 minut': return now - 5 * 60 * 1000;
+      case '10 minut': return now - 10 * 60 * 1000;
+      case '1 hodina': return now - 60 * 60 * 1000;
+      case '1 den': return now - 24 * 60 * 60 * 1000;
+      case 'Týden': return now - 7 * 24 * 60 * 60 * 1000;
+      case 'Měsíc': return now - 30 * 24 * 60 * 60 * 1000;
+      case '3 měsíce': return now - 90 * 24 * 60 * 60 * 1000;
+      case '6 měsíců': return now - 180 * 24 * 60 * 60 * 1000;
+      case 'Rok': return now - 365 * 24 * 60 * 60 * 1000;
+      case 'Celá doba': {
+        const validHistory = history.filter(h => h.watchedAt > 0);
+        return validHistory.length > 0 ? Math.min(...validHistory.map(h => h.watchedAt)) : now;
+      }
+      default: return 0;
+    }
   };
+
 
   const getRangeDates = () => {
     const to = new Date();
-    let from = new Date(0);
-    // eslint-disable-next-line react-hooks/purity
-    const now = Date.now();
+    let from: Date;
 
     if (range === 'Vlastní rozsah' && customRange) {
       from = new Date(customRange.from);
       to.setTime(customRange.to);
     } else {
-      switch (range) {
-        case '5 minut': from = new Date(now - 5 * 60 * 1000); break;
-        case '10 minut': from = new Date(now - 10 * 60 * 1000); break;
-        case '1 hodina': from = new Date(now - 60 * 60 * 1000); break;
-        case '1 den': from = new Date(now - 24 * 60 * 60 * 1000); break;
-        case 'Týden': from = new Date(now - 7 * 24 * 60 * 60 * 1000); break;
-        case 'Měsíc': from = new Date(now - 30 * 24 * 60 * 60 * 1000); break;
-        case '3 měsíce': from = new Date(now - 90 * 24 * 60 * 60 * 1000); break;
-        case '6 měsíců': from = new Date(now - 180 * 24 * 60 * 60 * 1000); break;
-        case 'Rok': from = new Date(now - 365 * 24 * 60 * 60 * 1000); break;
-        case 'Celá doba': {
-          const validHistory = history.filter(h => h.watchedAt > 0);
-          if (validHistory.length > 0) {
-            from = new Date(Math.min(...validHistory.map(h => h.watchedAt)));
-          } else {
-            from = new Date(now);
-          }
-          break;
-        }
-      }
+      from = new Date(getRangeStartMs());
     }
 
     const formatDate = (d: Date) => {
@@ -125,38 +126,12 @@ export function Stats() {
     const watchedTitleObjects: Title[] = [];
     const seenTitleIds = new Set<string>();
 
-    // Filtrování historie na základě vybraného časového období
     const filteredHistory = history.filter(item => {
       if (range === 'Celá doba') return true;
       if (range === 'Vlastní rozsah' && customRange) {
         return item.watchedAt >= customRange.from && item.watchedAt <= customRange.to;
       }
-
-      const now = Date.now();
-      const diff = now - item.watchedAt;
-
-      switch (range) {
-        case '5 minut':
-          return diff <= 5 * 60 * 1000;
-        case '10 minut':
-          return diff <= 10 * 60 * 1000;
-        case '1 hodina':
-          return diff <= 60 * 60 * 1000;
-        case '1 den':
-          return diff <= 24 * 60 * 60 * 1000;
-        case 'Týden':
-          return diff <= 7 * 24 * 60 * 60 * 1000;
-        case 'Měsíc':
-          return diff <= 30 * 24 * 60 * 60 * 1000;
-        case '3 měsíce':
-          return diff <= 90 * 24 * 60 * 60 * 1000;
-        case '6 měsíců':
-          return diff <= 180 * 24 * 60 * 60 * 1000;
-        case 'Rok':
-          return diff <= 365 * 24 * 60 * 60 * 1000;
-        default:
-          return true;
-      }
+      return item.watchedAt >= getRangeStartMs();
     });
 
     filteredHistory.forEach(item => {
@@ -313,7 +288,7 @@ export function Stats() {
                       contentStyle={{ backgroundColor: '#1c1c24', borderColor: '#27272a', color: 'white', borderRadius: '8px' }}
                       itemStyle={{ color: 'white' }}
                       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                      formatter={(value: unknown, name: any) => [formatTime(Number(value)), String(name)]}
+                      formatter={(value: unknown, name: any) => [formatMinutes(Number(value)), String(name)]}
                     />
                   </PieChart>
                 </ResponsiveContainer>
@@ -333,7 +308,7 @@ export function Stats() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-6">
             <div className="panel-container-dark">
               <h3 className="text-sm font-medium text-gray-400 mb-2">Celkový čas sledování filmů za {formatRangeForSentence(range, false)}</h3>
-              <div className="text-4xl font-bold text-white mb-2">{formatTime(stats.totalMinutes)}</div>
+              <div className="text-4xl font-bold text-white mb-2">{formatMinutes(stats.totalMinutes)}</div>
               <div className="text-sm text-gray-500">
                 {stats.totalFilms} {stats.totalFilms === 1 ? 'zhlédnutý film' : stats.totalFilms >= 2 && stats.totalFilms <= 4 ? 'zhlédnuté filmy' : 'zhlédnutých filmů'}
               </div>
@@ -389,7 +364,7 @@ export function Stats() {
                 </div>
                 <div>
                   <div className="text-lg font-bold text-white">{stats.topService}</div>
-                  <div className="text-sm text-gray-500">{formatTime(stats.topServiceMinutes)} sledování filmů</div>
+                  <div className="text-sm text-gray-500">{formatMinutes(stats.topServiceMinutes)} sledování filmů</div>
                 </div>
               </div>
             </div>

@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Search, Check } from 'lucide-react';
+import { Check } from 'lucide-react';
 import { catalog } from '../../../data/catalog';
 import { Modal } from '../Modal';
 import { useTitleName } from '../../../hooks/useTitleName';
 import { useSearch } from '../../../hooks/useSearch';
+import { SearchInput } from '../SearchInput';
 
 type SearchTitleForPlaylistModalProps = {
   playlistName: string;
@@ -27,17 +28,13 @@ export function SearchTitleForPlaylistModal({ playlistName, currentTitleIds, onC
       maxWidth="max-w-lg"
     >
       <div className="space-y-4">
-        <div className="relative mb-4">
-          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
-            <Search size={18} />
-          </div>
-          <input
-            type="text"
-            placeholder="Hledat..."
+        <div className="mb-4">
+          <SearchInput
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-3 bg-[#1c1c24] border border-[#27272a] rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-[#dc2626] transition-colors"
+            onChange={setSearch}
+            placeholder="Hledat..."
             autoFocus
+            iconSize={18}
           />
         </div>
 

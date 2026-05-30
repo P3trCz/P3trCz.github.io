@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { Title, ServiceType, serviceColors } from '../../../data/catalog';
-import { X, Star, Play, Share2, Check, Eye, Search } from 'lucide-react';
+import { X, Star, Play, Share2, Check, Eye } from 'lucide-react';
 import { useAppStore } from '../../../store/useAppStore';
-import { usersDb } from '../../../data/usersDb';
 import { Snackbar } from '../../Common/Snackbar';
 import { useTitleName } from '../../../hooks/useTitleName';
 import { useSearch } from '../../../hooks/useSearch';
+import { useMyFriends } from '../../../hooks/useMyFriends';
+import { formatMinutes } from '../../../utils/formatUtils';
+import { SearchInput } from '../../Common/SearchInput';
 
 type Props = {
   title: Title;
@@ -24,11 +26,8 @@ export function TitleDetail({ title, onClose }: Props) {
   const existingItem = currentHistory.find(h => h.titleId === title.id.toString());
   const isWatched = !!existingItem;
 
-  const friends = useAppStore(state => state.friends);
+  const myFriends = useMyFriends();
   const recommendTitle = useAppStore(state => state.recommendTitle);
-
-  const myFriendsIds = currentUser ? (friends[currentUser.id] || []) : [];
-  const myFriends = myFriendsIds.map(id => usersDb.getUsers().find(u => u.id === id)).filter(Boolean);
 
   const [shareModalOpen, setShareModalOpen] = useState(false);
   const [shareSelectedFriendId, setShareSelectedFriendId] = useState('');
@@ -36,8 +35,7 @@ export function TitleDetail({ title, onClose }: Props) {
   const [shareSearchQuery, setShareSearchQuery] = useState('');
   const [snackbarMsg, setSnackbarMsg] = useState('');
 
-  const validMyFriends = myFriends.filter((f): f is { id: string; username: string; email: string; avatarUrl?: string } => Boolean(f));
-  const filteredMyFriends = useSearch(validMyFriends, shareSearchQuery, f => [f.username]);
+  const filteredMyFriends = useSearch(myFriends, shareSearchQuery, f => [f.username]);
 
   const handlePlay = (service: ServiceType) => {
     // Simulace zhlédnutí pro statistiky
@@ -58,11 +56,6 @@ export function TitleDetail({ title, onClose }: Props) {
     }
   };
 
-  const formatRuntime = (minutes: number) => {
-    const hours = Math.floor(minutes / 60);
-    const mins = minutes % 60;
-    return `${hours} h ${mins} min`;
-  };
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm" onClick={(e) => { e.stopPropagation(); onClose(); }}>
@@ -130,7 +123,7 @@ export function TitleDetail({ title, onClose }: Props) {
             {title.type === 'Film' && title.runtime > 0 && (
               <>
                 <span>•</span>
-                <span>{formatRuntime(title.runtime)}</span>
+                <span>{formatMinutes(title.runtime)}</span>
               </>
             )}
             <span>•</span>
@@ -235,18 +228,11 @@ export function TitleDetail({ title, onClose }: Props) {
                 <div>
                   <label className="block text-sm font-medium text-gray-400 mb-2">Vyberte přítele</label>
                   
-                  <div className="relative mb-3">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
-                      <Search size={16} />
-                    </div>
-                    <input
-                      type="text"
-                      placeholder="Hledat přítele..."
-                      value={shareSearchQuery}
-                      onChange={(e) => setShareSearchQuery(e.target.value)}
-                      className="w-full pl-9 pr-3 py-2 bg-[#1c1c24] border border-[#27272a] rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[#dc2626] transition-colors text-sm"
-                    />
-                  </div>
+                  <SearchInput
+                    value={shareSearchQuery}
+                    onChange={setShareSearchQuery}
+                    placeholder="Hledat přítele..."
+                  />
 
                   <div className="flex flex-col gap-2 max-h-[250px] overflow-y-auto pr-2 custom-scrollbar">
                     {filteredMyFriends.length === 0 ? (

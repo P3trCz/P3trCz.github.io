@@ -14,11 +14,13 @@ import { RemoveFriendModal } from '../Common/modals/RemoveFriendModal';
 import { Snackbar } from '../Common/Snackbar';
 import { useTitleName } from '../../hooks/useTitleName';
 import { useSearch } from '../../hooks/useSearch';
+import { useMyFriends } from '../../hooks/useMyFriends';
+import { SearchInput } from '../Common/SearchInput';
 
 export function Friends() {
   const getTitleName = useTitleName();
   const currentUser = useAppStore(state => state.currentUser);
-  const friends = useAppStore(state => state.friends);
+  const myFriends = useMyFriends();
   const notifications = useAppStore(state => state.notifications);
   const playlists = useAppStore(state => state.playlists);
   const sendFriendRequest = useAppStore(state => state.sendFriendRequest);
@@ -46,10 +48,9 @@ export function Friends() {
   const [selectedTitleForDetail, setSelectedTitleForDetail] = useState<Title | null>(null);
   const [friendToRemove, setFriendToRemove] = useState<{ id: string, name: string } | null>(null);
 
-  const myFriendsIds = currentUser ? (friends[currentUser.id] || []) : [];
-  const myFriends = myFriendsIds.map(id => usersDb.getUsers().find(u => u.id === id)).filter(Boolean);
   const myNotifications = currentUser ? (notifications[currentUser.id] || []) : [];
   const myPlaylists = currentUser ? (playlists[currentUser.id] || []) : [];
+  const myFriendsIds = myFriends.map(f => f.id);
 
   const getLatestMessageTime = (friendId: string) => {
     if (!currentUser) return 0;
@@ -293,16 +294,11 @@ export function Friends() {
           <div className="panel-container-dark min-h-[500px]">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
               <h2 className="text-xl font-bold text-white">Moji přátelé</h2>
-              <div className="relative w-full sm:w-64">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-500">
-                  <Search size={16} />
-                </div>
-                <input
-                  type="text"
-                  placeholder="Vyhledat přítele..."
+              <div className="w-full sm:w-64">
+                <SearchInput
                   value={friendSearch}
-                  onChange={(e) => setFriendSearch(e.target.value)}
-                  className="w-full pl-9 pr-4 py-2 bg-[#111116] border border-[#27272a] rounded-xl text-sm text-white placeholder-gray-500 focus:outline-none focus:border-[#dc2626] transition-colors"
+                  onChange={setFriendSearch}
+                  placeholder="Vyhledat přítele..."
                 />
               </div>
             </div>

@@ -3,6 +3,7 @@ import { ListVideo, Check, Share2 } from 'lucide-react';
 import { Playlist } from '../../../store/useAppStore';
 import { Modal } from '../Modal';
 import { getUsername } from '../../../utils/userUtils';
+import { pluralizeItems } from '../../../utils/formatUtils';
 
 type SharePlaylistModalProps = {
   friendName: string;
@@ -48,7 +49,7 @@ export function SharePlaylistModal({ friendName, playlists, onClose, onShare }: 
                       <span className="truncate">{pl.name}</span>
                     </div>
                     <div className="text-xs opacity-60 mt-0.5">
-                      {pl.titleIds.length} {pl.titleIds.length === 1 ? 'položka' : pl.titleIds.length >= 2 && pl.titleIds.length <= 4 ? 'položky' : 'položek'}
+                      {pl.titleIds.length} {pluralizeItems(pl.titleIds.length)}
                     </div>
                   </div>
                   <div className="flex items-center gap-2 shrink-0">

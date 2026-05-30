@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Share2, Check } from 'lucide-react';
 import { Modal } from '../Modal';
 import { useSearch } from '../../../hooks/useSearch';
-import { Search } from 'lucide-react';
+import { SearchInput } from '../SearchInput';
 
 type SharePlaylistWithFriendModalProps = {
   friends: { id: string; username: string }[];
@@ -31,18 +31,11 @@ export function SharePlaylistWithFriendModal({ friends, onClose, onShare }: Shar
           <div>
             <label className="block text-sm font-medium text-gray-400 mb-2">Vyberte přítele</label>
             
-            <div className="relative mb-3">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
-                <Search size={16} />
-              </div>
-              <input
-                type="text"
-                placeholder="Hledat přítele..."
+            <SearchInput
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-9 pr-3 py-2 bg-[#1c1c24] border border-[#27272a] rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[#dc2626] transition-colors text-sm"
+                onChange={setSearchQuery}
+                placeholder="Hledat přítele..."
               />
-            </div>
 
             <div className="flex flex-col gap-2 max-h-[250px] overflow-y-auto pr-2 custom-scrollbar">
               {filteredFriends.length === 0 ? (
