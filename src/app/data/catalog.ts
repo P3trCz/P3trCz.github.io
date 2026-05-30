@@ -39,7 +39,7 @@ const regionNames = new Intl.DisplayNames(['cs'], { type: 'region' });
 const getCountryName = (code: string) => {
   try {
     return regionNames.of(code) || code;
-  } catch (e) {
+  } catch {
     return code;
   }
 };

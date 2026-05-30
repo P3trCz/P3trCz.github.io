@@ -42,5 +42,5 @@ export function useSearch<T>(
       const texts = getSearchableTexts(item);
       return texts.some(text => text && normalizeText(text).includes(normalizedQuery));
     });
-  }, [items, query, getSearchableTexts, options?.minQueryLength]);
+  }, [items, query, getSearchableTexts, options]);
 }

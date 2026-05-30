@@ -3,7 +3,7 @@ import { useAppStore, Playlist } from '../../store/useAppStore';
 import { usersDb } from '../../data/usersDb';
 import { catalog, Title } from '../../data/catalog';
 import { getUsername } from '../../utils/userUtils';
-import { Search, UserPlus, Check, X, Share2, Film, Trash2, Play, Download, Eye, MessageSquare } from 'lucide-react';
+import { Search, UserPlus, Check, X, Share2, Film, Trash2, Play, Eye, MessageSquare } from 'lucide-react';
 import { TitleDetail } from './Catalog/TitleDetail';
 import { SharePlaylistModal } from '../Common/modals/SharePlaylistModal';
 import { RecommendMovieModal } from '../Common/modals/RecommendMovieModal';
@@ -25,7 +25,6 @@ export function Friends() {
   const acceptFriendRequest = useAppStore(state => state.acceptFriendRequest);
   const rejectFriendRequest = useAppStore(state => state.rejectFriendRequest);
   const dismissNotification = useAppStore(state => state.dismissNotification);
-  const saveSharedPlaylist = useAppStore(state => state.saveSharedPlaylist);
   const importPlaylist = useAppStore(state => state.importPlaylist);
   const removeFriend = useAppStore(state => state.removeFriend);
   const sharePlaylist = useAppStore(state => state.sharePlaylist);

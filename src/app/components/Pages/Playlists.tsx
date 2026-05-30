@@ -1,9 +1,8 @@
 import React, { useState, useRef } from 'react';
 import { useAppStore } from '../../store/useAppStore';
 import { catalog, Title } from '../../data/catalog';
-import { usersDb } from '../../data/usersDb';
-import { Modal } from '../Common/Modal';
-import { MoreHorizontal, ArrowLeft, Edit2, Trash2, Share2, Check, Plus } from 'lucide-react';
+import { usersDb, User } from '../../data/usersDb';
+import { MoreHorizontal, ArrowLeft, Edit2, Trash2, Share2, Plus } from 'lucide-react';
 import { useOnClickOutside } from '../../hooks/useOnClickOutside';
 import { TitleDetail } from './Catalog/TitleDetail';
 import { TitleCard } from './Catalog/TitleCard';
@@ -71,7 +70,7 @@ export function Playlists() {
   const [newPlaylistName, setNewPlaylistName] = useState('');
 
   const myFriendsIds = currentUser ? (friends[currentUser.id] || []) : [];
-  const myFriends = myFriendsIds.map(id => usersDb.getUsers().find(u => u.id === id)).filter(Boolean);
+  const myFriends = myFriendsIds.map(id => usersDb.getUsers().find(u => u.id === id)).filter((u): u is User => Boolean(u));
 
   const [shareModalPlaylistId, setShareModalPlaylistId] = useState<string | null>(null);
   const [renameModalPlaylistId, setRenameModalPlaylistId] = useState<string | null>(null);
@@ -429,7 +428,7 @@ export function Playlists() {
       {/* SDÍLET MODAL */}
       {shareModalPlaylistId && (
         <SharePlaylistWithFriendModal
-          friends={myFriends as any}
+          friends={myFriends}
           onClose={() => setShareModalPlaylistId(null)}
           onShare={(friendId, message) => {
             const pl = playlists.find(p => p.id === shareModalPlaylistId);

@@ -20,6 +20,7 @@ export function LoginForm({ onNavigate }: Props) {
 
       const user = usersDb.findUserByEmail(email);
       if (user && user.password === password) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { password: _p, ...userWithoutPassword } = user;
         login(userWithoutPassword);
       } else {

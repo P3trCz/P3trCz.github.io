@@ -50,7 +50,7 @@ export function StatsWatchedTitlesModal({ titles, history, rangeText, onClose, o
               {TITLE_FILTER_OPTIONS.map(opt => (
                 <button
                   key={opt.value}
-                  onClick={() => { setFilter(opt.value as any); setDisplayedCount(24); }}
+                  onClick={() => { setFilter(opt.value); setDisplayedCount(24); }}
                   className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
                     filter === opt.value ? 'bg-[#dc2626] text-white' : 'bg-[#1c1c24] border border-[#27272a] text-gray-400 hover:text-white'
                   }`}

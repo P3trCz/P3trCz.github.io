@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAppStore } from '../../store/useAppStore';
-import { ServiceType, serviceLogos } from '../../data/catalog';
+import { serviceLogos } from '../../data/catalog';
 import { usersDb } from '../../data/usersDb';
 import { User, LogOut, Key, Edit2 } from 'lucide-react';
 import { Modal } from '../Common/Modal';

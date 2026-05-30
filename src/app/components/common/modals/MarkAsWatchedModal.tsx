@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAppStore } from '../../../store/useAppStore';
-import { catalog } from '../../../data/catalog';
+import { catalog, ServiceType } from '../../../data/catalog';
 import { Modal } from '../Modal';
 import { useTitleName } from '../../../hooks/useTitleName';
 
@@ -11,7 +11,6 @@ export function MarkAsWatchedModal() {
   const markAsWatched = useAppStore(state => state.markAsWatched);
   const toggleWatchedTitle = useAppStore(state => state.toggleWatchedTitle);
   const currentUser = useAppStore(state => state.currentUser);
-  const subscriptionsState = useAppStore(state => state.subscriptions);
   const watchHistory = useAppStore(state => state.watchHistory);
 
   const [date, setDate] = useState<string>('');
@@ -20,7 +19,6 @@ export function MarkAsWatchedModal() {
 
   const title = catalog.find(t => t.id.toString() === promptWatchedTitleId);
 
-  const userSubscriptions = currentUser ? (subscriptionsState[currentUser.id] || []) : [];
   const currentHistory = currentUser ? (watchHistory[currentUser.id] || []) : [];
   const existingItem = currentHistory.find(h => h.titleId === promptWatchedTitleId);
 
@@ -30,6 +28,7 @@ export function MarkAsWatchedModal() {
         // Formátujeme existující timestamp na YYYY-MM-DD
         const d = new Date(existingItem.watchedAt || Date.now());
         const dateString = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setDate(dateString);
         setService(existingItem.service);
         if (title?.type === 'Seriál' && existingItem.episodesWatched !== undefined) {
@@ -86,7 +85,7 @@ export function MarkAsWatchedModal() {
       if (eps !== undefined && eps < 0) eps = 0;
     }
     
-    markAsWatched(promptWatchedTitleId, service as any, duration, timestamp, eps);
+    markAsWatched(promptWatchedTitleId, service as "Unknown" | ServiceType, duration, timestamp, eps);
     setPromptWatchedTitleId(null);
   };
 

@@ -34,6 +34,7 @@ export function RegisterForm({ onNavigate }: Props) {
       }
 
       const newUser = usersDb.createUser({ username, email, password });
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { password: _p, ...userWithoutPassword } = newUser;
       login(userWithoutPassword);
     }, 500);

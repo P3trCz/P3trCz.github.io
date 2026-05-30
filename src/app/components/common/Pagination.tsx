@@ -22,6 +22,7 @@ export function Pagination({
   const [inputPage, setInputPage] = useState(currentPage.toString());
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setInputPage(currentPage.toString());
   }, [currentPage]);
 

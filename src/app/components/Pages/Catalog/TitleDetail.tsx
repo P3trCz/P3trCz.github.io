@@ -49,6 +49,7 @@ export function TitleDetail({ title, onClose }: Props) {
       if (title.episodes && eps > title.episodes) eps = title.episodes;
     }
 
+    // eslint-disable-next-line react-hooks/purity
     markAsWatched(title.id.toString(), service, duration, Date.now(), eps);
     
     // Zde by normálně bylo spuštění přehrávače

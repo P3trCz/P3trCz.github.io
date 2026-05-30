@@ -54,6 +54,7 @@ export function TitleGrid() {
 
   // Reset pagination when filters or search change
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setCurrentPage(1);
   }, [selectedServices, selectedGenres, selectedTypes, selectedWatched, selectedCountries, userSubscriptions, searchQuery]);
 
@@ -117,7 +118,7 @@ export function TitleGrid() {
 
     return true;
     });
-  }, [selectedServices, selectedGenres, selectedTypes, selectedWatched, selectedCountries, userSubscriptions, searchQuery, isSearchActive, userWatchedTitles]);
+  }, [selectedServices, selectedGenres, selectedTypes, selectedWatched, selectedCountries, userSubscriptions, searchQuery, userWatchedTitles, searchedCatalog]);
 
   const sortedCatalog = useMemo(() => {
     return sortTitles(filteredCatalog, sortField, sortOrder, language);

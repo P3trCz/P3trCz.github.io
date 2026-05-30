@@ -25,6 +25,7 @@ export const useAppStore = create<AppState>()(
     {
       name: 'streamhub-storage',
       partialize: (state) => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { searchQuery: _s, setSearchQuery: _sq, promptWatchedTitleId: _p, setPromptWatchedTitleId: _sp, ...rest } = state;
         return rest;
       },

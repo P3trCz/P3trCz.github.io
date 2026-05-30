@@ -9,6 +9,7 @@ import { Title } from '../../data/catalog';
 import { X } from 'lucide-react';
 import { TIME_RANGES, TITLE_FILTER_OPTIONS } from '../../data/constants';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const renderActiveShape = (props: any) => {
   const { cx, cy, innerRadius, outerRadius, startAngle, endAngle, fill } = props;
   return (
@@ -27,6 +28,7 @@ const renderActiveShape = (props: any) => {
   );
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const PieComponent = Pie as any;
 
 export function Stats() {
@@ -51,6 +53,7 @@ export function Stats() {
   const getRangeDates = () => {
     const to = new Date();
     let from = new Date(0);
+    // eslint-disable-next-line react-hooks/purity
     const now = Date.now();
 
     if (range === 'Vlastní rozsah' && customRange) {
@@ -298,7 +301,7 @@ export function Stats() {
                       stroke="none"
                       activeIndex={activeIndex}
                       activeShape={renderActiveShape}
-                      onMouseEnter={(_: any, index: number) => setActiveIndex(index)}
+                      onMouseEnter={(_: unknown, index: number) => setActiveIndex(index)}
                       onMouseLeave={() => setActiveIndex(undefined)}
                       style={{ outline: 'none' }}
                     >
@@ -309,7 +312,7 @@ export function Stats() {
                     <Tooltip
                       contentStyle={{ backgroundColor: '#1c1c24', borderColor: '#27272a', color: 'white', borderRadius: '8px' }}
                       itemStyle={{ color: 'white' }}
-                      formatter={(value: unknown, name: any) => [formatTime(Number(value)), String(name)]}
+                      formatter={(value: unknown, name: string) => [formatTime(Number(value)), String(name)]}
                     />
                   </PieChart>
                 </ResponsiveContainer>
@@ -342,7 +345,7 @@ export function Stats() {
                   {TITLE_FILTER_OPTIONS.map(opt => (
                     <button
                       key={opt.value}
-                      onClick={() => setGenreFilter(opt.value as any)}
+                      onClick={() => setGenreFilter(opt.value)}
                       className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${genreFilter === opt.value ? 'bg-[#dc2626] text-white' : 'text-gray-400 hover:text-white'}`}
                     >
                       {opt.label}
