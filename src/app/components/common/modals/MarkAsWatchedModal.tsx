@@ -157,14 +157,14 @@ export function MarkAsWatchedModal() {
         <div className="flex flex-col sm:flex-row justify-end gap-3 mt-4">
           <button
             onClick={() => setPromptWatchedTitleId(null)}
-            className="px-6 py-2.5 rounded-xl font-medium transition-colors bg-[#27272a] hover:bg-[#3f3f46] text-white"
+            className="btn-action-cancel"
           >
             Zrušit
           </button>
           {existingItem && (
             <button
               onClick={handleRemove}
-              className="px-6 py-2.5 rounded-xl font-medium transition-colors border border-[#dc2626]/50 text-[#dc2626] hover:bg-[#dc2626]/10"
+              className="btn-sm-primary border border-[#dc2626]/50 bg-transparent hover:bg-[#dc2626]/10 text-[#dc2626]"
             >
               Odebrat z historie
             </button>

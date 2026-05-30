@@ -196,7 +196,7 @@ export function Friends() {
                           <strong className="text-white break-all">{getUsername(notif.fromUserId)}</strong> si vás chce přidat do přátel.
                         </p>
                         <div className="flex gap-2">
-                          <button onClick={() => acceptFriendRequest(notif.id)} className="flex-1 flex items-center justify-center gap-1 bg-[#dc2626] hover:bg-[#b91c1c] text-white py-2 rounded-lg text-xs font-medium transition-colors">
+                          <button onClick={() => acceptFriendRequest(notif.id)} className="flex-1 btn-sm-primary">
                             <Check size={14} /> Přijmout
                           </button>
                           <button onClick={() => rejectFriendRequest(notif.id)} className="flex-1 flex items-center justify-center gap-1 bg-transparent border border-[#27272a] hover:bg-[#27272a] text-gray-300 py-2 rounded-lg text-xs font-medium transition-colors">
@@ -236,7 +236,7 @@ export function Friends() {
                           <button onClick={() => {
                             setPreviewPlaylist(notif.playlist || null);
                             setPreviewFromUserId(notif.fromUserId || '');
-                          }} className="flex-1 flex items-center justify-center gap-2 bg-[#27272a] hover:bg-[#3f3f46] text-white py-2 rounded-lg text-sm font-medium transition-colors">
+                          }} className="flex-1 btn-sm-cancel">
                             <Eye size={16} /> Otevřít seznam
                           </button>
                         </div>
@@ -272,7 +272,7 @@ export function Friends() {
                                   "{notif.message}"
                                 </div>
                               )}
-                              <button onClick={() => setSelectedTitleForDetail(title)} className="w-full flex items-center justify-center gap-2 bg-[#dc2626] hover:bg-[#b91c1c] text-white py-2 rounded-lg text-xs font-medium transition-colors">
+                              <button onClick={() => setSelectedTitleForDetail(title)} className="w-full btn-sm-primary">
                                 <Play size={14} fill="currentColor" /> Zobrazit detail
                               </button>
                             </div>
@@ -351,13 +351,13 @@ export function Friends() {
                       </div>
 
                       <div className="flex flex-col gap-2">
-                        <button onClick={() => setSharePlaylistFriendId(friend.id)} className="w-full flex items-center justify-center gap-2 bg-[#27272a] hover:bg-[#3f3f46] text-white py-2 rounded-lg text-sm font-medium transition-colors">
+                        <button onClick={() => setSharePlaylistFriendId(friend.id)} className="w-full btn-sm-cancel">
                           <Share2 size={16} /> Sdílet seznam
                         </button>
-                        <button onClick={() => setRecommendMovieFriendId(friend.id)} className="w-full flex items-center justify-center gap-2 bg-[#27272a] hover:bg-[#3f3f46] text-white py-2 rounded-lg text-sm font-medium transition-colors">
+                        <button onClick={() => setRecommendMovieFriendId(friend.id)} className="w-full btn-sm-cancel">
                           <Film size={16} /> Doporučit titul
                         </button>
-                        <button onClick={() => setHistoryFriendId(friend.id)} className="w-full flex items-center justify-center gap-2 bg-[#27272a] hover:bg-[#3f3f46] text-white py-2 rounded-lg text-sm font-medium transition-colors">
+                        <button onClick={() => setHistoryFriendId(friend.id)} className="w-full btn-sm-cancel">
                           <MessageSquare size={16} /> Historie doporučení
                         </button>
                         <button onClick={() => handleRemoveFriend(friend.id, friend.username)} className="w-full flex items-center justify-center gap-2 bg-transparent hover:bg-red-500/10 text-red-500 py-2 rounded-lg text-sm font-medium transition-colors mt-2">

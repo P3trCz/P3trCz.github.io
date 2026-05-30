@@ -89,7 +89,7 @@ export function SharePlaylistWithFriendModal({ friends, onClose, onShare }: Shar
           <div className="flex gap-2 pt-2">
             <button
               onClick={onClose}
-              className="flex-1 bg-[#27272a] hover:bg-[#3f3f46] text-white py-2.5 rounded-lg text-sm font-medium transition-colors"
+              className="flex-1 btn-sm-cancel"
             >
               Zrušit
             </button>
@@ -100,7 +100,7 @@ export function SharePlaylistWithFriendModal({ friends, onClose, onShare }: Shar
                 }
               }}
               disabled={!selectedFriendId}
-              className="flex-1 flex items-center justify-center gap-2 bg-[#dc2626] hover:bg-[#b91c1c] text-white py-2.5 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
+              className="flex-1 btn-sm-primary"
             >
               <Share2 size={18} /> Sdílet s přítelem
             </button>

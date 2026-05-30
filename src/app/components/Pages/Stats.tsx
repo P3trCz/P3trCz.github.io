@@ -312,7 +312,8 @@ export function Stats() {
                     <Tooltip
                       contentStyle={{ backgroundColor: '#1c1c24', borderColor: '#27272a', color: 'white', borderRadius: '8px' }}
                       itemStyle={{ color: 'white' }}
-                      formatter={(value: unknown, name: string) => [formatTime(Number(value)), String(name)]}
+                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                      formatter={(value: unknown, name: any) => [formatTime(Number(value)), String(name)]}
                     />
                   </PieChart>
                 </ResponsiveContainer>
@@ -366,7 +367,7 @@ export function Stats() {
               </div>
               <button
                 onClick={() => setIsWatchedTitlesModalOpen(true)}
-                className="w-full bg-[#27272a] hover:bg-[#3f3f46] text-white py-2 rounded-xl text-sm font-medium transition-colors mt-auto"
+                className="w-full btn-sm-cancel rounded-xl mt-auto"
               >
                 Zobrazit zhlédnuté tituly
               </button>

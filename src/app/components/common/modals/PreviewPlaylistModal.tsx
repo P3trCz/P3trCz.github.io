@@ -46,7 +46,7 @@ export function PreviewPlaylistModal({ playlist, onClose, onViewMovie, onSave }:
         </div>
 
         <div className="p-6 border-t border-[#27272a] flex justify-between gap-4 bg-[#111116]">
-          <button onClick={onClose} className="flex-1 bg-[#27272a] hover:bg-[#3f3f46] text-white px-6 py-3 rounded-xl font-medium transition-colors">
+          <button onClick={onClose} className="flex-1 btn-action-cancel">
             Zavřít náhled
           </button>
           <button onClick={onSave} className="flex-1 btn-action-primary flex items-center justify-center gap-2">

@@ -138,7 +138,7 @@ export function Playlists() {
             {!isHistory && (
               <button
                 onClick={() => setAddTitleModalPlaylistId(isWatchlist ? '__watchlist__' : playlist!.id)}
-                className="flex items-center gap-2 px-4 py-2 bg-[#dc2626] hover:bg-[#b91c1c] text-white rounded-lg font-medium transition-colors"
+                className="btn-sm-primary px-4"
               >
                 <Plus size={18} /> Přidat titul
               </button>
@@ -146,7 +146,7 @@ export function Playlists() {
             {!isWatchlist && !isHistory && playlist && (
               <button
                 onClick={() => playlist.titleIds.length > 0 ? setShareModalPlaylistId(playlist.id) : setSnackbarMsg('Prázdný seznam nelze sdílet!')}
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors ${playlist.titleIds.length > 0 ? 'bg-[#27272a] hover:bg-[#3f3f46] text-white' : 'bg-[#27272a]/50 text-gray-500 cursor-not-allowed'}`}
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors ${playlist.titleIds.length > 0 ? 'btn-sm-cancel' : 'bg-[#27272a]/50 text-gray-500 cursor-not-allowed'}`}
                 title={playlist.titleIds.length === 0 ? "Prázdný seznam nelze sdílet" : ""}
               >
                 <Share2 size={18} /> Sdílet
@@ -347,7 +347,7 @@ export function Playlists() {
                       setIsCreating(false);
                       setNewPlaylistName('');
                     }}
-                    className="bg-[#27272a] hover:bg-[#3f3f46] text-white px-4 py-1.5 rounded-lg text-sm font-medium transition-colors"
+                    className="btn-sm-cancel px-4 py-1.5"
                   >
                     Zrušit
                   </button>
@@ -360,7 +360,7 @@ export function Playlists() {
                       }
                     }}
                     disabled={!newPlaylistName.trim()}
-                    className="bg-[#dc2626] hover:bg-[#b91c1c] text-white px-4 py-1.5 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
+                    className="btn-sm-primary px-4 py-1.5"
                   >
                     Vytvořit
                   </button>

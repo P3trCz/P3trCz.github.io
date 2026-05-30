@@ -36,7 +36,7 @@ export function RenamePlaylistModal({ playlistId, currentName, onClose, onRename
         <div className="flex gap-2">
           <button
             onClick={onClose}
-            className="flex-1 bg-[#27272a] hover:bg-[#3f3f46] text-white py-2 rounded-lg text-sm font-medium transition-colors"
+            className="flex-1 btn-sm-cancel"
           >
             Zrušit
           </button>
@@ -48,7 +48,7 @@ export function RenamePlaylistModal({ playlistId, currentName, onClose, onRename
               }
             }}
             disabled={!renamePlaylistName.trim()}
-            className="flex-1 bg-[#dc2626] hover:bg-[#b91c1c] text-white py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
+            className="flex-1 btn-sm-primary"
           >
             Uložit
           </button>

@@ -63,7 +63,7 @@ export function CustomTimeRangeModal({ onClose, onSave }: Props) {
                 setFromDate(e.target.value);
                 setError('');
               }}
-              className="w-full bg-[#1c1c24] border border-[#27272a] rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[#dc2626] transition-colors"
+              className="form-input-dark"
             />
           </div>
 
@@ -76,7 +76,7 @@ export function CustomTimeRangeModal({ onClose, onSave }: Props) {
                 setToDate(e.target.value);
                 setError('');
               }}
-              className="w-full bg-[#1c1c24] border border-[#27272a] rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[#dc2626] transition-colors"
+              className="form-input-dark"
             />
           </div>
         </div>
@@ -90,7 +90,7 @@ export function CustomTimeRangeModal({ onClose, onSave }: Props) {
           </button>
           <button
             onClick={handleSave}
-            className="px-6 py-2.5 rounded-xl font-medium bg-[#dc2626] hover:bg-[#b91c1c] text-white transition-colors"
+            className="btn-action-primary"
           >
             Aplikovat
           </button>

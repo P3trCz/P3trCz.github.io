@@ -84,7 +84,7 @@ export function SearchTitleForPlaylistModal({ playlistName, currentTitleIds, onC
         <div className="pt-2">
           <button
             onClick={onClose}
-            className="w-full bg-[#27272a] hover:bg-[#3f3f46] text-white py-2.5 rounded-lg text-sm font-medium transition-colors"
+            className="w-full btn-sm-cancel"
           >
             Hotovo
           </button>

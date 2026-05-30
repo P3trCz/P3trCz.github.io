@@ -221,7 +221,7 @@ export function Settings() {
 
             <button
               onClick={handlePasswordChange}
-              className="w-full py-3 rounded-xl bg-[#dc2626] hover:bg-[#b91c1c] text-white font-medium transition-colors mt-2"
+              className="btn-action-primary w-full mt-2"
             >
               Uložit nové heslo
             </button>
@@ -255,7 +255,7 @@ export function Settings() {
 
             <button
               onClick={handleUsernameChange}
-              className="w-full py-3 rounded-xl bg-[#dc2626] hover:bg-[#b91c1c] text-white font-medium transition-colors mt-2"
+              className="btn-action-primary w-full mt-2"
             >
               Uložit jméno
             </button>

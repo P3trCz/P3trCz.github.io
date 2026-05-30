@@ -62,6 +62,15 @@
     @apply flex items-center justify-center gap-2 bg-[#27272a] hover:bg-[#3f3f46] text-white py-3 px-4 rounded-xl font-medium transition-colors;
   }
 
+  /* Malá varianta pro tlačítka v modálech a kartách */
+  .btn-sm-primary {
+    @apply flex items-center justify-center gap-2 bg-[#dc2626] hover:bg-[#b91c1c] text-white py-2 px-3 rounded-lg text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-sm-cancel {
+    @apply flex items-center justify-center gap-2 bg-[#27272a] hover:bg-[#3f3f46] text-white py-2 px-3 rounded-lg text-sm font-medium transition-colors;
+  }
+
   .form-input-dark {
     @apply w-full bg-[#1c1c24] border border-[#27272a] text-white rounded-xl px-4 py-3 focus:outline-none focus:border-[#dc2626] transition-colors;
   }
