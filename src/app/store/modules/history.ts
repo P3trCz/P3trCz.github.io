@@ -51,7 +51,7 @@ export const createHistoryModule: StateCreator<AppState, [], [], HistoryState> =
         };
 
         newHistory.push(updatedItem);
-        return { watchHistory: { ...state.watchHistory, [userId]: newHistory } };
+        return { watchHistory: { ...state.watchHistory, [userId]: newHistory.sort((a, b) => a.watchedAt - b.watchedAt) } };
       }
 
       const newHistoryItem: WatchHistoryItem = {
@@ -65,7 +65,7 @@ export const createHistoryModule: StateCreator<AppState, [], [], HistoryState> =
       return {
         watchHistory: {
           ...state.watchHistory,
-          [userId]: [...currentHistory, newHistoryItem]
+          [userId]: [...currentHistory, newHistoryItem].sort((a, b) => a.watchedAt - b.watchedAt)
         }
       };
     });
