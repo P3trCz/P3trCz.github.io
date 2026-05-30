@@ -3,6 +3,7 @@ import { useAppStore } from '../../../store/useAppStore';
 import { catalog, ServiceType } from '../../../data/catalog';
 import { Modal } from '../Modal';
 import { useTitleName } from '../../../hooks/useTitleName';
+import { TitleTile } from '../TitleTile';
 
 export function MarkAsWatchedModal() {
   const getTitleName = useTitleName();
@@ -102,13 +103,7 @@ export function MarkAsWatchedModal() {
       zIndex="z-[999]"
     >
       <div className="flex flex-col gap-4">
-        <div className="flex items-center gap-3 bg-[#1c1c24] p-3 rounded-xl border border-[#27272a]">
-          <img src={title.poster_url} alt={getTitleName(title)} className="w-12 h-18 object-cover rounded shadow-md" />
-          <div className="min-w-0">
-            <div className="font-bold text-white text-sm truncate">{getTitleName(title)}</div>
-            <div className="text-xs text-gray-500">{title.release_year} • {title.type}</div>
-          </div>
-        </div>
+        <TitleTile title={title} />
 
         <div>
           <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">

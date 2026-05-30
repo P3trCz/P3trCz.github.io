@@ -3,9 +3,9 @@ import { useAppStore, Playlist } from '../../store/useAppStore';
 import { usersDb } from '../../data/usersDb';
 import { catalog, Title } from '../../data/catalog';
 import { getUsername } from '../../utils/userUtils';
-import { Search, UserPlus, Check, X, Share2, Film, Trash2, Play, Eye, MessageSquare } from 'lucide-react';
+import { Search, UserPlus, Check, X, Share2, Film, Trash2, Play, Eye, MessageSquare, ListVideo } from 'lucide-react';
 import { TitleDetail } from '../shared/TitleDetail';
-import { SharePlaylistModal } from '../shared/modals/SharePlaylistModal';
+import { ShareModal } from '../shared/modals/ShareModal';
 import { RecommendMovieModal } from '../shared/modals/RecommendMovieModal';
 import { MessageHistoryModal } from '../shared/modals/MessageHistoryModal';
 import { PreviewPlaylistModal } from '../shared/modals/PreviewPlaylistModal';
@@ -372,9 +372,22 @@ export function Friends() {
 
       {/* MODAL: Sdílet Seznam */}
       {sharePlaylistFriendId && (
-        <SharePlaylistModal
-          friendName={myFriends.find(f => f?.id === sharePlaylistFriendId)?.username || ''}
-          playlists={myPlaylists}
+        <ShareModal
+          modalTitle={`Sdílet seznam s ${myFriends.find(f => f?.id === sharePlaylistFriendId)?.username || ''}`}
+          searchPlaceholder="Hledat seznam..."
+          emptyMessage="Nemáte žádné vlastní seznamy ke sdílení."
+          noResultsMessage="Žádný seznam neodpovídá hledání."
+          selectionLabel="Vyberte seznam"
+          shareBtnText="Odeslat seznam"
+          items={myPlaylists.map(pl => ({
+            id: pl.id,
+            title: pl.name,
+            subtitle: `${pl.titleIds.length} položek`,
+            icon: <ListVideo size={16} />,
+            disabled: pl.titleIds.length === 0,
+            disabledReason: "Prázdný seznam nelze sdílet",
+            tag: pl.fromUserId ? `Od: ${getUsername(pl.fromUserId)}` : undefined
+          }))}
           onClose={() => setSharePlaylistFriendId(null)}
           onShare={(playlistId, message) => {
             const list = myPlaylists.find(p => p.id === playlistId);

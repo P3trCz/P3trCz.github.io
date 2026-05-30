@@ -5,6 +5,7 @@ import { Modal } from '../Modal';
 import { useTitleName } from '../../../hooks/useTitleName';
 import { useSearch } from '../../../hooks/useSearch';
 import { SearchInput } from '../SearchInput';
+import { TitleTile } from '../TitleTile';
 
 type RecommendMovieModalProps = {
   friendName: string;
@@ -50,17 +51,12 @@ export function RecommendMovieModal({ friendName, onClose, onRecommend }: Recomm
             {filteredMovies.length > 0 ? (
               <div className="flex flex-col gap-2 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
                 {filteredMovies.map(title => (
-                  <div
+                  <TitleTile
                     key={`${title.type}-${title.id}`}
+                    title={title}
+                    size="sm"
                     onClick={() => setSelectedTitleId(title.id.toString())}
-                    className="flex items-center gap-3 p-2 hover:bg-[#27272a] rounded-lg cursor-pointer transition-colors border border-transparent hover:border-[#3f3f46]"
-                  >
-                    <img src={title.poster_url} alt={getTitleName(title)} className="w-10 h-14 object-cover rounded" />
-                    <div>
-                      <div className="font-bold text-white text-sm">{getTitleName(title)}</div>
-                      <div className="text-xs text-gray-400">{title.release_year} • {title.type}</div>
-                    </div>
-                  </div>
+                  />
                 ))}
               </div>
             ) : (
@@ -73,15 +69,19 @@ export function RecommendMovieModal({ friendName, onClose, onRecommend }: Recomm
           </div>
         ) : (
           <div className="animate-in fade-in slide-in-from-bottom-4 duration-300">
-            <div className="flex items-center gap-4 bg-[#1c1c24] border border-[#27272a] p-3 rounded-xl mb-4">
-              <img src={selectedTitle.poster_url} alt={selectedTitle.title} className="w-16 h-24 object-cover rounded shadow-md" />
-              <div className="flex-1">
-                <div className="font-bold text-white text-lg">{selectedTitle.title}</div>
-                <div className="text-sm text-gray-400">{selectedTitle.release_year} • {selectedTitle.type}</div>
-                <button onClick={() => setSelectedTitleId(null)} className="text-xs text-[#dc2626] hover:text-white mt-2 transition-colors flex items-center gap-1">
-                  <ArrowLeft size={12} /> Zpět k vyhledávání
-                </button>
-              </div>
+            <div className="mb-4">
+              <TitleTile 
+                title={selectedTitle}
+                action={
+                  <button 
+                    onClick={() => setSelectedTitleId(null)} 
+                    className="px-3 py-1.5 rounded-lg bg-[#dc2626]/10 border border-[#dc2626] text-[#dc2626] hover:bg-[#dc2626] hover:text-white flex items-center gap-2 text-xs font-bold transition-colors"
+                    title="Zpět k vyhledávání"
+                  >
+                    <ArrowLeft size={14} /> Zpět
+                  </button>
+                }
+              />
             </div>
 
             <div>

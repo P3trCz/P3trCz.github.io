@@ -5,7 +5,7 @@ import { catalog, Title } from '../../../data/catalog';
 import { Modal } from '../Modal';
 import { User } from '../../../data/usersDb';
 import { getUsername } from '../../../utils/userUtils';
-import { useTitleName } from '../../../hooks/useTitleName';
+import { TitleTile } from '../TitleTile';
 
 type MessageHistoryModalProps = {
   friend: User;
@@ -24,7 +24,6 @@ export function MessageHistoryModal({
   onViewPlaylist,
   onAddMovieToPlaylist
 }: MessageHistoryModalProps) {
-  const getTitleName = useTitleName();
   const filteredHistory = history.filter(m =>
     (m.fromUserId === friend.id) || (m.toUserId === friend.id)
   ).sort((a, b) => b.timestamp - a.timestamp);
@@ -64,29 +63,28 @@ export function MessageHistoryModal({
                   )}
 
                   {msg.type === 'RECOMMENDED_TITLE' && (
-                    <div className="bg-black/20 rounded-xl p-3 flex items-center gap-3">
+                    <div className="mt-2">
                       {(() => {
                         const title = catalog.find(m => m.id.toString() === msg.titleId);
                         if (!title) return <span className="text-xs text-red-500">Titul nenalezen</span>;
                         return (
-                          <>
-                            <img src={title.poster_url} alt={getTitleName(title)} className="w-10 h-14 object-cover rounded shadow-sm" />
-                            <div className="min-w-0 flex-1">
-                              <div className="text-sm font-bold text-white truncate">{getTitleName(title)}</div>
+                          <TitleTile
+                            title={title}
+                            size="sm"
+                            onClick={() => onViewMovie(title)}
+                            action={
                               <button
-                                onClick={() => onViewMovie(title)}
-                                className="text-[10px] text-[#dc2626] font-bold hover:underline mt-1 mr-3"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  onAddMovieToPlaylist(title.id.toString());
+                                }}
+                                className="w-8 h-8 rounded-full border border-[#27272a] text-gray-400 hover:text-white hover:border-[#dc2626] flex items-center justify-center transition-colors"
+                                title="Přidat do seznamu"
                               >
-                                ZOBRAZIT DETAIL
+                                <Plus size={16} />
                               </button>
-                              <button
-                                onClick={() => onAddMovieToPlaylist(title.id.toString())}
-                                className="text-[10px] text-gray-400 font-bold hover:text-white mt-1 inline-flex items-center gap-1"
-                              >
-                                <Plus size={10} /> PŘIDAT DO SEZNAMU
-                              </button>
-                            </div>
-                          </>
+                            }
+                          />
                         );
                       })()}
                     </div>

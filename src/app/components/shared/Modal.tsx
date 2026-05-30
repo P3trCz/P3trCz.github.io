@@ -27,7 +27,7 @@ export function Modal({
 
   return (
     <div 
-      className={`fixed inset-0 ${zIndex} flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm`} 
+      className={`fixed inset-0 ${zIndex} flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm cursor-default`} 
       onClick={(e) => {
         e.stopPropagation();
         onClose();

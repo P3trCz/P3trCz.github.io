@@ -5,6 +5,7 @@ import { Modal } from '../Modal';
 import { useTitleName } from '../../../hooks/useTitleName';
 import { useSearch } from '../../../hooks/useSearch';
 import { SearchInput } from '../SearchInput';
+import { TitleTile } from '../TitleTile';
 
 type SearchTitleForPlaylistModalProps = {
   playlistName: string;
@@ -47,26 +48,14 @@ export function SearchTitleForPlaylistModal({ playlistName, currentTitleIds, onC
             {filteredMovies.map(title => {
               const isSelected = currentTitleIds.includes(title.id.toString());
               return (
-                <div
+                <TitleTile
                   key={`${title.type}-${title.id}`}
+                  title={title}
+                  size="sm"
+                  isSelected={isSelected}
                   onClick={() => onToggleTitle(title.id.toString())}
-                  className={`flex justify-between items-center p-3 rounded-xl cursor-pointer transition-colors border ${
-                    isSelected ? 'bg-[#dc2626]/10 border-[#dc2626]/30 hover:bg-[#dc2626]/20' : 'bg-[#1c1c24] border-[#27272a] hover:bg-[#27272a]'
-                  }`}
-                >
-                  <div className="flex items-center gap-3 min-w-0">
-                    <img src={title.poster_url || undefined} alt={getTitleName(title)} className="w-10 h-14 object-cover rounded shadow-sm" />
-                    <div className="min-w-0">
-                      <div className="font-bold text-white text-sm truncate">{getTitleName(title)}</div>
-                      <div className="text-xs text-gray-500 mt-0.5">{title.release_year} • {title.type}</div>
-                    </div>
-                  </div>
-                  {isSelected && (
-                    <div className="pr-2">
-                      <Check size={18} className="text-[#dc2626]" />
-                    </div>
-                  )}
-                </div>
+                  action={isSelected ? <div className="pr-2"><Check size={18} className="text-[#dc2626]" /></div> : null}
+                />
               );
             })}
           </div>

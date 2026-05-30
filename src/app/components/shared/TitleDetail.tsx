@@ -6,7 +6,7 @@ import { Snackbar } from './Snackbar';
 import { useTitleName } from '../../hooks/useTitleName';
 import { useMyFriends } from '../../hooks/useMyFriends';
 import { formatMinutes } from '../../utils/formatUtils';
-import { ShareWithFriendModal } from './modals/ShareWithFriendModal';
+import { ShareModal } from './modals/ShareModal';
 
 type Props = {
   title: Title;
@@ -208,9 +208,16 @@ export function TitleDetail({ title, onClose }: Props) {
       </div>
 
       {shareModalOpen && (
-        <ShareWithFriendModal
+        <ShareModal
           modalTitle="Sdílet titul"
-          friends={myFriends}
+          searchPlaceholder="Hledat přítele..."
+          emptyMessage="Nemáte přidané žádné přátele."
+          selectionLabel="Vyberte přítele"
+          shareBtnText="Odeslat doporučení"
+          items={myFriends.filter(Boolean).map(f => ({
+            id: f.id,
+            title: f.username,
+          }))}
           onClose={() => setShareModalOpen(false)}
           onShare={(friendId, message) => {
             recommendTitle(friendId, title.id.toString(), message);

@@ -10,7 +10,7 @@ import { getUsername } from '../../utils/userUtils';
 import { RenamePlaylistModal } from '../shared/modals/RenamePlaylistModal';
 import { DeletePlaylistModal } from '../shared/modals/DeletePlaylistModal';
 import { SearchTitleForPlaylistModal } from '../shared/modals/SearchTitleForPlaylistModal';
-import { ShareWithFriendModal } from '../shared/modals/ShareWithFriendModal';
+import { ShareModal } from '../shared/modals/ShareModal';
 import { Snackbar } from '../shared/Snackbar';
 import { SortField, SortOrder, sortTitles } from '../../utils/sortUtils';
 import { SortableHeader } from '../shared/SortableHeader';
@@ -425,9 +425,16 @@ export function Playlists() {
 
       {/* SDÍLET MODAL */}
       {shareModalPlaylistId && (
-        <ShareWithFriendModal
+        <ShareModal
           modalTitle="Sdílet seznam"
-          friends={myFriends}
+          searchPlaceholder="Hledat přítele..."
+          emptyMessage="Nemáte přidané žádné přátele."
+          selectionLabel="Vyberte přítele"
+          shareBtnText="Sdílet s přítelem"
+          items={myFriends.filter(Boolean).map(f => ({
+            id: f.id,
+            title: f.username,
+          }))}
           onClose={() => setShareModalPlaylistId(null)}
           onShare={(friendId, message) => {
             const pl = playlists.find(p => p.id === shareModalPlaylistId);

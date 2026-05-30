@@ -5,6 +5,7 @@ import { catalog } from '../../../data/catalog';
 import { Modal } from '../Modal';
 import { getUsername } from '../../../utils/userUtils';
 import { useTitleName } from '../../../hooks/useTitleName';
+import { TitleTile } from '../TitleTile';
 
 type AddTitleToPlaylistModalProps = {
   titleId: string;
@@ -13,7 +14,7 @@ type AddTitleToPlaylistModalProps = {
 
 export function AddTitleToPlaylistModal({ titleId, onClose }: AddTitleToPlaylistModalProps) {
   const getTitleName = useTitleName();
-  
+
   const currentUser = useAppStore(state => state.currentUser);
   const playlists = useAppStore(state => state.playlists);
   const addToPlaylist = useAppStore(state => state.addToPlaylist);
@@ -43,12 +44,8 @@ export function AddTitleToPlaylistModal({ titleId, onClose }: AddTitleToPlaylist
     >
       <div className="flex flex-col">
         {title && (
-          <div className="flex items-center gap-3 bg-[#1c1c24] p-3 rounded-xl mb-6">
-            <img src={title.poster_url} alt={getTitleName(title)} className="w-10 h-14 object-cover rounded" />
-            <div className="min-w-0">
-              <div className="text-sm font-bold text-white truncate">{getTitleName(title)}</div>
-              <div className="text-xs text-gray-500">{title.release_year}</div>
-            </div>
+          <div className="mb-6">
+            <TitleTile title={title} size="sm" />
           </div>
         )}
 
