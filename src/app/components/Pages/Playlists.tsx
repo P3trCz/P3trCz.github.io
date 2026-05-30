@@ -409,7 +409,7 @@ export function Playlists() {
 
         {sharedPlaylists.length > 0 && (
           <div className="mt-12">
-            <h1 className="text-3xl font-bold text-white mb-8">Seznamy sdílené se mnou</h1>
+            <h1 className="text-3xl font-bold text-white mb-8">Uložené seznamy od přátel</h1>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {sharedPlaylists.map(renderPlaylistCard)}
             </div>

@@ -19,6 +19,13 @@ export const createFriendsModule: StateCreator<AppState, [], [], FriendsState> =
     const myFriends = get().friends[currentUser.id] || [];
     if (myFriends.includes(toUser.id)) return 'ALREADY_FRIENDS';
 
+    const myNotifs = get().notifications[currentUser.id] || [];
+    const existingReq = myNotifs.find(n => n.type === 'FRIEND_REQUEST' && n.fromUserId === toUser.id);
+    if (existingReq) {
+      get().acceptFriendRequest(existingReq.id);
+      return 'SUCCESS';
+    }
+
     const toUserNotifs = get().notifications[toUser.id] || [];
     if (toUserNotifs.some(n => n.type === 'FRIEND_REQUEST' && n.fromUserId === currentUser.id)) {
       return 'ALREADY_SENT';
@@ -59,7 +66,10 @@ export const createFriendsModule: StateCreator<AppState, [], [], FriendsState> =
       return {
         notifications: {
           ...state.notifications,
-          [currentUser.id]: currentNotifs.filter(n => n.id !== notificationId)
+          [currentUser.id]: currentNotifs.filter(n => n.id !== notificationId),
+          [friendId]: (state.notifications[friendId] || []).filter(n => 
+            !(n.type === 'FRIEND_REQUEST' && n.fromUserId === currentUser.id)
+          )
         },
         friends: {
           ...state.friends,
