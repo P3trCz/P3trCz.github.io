@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
-import { Title, ServiceType, serviceColors } from '../../../data/catalog';
+import { Title, ServiceType, serviceColors } from '../../data/catalog';
 import { X, Star, Play, Share2, Check, Eye } from 'lucide-react';
-import { useAppStore } from '../../../store/useAppStore';
-import { Snackbar } from '../../Common/Snackbar';
-import { useTitleName } from '../../../hooks/useTitleName';
-import { useSearch } from '../../../hooks/useSearch';
-import { useMyFriends } from '../../../hooks/useMyFriends';
-import { formatMinutes } from '../../../utils/formatUtils';
-import { SearchInput } from '../../Common/SearchInput';
+import { useAppStore } from '../../store/useAppStore';
+import { Snackbar } from './Snackbar';
+import { useTitleName } from '../../hooks/useTitleName';
+import { useMyFriends } from '../../hooks/useMyFriends';
+import { formatMinutes } from '../../utils/formatUtils';
+import { ShareWithFriendModal } from './modals/ShareWithFriendModal';
 
 type Props = {
   title: Title;
@@ -30,12 +29,7 @@ export function TitleDetail({ title, onClose }: Props) {
   const recommendTitle = useAppStore(state => state.recommendTitle);
 
   const [shareModalOpen, setShareModalOpen] = useState(false);
-  const [shareSelectedFriendId, setShareSelectedFriendId] = useState('');
-  const [shareMessage, setShareMessage] = useState('');
-  const [shareSearchQuery, setShareSearchQuery] = useState('');
   const [snackbarMsg, setSnackbarMsg] = useState('');
-
-  const filteredMyFriends = useSearch(myFriends, shareSearchQuery, f => [f.username]);
 
   const handlePlay = (service: ServiceType) => {
     // Simulace zhlédnutí pro statistiky
@@ -214,89 +208,16 @@ export function TitleDetail({ title, onClose }: Props) {
       </div>
 
       {shareModalOpen && (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm" onClick={(e) => { e.stopPropagation(); setShareModalOpen(false); }}>
-          <div className="w-full max-w-md bg-[#111116] rounded-2xl border border-[#27272a] shadow-2xl p-6" onClick={e => e.stopPropagation()}>
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-bold text-white">Sdílet titul</h2>
-              <button onClick={() => setShareModalOpen(false)} className="text-gray-400 hover:text-white"><X size={20} /></button>
-            </div>
-
-            {myFriends.length === 0 ? (
-              <div className="text-center text-gray-500 py-6">Nemáte přidané žádné přátele.</div>
-            ) : (
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-400 mb-2">Vyberte přítele</label>
-                  
-                  <div className="mb-3">
-                    <SearchInput
-                      value={shareSearchQuery}
-                      onChange={setShareSearchQuery}
-                      placeholder="Hledat přítele..."
-                    />
-                  </div>
-
-                  <div className="flex flex-col gap-2 max-h-[250px] overflow-y-auto pr-2 custom-scrollbar">
-                    {filteredMyFriends.length === 0 ? (
-                      <div className="text-center text-gray-500 py-4 text-sm">Žádný přítel nenalezen.</div>
-                    ) : (
-                      filteredMyFriends.map(friend => {
-                      if (!friend) return null;
-                      const isSelected = shareSelectedFriendId === friend.id;
-                      return (
-                        <div
-                          key={friend.id}
-                          onClick={() => setShareSelectedFriendId(shareSelectedFriendId === friend.id ? '' : friend.id)}
-                          className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer border transition-all ${isSelected
-                            ? 'bg-[#dc2626]/10 border-[#dc2626] text-white'
-                            : 'bg-[#1c1c24] border-[#27272a] text-gray-400 hover:border-[#3f3f46] hover:text-white'
-                            }`}
-                        >
-                          <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs ${isSelected
-                            ? 'bg-[#dc2626] text-white'
-                            : 'bg-[#0a0a0f] text-gray-400'
-                            }`}>
-                            {friend.username.charAt(0).toUpperCase()}
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <div className="font-bold text-sm truncate text-white">{friend.username}</div>
-                          </div>
-                          {isSelected && <Check size={16} className="text-[#dc2626]" />}
-                        </div>
-                      );
-                    }))}
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-400 mb-2">Zpráva (nepovinné)</label>
-                  <textarea
-                    value={shareMessage}
-                    onChange={e => setShareMessage(e.target.value)}
-                    placeholder="Podívej se na tohle. Je to opravdu hustý!"
-                    className="w-full form-input-dark h-24 resize-none"
-                  ></textarea>
-                </div>
-
-                <button
-                  onClick={() => {
-                    if (shareSelectedFriendId) {
-                      recommendTitle(shareSelectedFriendId, title.id.toString(), shareMessage);
-                      setSnackbarMsg('Titul byl úspěšně doporučen!');
-                      setShareModalOpen(false);
-                      setShareMessage('');
-                      setShareSelectedFriendId('');
-                    }
-                  }}
-                  disabled={!shareSelectedFriendId}
-                  className="w-full flex items-center justify-center gap-2 btn-action-primary mt-2"
-                >
-                  <Share2 size={18} /> Odeslat doporučení
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
+        <ShareWithFriendModal
+          modalTitle="Sdílet titul"
+          friends={myFriends}
+          onClose={() => setShareModalOpen(false)}
+          onShare={(friendId, message) => {
+            recommendTitle(friendId, title.id.toString(), message);
+            setSnackbarMsg('Titul byl úspěšně doporučen!');
+            setShareModalOpen(false);
+          }}
+        />
       )}
 
       <Snackbar message={snackbarMsg} type="success" onClose={() => setSnackbarMsg('')} />

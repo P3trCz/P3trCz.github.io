@@ -21,7 +21,7 @@ export type Title = {
   origin_countries: string[];
 };
 
-import { AVAILABLE_SERVICES } from './constants';
+import { AVAILABLE_SERVICES } from '../constants';
 
 export const serviceLogos: Record<ServiceType, string> = Object.fromEntries(
   AVAILABLE_SERVICES.map(s => [s.id, s.logoUrl])

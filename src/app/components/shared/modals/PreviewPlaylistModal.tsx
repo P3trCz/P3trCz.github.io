@@ -3,7 +3,7 @@ import { Download } from 'lucide-react';
 import { Playlist } from '../../../store/useAppStore';
 import { catalog, Title } from '../../../data/catalog';
 import { Modal } from '../Modal';
-import { TitleTile } from '../../Pages/Catalog/TitleTile';
+import { TitleTile } from '../TitleTile';
 import { getUsername } from '../../../utils/userUtils';
 import { pluralizeItems } from '../../../utils/formatUtils';
 

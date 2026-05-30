@@ -1,6 +1,6 @@
 import { StateCreator } from 'zustand';
 import { AppState, FriendsState, Notification, ChatMessage, Playlist } from '../types';
-import { INITIAL_FRIENDS, INITIAL_NOTIFICATIONS, INITIAL_MESSAGE_HISTORY } from '../initialData';
+import { INITIAL_FRIENDS, INITIAL_NOTIFICATIONS, INITIAL_MESSAGE_HISTORY } from '../../data/initialData';
 
 const isDuplicatePlaylist = (userPlaylists: Playlist[], playlistToCheck: Playlist) => {
   const sortedNewIds = JSON.stringify([...playlistToCheck.titleIds].sort());

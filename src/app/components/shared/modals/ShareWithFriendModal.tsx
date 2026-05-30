@@ -4,13 +4,14 @@ import { Modal } from '../Modal';
 import { useSearch } from '../../../hooks/useSearch';
 import { SearchInput } from '../SearchInput';
 
-type SharePlaylistWithFriendModalProps = {
+type ShareWithFriendModalProps = {
+  modalTitle?: string;
   friends: { id: string; username: string }[];
   onClose: () => void;
   onShare: (friendId: string, message: string) => void;
 };
 
-export function SharePlaylistWithFriendModal({ friends, onClose, onShare }: SharePlaylistWithFriendModalProps) {
+export function ShareWithFriendModal({ modalTitle = "Sdílet", friends, onClose, onShare }: ShareWithFriendModalProps) {
   const [selectedFriendId, setSelectedFriendId] = useState('');
   const [message, setMessage] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
@@ -22,7 +23,7 @@ export function SharePlaylistWithFriendModal({ friends, onClose, onShare }: Shar
     <Modal
       isOpen={true}
       onClose={onClose}
-      title="Sdílet seznam"
+      title={modalTitle}
     >
       {friends.length === 0 ? (
         <div className="text-center text-gray-500 py-6">Nemáte přidané žádné přátele.</div>

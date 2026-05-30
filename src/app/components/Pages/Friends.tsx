@@ -4,18 +4,18 @@ import { usersDb } from '../../data/usersDb';
 import { catalog, Title } from '../../data/catalog';
 import { getUsername } from '../../utils/userUtils';
 import { Search, UserPlus, Check, X, Share2, Film, Trash2, Play, Eye, MessageSquare } from 'lucide-react';
-import { TitleDetail } from './Catalog/TitleDetail';
-import { SharePlaylistModal } from '../Common/modals/SharePlaylistModal';
-import { RecommendMovieModal } from '../Common/modals/RecommendMovieModal';
-import { MessageHistoryModal } from '../Common/modals/MessageHistoryModal';
-import { PreviewPlaylistModal } from '../Common/modals/PreviewPlaylistModal';
-import { AddTitleToPlaylistModal } from '../Common/modals/AddTitleToPlaylistModal';
-import { RemoveFriendModal } from '../Common/modals/RemoveFriendModal';
-import { Snackbar } from '../Common/Snackbar';
+import { TitleDetail } from '../shared/TitleDetail';
+import { SharePlaylistModal } from '../shared/modals/SharePlaylistModal';
+import { RecommendMovieModal } from '../shared/modals/RecommendMovieModal';
+import { MessageHistoryModal } from '../shared/modals/MessageHistoryModal';
+import { PreviewPlaylistModal } from '../shared/modals/PreviewPlaylistModal';
+import { AddTitleToPlaylistModal } from '../shared/modals/AddTitleToPlaylistModal';
+import { RemoveFriendModal } from '../shared/modals/RemoveFriendModal';
+import { Snackbar } from '../shared/Snackbar';
 import { useTitleName } from '../../hooks/useTitleName';
 import { useSearch } from '../../hooks/useSearch';
 import { useMyFriends } from '../../hooks/useMyFriends';
-import { SearchInput } from '../Common/SearchInput';
+import { SearchInput } from '../shared/SearchInput';
 
 export function Friends() {
   const getTitleName = useTitleName();

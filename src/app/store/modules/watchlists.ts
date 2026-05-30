@@ -1,7 +1,7 @@
 import { StateCreator } from 'zustand';
 import { AppState, WatchlistState } from '../types';
-import { INITIAL_WATCHLISTS } from '../initialData';
-import { updateUserRecord, toggleItemInArray } from '../utils';
+import { INITIAL_WATCHLISTS } from '../../data/initialData';
+import { updateUserRecord, toggleItemInArray } from '../../utils/storeUtils';
 
 export const createWatchlistsModule: StateCreator<AppState, [], [], WatchlistState> = (set, get) => ({
   watchlists: INITIAL_WATCHLISTS,

@@ -1,15 +1,15 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { catalog, Title, ServiceType } from '../../../data/catalog';
-import { TITLE_TYPES } from '../../../data/constants';
+import { TITLE_TYPES } from '../../../constants';
 import { TitleCard } from './TitleCard';
-import { TitleDetail } from './TitleDetail';
-import { Pagination } from '../../Common/Pagination';
+import { TitleDetail } from '../../shared/TitleDetail';
+import { Pagination } from '../../shared/Pagination';
 import { Filter, RefreshCw, Search, X } from 'lucide-react';
 import { FilterDropdown, AdvancedFilterState } from './FilterDropdown';
 import { useAppStore } from '../../../store/useAppStore';
 import { useSearch } from '../../../hooks/useSearch';
 import { SortField, SortOrder, sortTitles } from '../../../utils/sortUtils';
-import { SortableHeader } from '../../Common/SortableHeader';
+import { SortableHeader } from '../../shared/SortableHeader';
 
 export function TitleGrid() {
   const [selectedTitle, setSelectedTitle] = useState<Title | null>(null);
@@ -116,7 +116,7 @@ export function TitleGrid() {
         if (!matchesCountry) return false;
       }
 
-    return true;
+      return true;
     });
   }, [selectedServices, selectedGenres, selectedTypes, selectedWatched, selectedCountries, userSubscriptions, searchQuery, userWatchedTitles, searchedCatalog]);
 

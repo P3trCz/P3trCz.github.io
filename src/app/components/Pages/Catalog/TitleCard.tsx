@@ -1,7 +1,7 @@
 import React from 'react';
 import { Title, serviceColors } from '../../../data/catalog';
 import { Star, Eye } from 'lucide-react';
-import { AddToPlaylistButton } from './AddToPlaylistButton';
+import { AddToPlaylistButton } from '../../shared/AddToPlaylistButton';
 import { useAppStore } from '../../../store/useAppStore';
 import { useTitleName } from '../../../hooks/useTitleName';
 

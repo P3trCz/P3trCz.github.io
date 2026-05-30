@@ -1,6 +1,6 @@
 
-import type { ServiceType } from '../data/catalog';
-import type { Playlist, WatchHistoryItem, Notification, ChatMessage } from './useAppStore';
+import type { ServiceType } from './catalog';
+import type { Playlist, WatchHistoryItem, Notification, ChatMessage } from '../store/types';
 
 export const INITIAL_SUBSCRIPTIONS: Record<string, ServiceType[]> = {
   "2": [

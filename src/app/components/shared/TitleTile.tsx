@@ -1,6 +1,6 @@
 import React from 'react';
-import { Title } from '../../../data/catalog';
-import { useTitleName } from '../../../hooks/useTitleName';
+import { Title } from '../../data/catalog';
+import { useTitleName } from '../../hooks/useTitleName';
 
 type Props = {
   title: Title;

@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { Title } from '../../../data/catalog';
 import { WatchHistoryItem } from '../../../store/useAppStore';
 import { Modal } from '../Modal';
-import { TitleTile } from '../../Pages/Catalog/TitleTile';
-import { TITLE_FILTER_OPTIONS } from '../../../data/constants';
+import { TitleTile } from '../TitleTile';
+import { TITLE_FILTER_OPTIONS } from '../../../constants';
 
 type Props = {
   titles: Title[];

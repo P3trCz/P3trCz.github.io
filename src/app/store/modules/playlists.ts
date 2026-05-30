@@ -1,6 +1,6 @@
 import { StateCreator } from 'zustand';
 import { AppState, PlaylistsState, Playlist } from '../types';
-import { INITIAL_PLAYLISTS } from '../initialData';
+import { INITIAL_PLAYLISTS } from '../../data/initialData';
 
 const isDuplicatePlaylist = (userPlaylists: Playlist[], playlistToCheck: Playlist) => {
   const sortedNewIds = JSON.stringify([...playlistToCheck.titleIds].sort());

@@ -1,6 +1,6 @@
 import { StateCreator } from 'zustand';
 import { AppState, HistoryState, WatchHistoryItem } from '../types';
-import { INITIAL_WATCH_HISTORY } from '../initialData';
+import { INITIAL_WATCH_HISTORY } from '../../data/initialData';
 
 export const createHistoryModule: StateCreator<AppState, [], [], HistoryState> = (set, get) => ({
   watchHistory: INITIAL_WATCH_HISTORY,

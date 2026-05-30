@@ -3,10 +3,10 @@ import { useAppStore } from '../../store/useAppStore';
 import { serviceLogos } from '../../data/catalog';
 import { usersDb } from '../../data/usersDb';
 import { User, LogOut, Key, Edit2 } from 'lucide-react';
-import { Modal } from '../Common/Modal';
-import { Snackbar } from '../Common/Snackbar';
+import { Modal } from '../shared/Modal';
+import { Snackbar } from '../shared/Snackbar';
 
-import { AVAILABLE_SERVICES } from '../../data/constants';
+import { AVAILABLE_SERVICES } from '../../constants';
 
 export function Settings() {
   const currentUser = useAppStore(state => state.currentUser);

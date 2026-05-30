@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 import { useAppStore } from '../../store/useAppStore';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Sector } from 'recharts';
 import { catalog, ServiceType, serviceLogos, serviceColors } from '../../data/catalog';
-import { CustomTimeRangeModal } from '../Common/modals/CustomTimeRangeModal';
-import { StatsWatchedTitlesModal } from '../Common/modals/StatsWatchedTitlesModal';
-import { TitleDetail } from './Catalog/TitleDetail';
+import { CustomTimeRangeModal } from '../shared/modals/CustomTimeRangeModal';
+import { StatsWatchedTitlesModal } from '../shared/modals/StatsWatchedTitlesModal';
+import { TitleDetail } from '../shared/TitleDetail';
 import { Title } from '../../data/catalog';
 import { X } from 'lucide-react';
-import { TIME_RANGES, TITLE_FILTER_OPTIONS } from '../../data/constants';
+import { TIME_RANGES, TITLE_FILTER_OPTIONS } from '../../constants';
 import { formatMinutes } from '../../utils/formatUtils';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -23,7 +23,7 @@ export function useSearch<T>(
 ): T[] {
   return useMemo(() => {
     const trimmedQuery = query.trim();
-    
+
     // Pokud je zadaný limit na počet znaků a dotaz je kratší
     if (options?.minQueryLength && trimmedQuery.length > 0 && trimmedQuery.length < options.minQueryLength) {
       return options.returnEmptyIfBelowMinLength ? [] : items;
@@ -34,10 +34,8 @@ export function useSearch<T>(
       return (options?.minQueryLength && options.returnEmptyIfBelowMinLength) ? [] : items;
     }
 
-
-    
     const normalizedQuery = normalizeText(trimmedQuery);
-    
+
     return items.filter(item => {
       const texts = getSearchableTexts(item);
       return texts.some(text => text && normalizeText(text).includes(normalizedQuery));

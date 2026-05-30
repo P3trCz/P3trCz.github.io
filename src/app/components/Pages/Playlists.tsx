@@ -3,17 +3,17 @@ import { useAppStore } from '../../store/useAppStore';
 import { catalog, Title } from '../../data/catalog';
 import { MoreHorizontal, ArrowLeft, Edit2, Trash2, Share2, Plus } from 'lucide-react';
 import { useOnClickOutside } from '../../hooks/useOnClickOutside';
-import { TitleDetail } from './Catalog/TitleDetail';
+import { TitleDetail } from '../shared/TitleDetail';
 import { TitleCard } from './Catalog/TitleCard';
-import { Pagination } from '../Common/Pagination';
+import { Pagination } from '../shared/Pagination';
 import { getUsername } from '../../utils/userUtils';
-import { RenamePlaylistModal } from '../Common/modals/RenamePlaylistModal';
-import { DeletePlaylistModal } from '../Common/modals/DeletePlaylistModal';
-import { SearchTitleForPlaylistModal } from '../Common/modals/SearchTitleForPlaylistModal';
-import { SharePlaylistWithFriendModal } from '../Common/modals/SharePlaylistWithFriendModal';
-import { Snackbar } from '../Common/Snackbar';
+import { RenamePlaylistModal } from '../shared/modals/RenamePlaylistModal';
+import { DeletePlaylistModal } from '../shared/modals/DeletePlaylistModal';
+import { SearchTitleForPlaylistModal } from '../shared/modals/SearchTitleForPlaylistModal';
+import { ShareWithFriendModal } from '../shared/modals/ShareWithFriendModal';
+import { Snackbar } from '../shared/Snackbar';
 import { SortField, SortOrder, sortTitles } from '../../utils/sortUtils';
-import { SortableHeader } from '../Common/SortableHeader';
+import { SortableHeader } from '../shared/SortableHeader';
 import { useMyFriends } from '../../hooks/useMyFriends';
 import { pluralizeItems } from '../../utils/formatUtils';
 
@@ -425,7 +425,8 @@ export function Playlists() {
 
       {/* SDÍLET MODAL */}
       {shareModalPlaylistId && (
-        <SharePlaylistWithFriendModal
+        <ShareWithFriendModal
+          modalTitle="Sdílet seznam"
           friends={myFriends}
           onClose={() => setShareModalPlaylistId(null)}
           onShare={(friendId, message) => {

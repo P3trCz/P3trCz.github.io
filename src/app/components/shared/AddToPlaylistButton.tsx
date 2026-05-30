@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Bookmark } from 'lucide-react';
-import { AddTitleToPlaylistModal } from '../../Common/modals/AddTitleToPlaylistModal';
-import { useAppStore } from '../../../store/useAppStore';
+import { AddTitleToPlaylistModal } from './modals/AddTitleToPlaylistModal';
+import { useAppStore } from '../../store/useAppStore';
 
 type Props = {
   titleId: string;
