@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-react';
 
 type PaginationProps = {
@@ -19,12 +19,13 @@ export function Pagination({
   options = [25, 50, 100]
 }: PaginationProps) {
   const totalPages = Math.ceil(totalItems / itemsPerPage) || 1;
+  const [prevCurrentPage, setPrevCurrentPage] = useState(currentPage);
   const [inputPage, setInputPage] = useState(currentPage.toString());
 
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
+  if (currentPage !== prevCurrentPage) {
+    setPrevCurrentPage(currentPage);
     setInputPage(currentPage.toString());
-  }, [currentPage]);
+  }
 
   const handlePageSubmit = (e: React.FormEvent) => {
     e.preventDefault();

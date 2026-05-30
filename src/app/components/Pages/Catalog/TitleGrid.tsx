@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import { catalog, Title, ServiceType } from '../../../data/catalog';
 import { TITLE_TYPES } from '../../../constants';
 import { TitleCard } from './TitleCard';
@@ -53,10 +53,13 @@ export function TitleGrid() {
   const isSearchActive = searchQuery.length >= 3;
 
   // Reset pagination when filters or search change
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
+  const currentFiltersSig = JSON.stringify({ selectedServices, selectedGenres, selectedTypes, selectedWatched, selectedCountries, userSubscriptions, searchQuery });
+  const [prevFiltersSig, setPrevFiltersSig] = useState(currentFiltersSig);
+
+  if (currentFiltersSig !== prevFiltersSig) {
+    setPrevFiltersSig(currentFiltersSig);
     setCurrentPage(1);
-  }, [selectedServices, selectedGenres, selectedTypes, selectedWatched, selectedCountries, userSubscriptions, searchQuery]);
+  }
 
   // Filmy dostupné na uživatelových službách
   const availableTitles = useMemo(() => {

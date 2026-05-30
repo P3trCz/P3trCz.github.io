@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useAppStore } from '../../../store/useAppStore';
 import { catalog, ServiceType } from '../../../data/catalog';
 import { Modal } from '../Modal';
@@ -23,13 +23,15 @@ export function MarkAsWatchedModal() {
   const currentHistory = currentUser ? (watchHistory[currentUser.id] || []) : [];
   const existingItem = currentHistory.find(h => h.titleId === promptWatchedTitleId);
 
-  useEffect(() => {
+  const [prevTitleId, setPrevTitleId] = useState(promptWatchedTitleId);
+
+  if (promptWatchedTitleId !== prevTitleId) {
+    setPrevTitleId(promptWatchedTitleId);
     if (promptWatchedTitleId) {
       if (existingItem) {
         // Formátujeme existující timestamp na YYYY-MM-DD
         const d = new Date(existingItem.watchedAt || Date.now());
         const dateString = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-        // eslint-disable-next-line react-hooks/set-state-in-effect
         setDate(dateString);
         setService(existingItem.service);
         if (title?.type === 'Seriál' && existingItem.episodesWatched !== undefined) {
@@ -38,17 +40,19 @@ export function MarkAsWatchedModal() {
           setEpisodesWatched(0);
         }
       } else {
-        // Dnešní datum
         const d = new Date();
         const dateString = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
         setDate(dateString);
         setService('Unknown');
-        if (title?.type === 'Seriál' && title.episodes) {
+        
+        if (title?.type === 'Seriál') {
           setEpisodesWatched(0);
+        } else {
+          setEpisodesWatched('');
         }
       }
     }
-  }, [promptWatchedTitleId, existingItem, title]);
+  }
 
   if (!promptWatchedTitleId || !title) return null;
 
