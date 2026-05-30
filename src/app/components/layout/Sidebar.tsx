@@ -34,10 +34,13 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
       )}>
         <div className="p-6 flex items-center justify-between text-white">
           <div className="flex items-center gap-3">
-            <div className="border-2 border-red-600 rounded-lg p-1.5 flex items-center justify-center">
+            <div className="border-2 border-red-600 rounded-lg p-1.5 flex items-center justify-center shrink-0">
               <Play size={20} className="fill-red-600 text-red-600" />
             </div>
-            <span className="text-xl font-bold tracking-tight">StreamHub</span>
+            <div className="flex flex-col">
+              <span className="text-xl font-bold tracking-tight leading-tight">StreamHub</span>
+              <span className="text-[10px] text-gray-400 uppercase tracking-wider font-semibold mt-0.5">Petr Toman: A25B0288P</span>
+            </div>
           </div>
 
           <button
