@@ -55,7 +55,7 @@ export function CustomTimeRangeModal({ onClose, onSave }: Props) {
           )}
 
           <div className="flex flex-col gap-2">
-            <label className="text-sm font-medium text-gray-400">Od data</label>
+            <label className="text-sm font-medium text-gray-400">Od</label>
             <input
               type="date"
               value={fromDate}
@@ -68,7 +68,7 @@ export function CustomTimeRangeModal({ onClose, onSave }: Props) {
           </div>
 
           <div className="flex flex-col gap-2">
-            <label className="text-sm font-medium text-gray-400">Do data</label>
+            <label className="text-sm font-medium text-gray-400">Do</label>
             <input
               type="date"
               value={toDate}

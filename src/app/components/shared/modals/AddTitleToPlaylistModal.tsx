@@ -6,6 +6,7 @@ import { Modal } from '../Modal';
 import { getUsername } from '../../../utils/userUtils';
 import { useTitleName } from '../../../hooks/useTitleName';
 import { TitleTile } from '../TitleTile';
+import { SearchInput } from '../SearchInput';
 
 type AddTitleToPlaylistModalProps = {
   titleId: string;
@@ -24,9 +25,19 @@ export function AddTitleToPlaylistModal({ titleId, onClose }: AddTitleToPlaylist
   const toggleWatchlist = useAppStore(state => state.toggleWatchlist);
 
   const [newPlaylistName, setNewPlaylistName] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
+  
   const userPlaylists = currentUser ? (playlists[currentUser.id] || []) : [];
   const userWatchlist = currentUser ? (watchlists[currentUser.id] || []) : [];
   const title = catalog.find(m => m.id.toString() === titleId);
+
+  const normalizedQuery = searchQuery.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  
+  const filteredPlaylists = userPlaylists.filter(pl => {
+    const normalizedName = pl.name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+    return normalizedName.includes(normalizedQuery);
+  });
+  const showWatchlist = 'prehrat pozdeji'.includes(normalizedQuery);
 
   const handleCreateAndAdd = () => {
     if (!newPlaylistName.trim()) return;
@@ -49,29 +60,31 @@ export function AddTitleToPlaylistModal({ titleId, onClose }: AddTitleToPlaylist
           </div>
         )}
 
-        <div className="space-y-2 max-h-[250px] overflow-y-auto pr-2 custom-scrollbar mb-6">
-          {(() => {
-            const isAddedToWatchlist = userWatchlist.includes(titleId);
-            return (
-              <button
-                onClick={() => {
-                  toggleWatchlist(titleId);
-                }}
-                className={`w-full flex items-center justify-between p-3 rounded-xl border transition-all ${isAddedToWatchlist
-                  ? 'bg-[#dc2626]/10 border-[#dc2626] text-white'
-                  : 'bg-[#1c1c24] border-[#27272a] text-gray-400 hover:border-[#3f3f46] hover:text-white'
-                  }`}
-              >
-                <div className="flex items-center gap-3 truncate">
-                  <Clock size={16} />
-                  <span className="text-sm font-medium truncate">Přehrát později</span>
-                </div>
-                {isAddedToWatchlist && <Check size={16} className="text-[#dc2626]" />}
-              </button>
-            );
-          })()}
+        <div className="mb-4">
+          <SearchInput
+            value={searchQuery}
+            onChange={setSearchQuery}
+            placeholder="Hledat seznam..."
+          />
+        </div>
 
-          {userPlaylists.map(pl => {
+        <div className="space-y-2 max-h-[250px] overflow-y-auto pr-2 custom-scrollbar mb-6">
+          {showWatchlist && (
+            <button
+              onClick={() => {
+                toggleWatchlist(titleId);
+              }}
+              className={`selectable-item ${userWatchlist.includes(titleId) ? 'selectable-item--active' : ''}`}
+            >
+              <div className="flex items-center gap-3 truncate">
+                <Clock size={16} />
+                <span className="text-sm font-medium truncate">Přehrát později</span>
+              </div>
+              {userWatchlist.includes(titleId) && <Check size={16} className="text-[#dc2626]" />}
+            </button>
+          )}
+
+          {filteredPlaylists.map(pl => {
             const isAdded = pl.titleIds.includes(titleId);
             return (
               <button
@@ -80,10 +93,7 @@ export function AddTitleToPlaylistModal({ titleId, onClose }: AddTitleToPlaylist
                   if (!isAdded) addToPlaylist(pl.id, titleId);
                   else removeFromPlaylist(pl.id, titleId);
                 }}
-                className={`w-full flex items-center justify-between p-3 rounded-xl border transition-all ${isAdded
-                  ? 'bg-[#dc2626]/10 border-[#dc2626] text-white'
-                  : 'bg-[#1c1c24] border-[#27272a] text-gray-400 hover:border-[#3f3f46] hover:text-white'
-                  }`}
+                className={`selectable-item ${isAdded ? 'selectable-item--active' : ''}`}
               >
                 <div className="flex items-center gap-3 truncate pr-2">
                   <ListVideo size={16} />
@@ -100,6 +110,12 @@ export function AddTitleToPlaylistModal({ titleId, onClose }: AddTitleToPlaylist
               </button>
             );
           })}
+
+          {!showWatchlist && filteredPlaylists.length === 0 && (
+            <div className="text-center text-gray-500 py-4 text-sm">
+              Žádný seznam nenalezen
+            </div>
+          )}
         </div>
 
         <div className="pt-4 border-t border-[#27272a]">

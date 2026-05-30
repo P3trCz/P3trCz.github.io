@@ -76,12 +76,12 @@ export function ShareModal({
                     <div
                       key={item.id}
                       onClick={() => !item.disabled && setSelectedId(selectedId === item.id ? '' : item.id)}
-                      className={`flex items-center gap-3 p-3 rounded-xl transition-all border ${
+                      className={`selectable-item ${
                         item.disabled
-                          ? 'bg-[#0a0a0f] border-[#27272a] opacity-50 cursor-not-allowed'
+                          ? 'opacity-50 cursor-not-allowed hover:border-[#27272a] hover:text-gray-400'
                           : isSelected
-                            ? 'bg-[#dc2626]/10 border-[#dc2626] text-white cursor-pointer'
-                            : 'bg-[#1c1c24] border-[#27272a] text-gray-400 hover:border-[#3f3f46] hover:text-white cursor-pointer'
+                            ? 'selectable-item--active'
+                            : ''
                       }`}
                       title={item.disabled ? item.disabledReason : ""}
                     >

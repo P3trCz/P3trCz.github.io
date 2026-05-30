@@ -91,7 +91,7 @@ export function MessageHistoryModal({
                   )}
 
                   {msg.type === 'SHARED_PLAYLIST' && (
-                    <div className="bg-black/20 rounded-xl p-3 flex items-center gap-3">
+                    <div className="bg-[#1c1c24] border border-[#27272a] rounded-xl p-3 flex items-center gap-3">
                       <div className="p-2 bg-[#dc2626] rounded-lg text-white">
                         <ListVideo size={16} />
                       </div>

@@ -1,40 +1,18 @@
 import React, { useState } from 'react';
-import { useAppStore } from '../../store/useAppStore';
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Sector } from 'recharts';
-import { catalog, ServiceType, serviceLogos, serviceColors } from '../../data/catalog';
-import { CustomTimeRangeModal } from '../shared/modals/CustomTimeRangeModal';
-import { StatsWatchedTitlesModal } from '../shared/modals/StatsWatchedTitlesModal';
-import { TitleDetail } from '../shared/TitleDetail';
-import { Title } from '../../data/catalog';
+import { useAppStore } from '../../../store/useAppStore';
+import { catalog, ServiceType, serviceLogos } from '../../../data/catalog';
+import { CustomTimeRangeModal } from '../../shared/modals/CustomTimeRangeModal';
+import { StatsWatchedTitlesModal } from '../../shared/modals/StatsWatchedTitlesModal';
+import { TitleDetail } from '../../shared/TitleDetail';
+import { Title } from '../../../data/catalog';
 import { X } from 'lucide-react';
-import { TIME_RANGES, TITLE_FILTER_OPTIONS } from '../../constants';
-import { formatMinutes } from '../../utils/formatUtils';
+import { TIME_RANGES, TITLE_FILTER_OPTIONS } from '../../../constants';
+import { formatMinutes } from '../../../utils/formatUtils';
+import { ServicePieChart } from './ServicePieChart';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const renderActiveShape = (props: any) => {
-  const { cx, cy, innerRadius, outerRadius, startAngle, endAngle, fill } = props;
-  return (
-    <g>
-      <Sector
-        cx={cx}
-        cy={cy}
-        innerRadius={innerRadius}
-        outerRadius={outerRadius + 8}
-        startAngle={startAngle}
-        endAngle={endAngle}
-        fill={fill}
-        style={{ outline: 'none' }}
-      />
-    </g>
-  );
-};
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const PieComponent = Pie as any;
 
 export function Stats() {
   const [range, setRange] = useState('Měsíc');
-  const [activeIndex, setActiveIndex] = useState<number | undefined>(undefined);
   const currentUser = useAppStore(state => state.currentUser);
   const watchHistoryState = useAppStore(state => state.watchHistory);
   const history = currentUser ? (watchHistoryState[currentUser.id] || []) : [];
@@ -92,7 +70,7 @@ export function Stats() {
     return { from: formatDate(from), to: formatDate(to) };
   };
 
-  const formatRangeForSentence = (r: string, includeDates = true) => {
+  const formatRangeForSentence = (r: string, includeDates = true, includePreposition = false) => {
     const dates = getRangeDates();
     const suffix = includeDates ? ` (od ${dates.from} do ${dates.to})` : '';
 
@@ -110,9 +88,10 @@ export function Stats() {
       case 'Celá doba': base = 'celou dobu'; break;
       case 'Vlastní rozsah':
         if (includeDates) return `od ${dates.from} do ${dates.to}`;
-        else return 'vlastní období';
+        else return includePreposition ? 'za vlastní období' : 'vlastní období';
     }
-    return base + suffix;
+    const result = base + suffix;
+    return includePreposition ? `za ${result}` : result;
   };
 
   const processData = () => {
@@ -245,69 +224,14 @@ export function Stats() {
         </div>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 panel-container-dark">
-            <h2 className="text-lg font-medium text-white mb-6">Podíl služeb na čase sledování filmů {range === 'Vlastní rozsah' ? '' : 'za '}{formatRangeForSentence(range, true)}</h2>
-
-            <div className="h-80 w-full relative">
-              {stats.pieData.length === 0 ? (
-                <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-6 border-2 border-dashed border-[#27272a] rounded-xl">
-                  <div className="w-12 h-12 rounded-full bg-[#1c1c24] flex items-center justify-center mb-4">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-gray-500">
-                      <path d="M21.21 15.89A10 10 0 1 1 8 2.83" />
-                      <path d="M22 12A10 10 0 0 0 12 2v10z" />
-                    </svg>
-                  </div>
-                  <h3 className="text-lg font-semibold text-white mb-2">Žádná data za vybrané období</h3>
-                  <p className="text-sm text-gray-400 max-w-md">
-                    Za zvolené období ({formatRangeForSentence(range, true)}) nemáte zaznamenaná žádná data sledování filmů. Zkuste zvolit delší časové období nebo zhlédnout nějaký film.
-                  </p>
-                </div>
-              ) : (
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <PieComponent
-                      data={stats.pieData}
-                      cx="50%"
-                      cy="50%"
-                      innerRadius={80}
-                      outerRadius={120}
-                      paddingAngle={2}
-                      dataKey="value"
-                      stroke="none"
-                      activeIndex={activeIndex}
-                      activeShape={renderActiveShape}
-                      onMouseEnter={(_: unknown, index: number) => setActiveIndex(index)}
-                      onMouseLeave={() => setActiveIndex(undefined)}
-                      style={{ outline: 'none' }}
-                    >
-                      {stats.pieData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={serviceColors[entry.name as ServiceType] || '#8884d8'} />
-                      ))}
-                    </PieComponent>
-                    <Tooltip
-                      contentStyle={{ backgroundColor: '#1c1c24', borderColor: '#27272a', color: 'white', borderRadius: '8px' }}
-                      itemStyle={{ color: 'white' }}
-                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                      formatter={(value: unknown, name: any) => [formatMinutes(Number(value)), String(name)]}
-                    />
-                  </PieChart>
-                </ResponsiveContainer>
-              )}
-            </div>
-
-            <div className="flex flex-wrap justify-center gap-6 mt-4">
-              {stats.pieData.map(entry => (
-                <div key={entry.name} className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full" style={{ backgroundColor: serviceColors[entry.name as ServiceType] }}></div>
-                  <span className="text-sm font-medium text-gray-400">{entry.name}</span>
-                </div>
-              ))}
-            </div>
-          </div>
+          <ServicePieChart
+            pieData={stats.pieData}
+            rangeLabel={formatRangeForSentence(range, true, true)}
+          />
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-6">
             <div className="panel-container-dark">
-              <h3 className="text-sm font-medium text-gray-400 mb-2">Celkový čas sledování filmů za {formatRangeForSentence(range, false)}</h3>
+              <h3 className="text-sm font-medium text-gray-400 mb-2">Celkový čas sledování filmů {formatRangeForSentence(range, false, true)}</h3>
               <div className="text-4xl font-bold text-white mb-2">{formatMinutes(stats.totalMinutes)}</div>
               <div className="text-sm text-gray-500">
                 {stats.totalFilms} {stats.totalFilms === 1 ? 'zhlédnutý film' : stats.totalFilms >= 2 && stats.totalFilms <= 4 ? 'zhlédnuté filmy' : 'zhlédnutých filmů'}

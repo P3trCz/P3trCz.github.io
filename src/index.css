@@ -78,4 +78,15 @@
   .panel-container-dark {
     @apply bg-[#111116] border border-[#27272a] rounded-xl p-6 shadow-sm;
   }
+
+  /* Klikatelný řádek s volitelným stavem (použití: seznamy, přátelé, modaly) */
+  .selectable-item {
+    @apply w-full flex items-center justify-between gap-3 p-3 rounded-xl border transition-all
+           bg-[#1c1c24] border-[#27272a] text-gray-400
+           hover:border-[#3f3f46] hover:text-white cursor-pointer;
+  }
+
+  .selectable-item--active {
+    @apply bg-[#dc2626]/10 border-[#dc2626] text-white;
+  }
 }

@@ -35,7 +35,7 @@ export function TitleDetail({ title, onClose }: Props) {
     // Simulace zhlédnutí pro statistiky
     const duration = title.type === 'Film' ? title.runtime : 45;
     let eps: number | undefined = undefined;
-    
+
     if (title.type === 'Seriál') {
       eps = existingItem && existingItem.episodesWatched !== undefined ? existingItem.episodesWatched + 1 : 1;
       if (title.episodes && eps > title.episodes) eps = title.episodes;
@@ -43,7 +43,7 @@ export function TitleDetail({ title, onClose }: Props) {
 
     // eslint-disable-next-line react-hooks/purity
     markAsWatched(title.id.toString(), service, duration, Date.now(), eps);
-    
+
     // Zde by normálně bylo spuštění přehrávače
     if (title.watch_link) {
       window.open(title.watch_link, '_blank');
@@ -188,7 +188,13 @@ export function TitleDetail({ title, onClose }: Props) {
                   return (
                     <button
                       key={service}
-                      onClick={() => isOwned ? handlePlay(service) : null}
+                      onClick={() => {
+                        if (isOwned) {
+                          handlePlay(service);
+                        } else {
+                          setSnackbarMsg('Tuto službu nemáte aktivní!');
+                        }
+                      }}
                       title={!isOwned ? "Tuto službu nemáte aktivní" : undefined}
                       style={isOwned ? { backgroundColor: color } : {}}
                       className={`flex items-center justify-center gap-3 flex-1 min-w-[200px] px-5 py-4 rounded-xl font-semibold transition-all group ${isOwned
@@ -227,7 +233,11 @@ export function TitleDetail({ title, onClose }: Props) {
         />
       )}
 
-      <Snackbar message={snackbarMsg} type="success" onClose={() => setSnackbarMsg('')} />
+      <Snackbar
+        message={snackbarMsg}
+        type={snackbarMsg.includes('nemáte') ? 'error' : 'success'}
+        onClose={() => setSnackbarMsg('')}
+      />
     </div>
   );
 }

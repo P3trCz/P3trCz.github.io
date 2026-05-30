@@ -5,7 +5,7 @@ import { Auth } from './components/Pages/Auth/Auth';
 import { Layout } from './components/Layout/Layout';
 import { TitleGrid } from './components/Pages/Catalog/TitleGrid';
 import { Playlists } from './components/Pages/Playlists';
-import { Stats } from './components/Pages/Stats';
+import { Stats } from './components/Pages/Stats/Stats';
 import { Settings } from './components/Pages/Settings';
 import { Friends } from './components/Pages/Friends';
 import { MarkAsWatchedModal } from './components/shared/modals/MarkAsWatchedModal';
