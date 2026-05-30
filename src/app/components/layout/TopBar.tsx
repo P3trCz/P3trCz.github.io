@@ -39,7 +39,7 @@ export function TopBar({ onToggleSidebar }: Props) {
 
   return (
     <header className="h-14 flex items-center justify-between px-8 bg-[#0a0a0f] shrink-0 border-b border-[#27272a] lg:border-none">
-      {/* Left: Toggle Button (Mobile only) */}
+      {/* Vlevo pouze pro mobilní verzi */}
       <div className="flex items-center lg:w-10">
         <button
           onClick={onToggleSidebar}
@@ -49,7 +49,7 @@ export function TopBar({ onToggleSidebar }: Props) {
         </button>
       </div>
 
-      {/* Center: Search Bar */}
+      {/* Uprostřed vyhledávací pole */}
       <div className="flex-1 flex justify-center px-4">
         <div className="w-full max-w-xl relative">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
@@ -71,7 +71,7 @@ export function TopBar({ onToggleSidebar }: Props) {
         </div>
       </div>
 
-      {/* Right: Actions & Profile */}
+      {/* Vpravo změna jazyka názvů titulů a profil */}
       <div className="flex items-center justify-end lg:w-auto gap-3 relative" ref={popoverRef}>
         <button
           onClick={() => setLanguage(language === 'cs' ? 'en' : 'cs')}

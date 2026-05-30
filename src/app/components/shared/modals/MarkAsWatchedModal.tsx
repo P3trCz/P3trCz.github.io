@@ -1,12 +1,11 @@
-import React, { useState } from 'react';
+// Modál pro ruční označení titulu jako zhlédnutého – umožňuje zadat datum, službu a pro seriály počet epizod.
+import { useState } from 'react';
 import { useAppStore } from '../../../store/useAppStore';
 import { catalog, ServiceType } from '../../../data/catalog';
 import { Modal } from '../Modal';
-import { useTitleName } from '../../../hooks/useTitleName';
 import { TitleTile } from '../TitleTile';
 
 export function MarkAsWatchedModal() {
-  const getTitleName = useTitleName();
   const promptWatchedTitleId = useAppStore(state => state.promptWatchedTitleId);
   const setPromptWatchedTitleId = useAppStore(state => state.setPromptWatchedTitleId);
   const markAsWatched = useAppStore(state => state.markAsWatched);
@@ -30,6 +29,7 @@ export function MarkAsWatchedModal() {
     if (promptWatchedTitleId) {
       if (existingItem) {
         // Formátujeme existující timestamp na YYYY-MM-DD
+        // eslint-disable-next-line react-hooks/purity
         const d = new Date(existingItem.watchedAt || Date.now());
         const dateString = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
         setDate(dateString);
@@ -44,7 +44,7 @@ export function MarkAsWatchedModal() {
         const dateString = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
         setDate(dateString);
         setService('Unknown');
-        
+
         if (title?.type === 'Seriál') {
           setEpisodesWatched(0);
         } else {

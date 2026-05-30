@@ -1,4 +1,13 @@
-import React, { useState } from 'react';
+/**
+ * Stats.tsx – stránka statistik sledování
+ *
+ * Zobrazuje statistiky zhlédnutého obsahu aktuálního uživatele za vybrané časové období.
+ * Klíčová logika:
+ * - getRangeStartMs(): převede zvolený rozsah (např. 'Měsíc') na Unix timestamp začátku
+ * - processData(): projde historii sledování, agreguje data po službách a žánrech
+ * - Koláčový graf (ServicePieChart) zobrazuje podíl streamovacích služeb na celkovém čase
+ */
+import { useState } from 'react';
 import { useAppStore } from '../../../store/useAppStore';
 import { catalog, ServiceType, serviceLogos } from '../../../data/catalog';
 import { CustomTimeRangeModal } from '../../shared/modals/CustomTimeRangeModal';
@@ -28,7 +37,6 @@ export function Stats() {
 
   /**
    * Vrátí timestamp začátku daného časového rozsahu.
-   * Sdílená logika pro getRangeDates() i processData().
    */
   const getRangeStartMs = (): number => {
     switch (range) {
@@ -113,6 +121,7 @@ export function Stats() {
       return item.watchedAt >= getRangeStartMs();
     });
 
+    // Pro každý záznam najde titul v katalogu a agreguje data po službách/žánrech
     filteredHistory.forEach(item => {
       const title = catalog.find(m => m.id.toString() === item.titleId);
 
@@ -122,8 +131,7 @@ export function Stats() {
           watchedTitleObjects.push(title);
         }
 
-        // Tady zastavíme zpracování pro statistiky, pokud je to Jiná.
-        // Tím se nezvýší počty filmů, seriálů, ani se nepřidají žánry.
+        // Zastavíme zpracování pro statistiky, pokud je služba 'Jiná'.
         if (item.service === 'Unknown') return;
 
         if (title.type === 'Film') {
@@ -140,11 +148,13 @@ export function Stats() {
       }
     });
 
+    // Připraví data pro koláčový graf – pole { name: serviceNázev, value: minuty }
     const pieData = Object.entries(serviceTime).map(([name, value]) => ({
       name,
       value
     }));
 
+    // Nejsledovanější žánr – seřadí záznamy sestupně a vezme první
     const topGenreMovie = Object.entries(genreCountMovie).sort((a, b) => b[1] - a[1])[0];
     const topGenreSeries = Object.entries(genreCountSeries).sort((a, b) => b[1] - a[1])[0];
     const topGenreAll = Object.entries(genreCountAll).sort((a, b) => b[1] - a[1])[0];

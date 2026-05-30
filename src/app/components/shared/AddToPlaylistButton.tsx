@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Bookmark } from 'lucide-react';
 import { AddTitleToPlaylistModal } from './modals/AddTitleToPlaylistModal';
 import { useAppStore } from '../../store/useAppStore';
@@ -27,11 +27,10 @@ export function AddToPlaylistButton({ titleId }: Props) {
           e.stopPropagation();
           setIsOpen(true);
         }}
-        className={`w-8 h-8 rounded-full border flex items-center justify-center transition-colors ${
-          isSaved
+        className={`w-8 h-8 rounded-full border flex items-center justify-center transition-colors ${isSaved
             ? 'bg-red-500/10 border-[#dc2626] text-[#dc2626]'
             : 'bg-[#111116] border-[#27272a] text-gray-500 hover:text-white hover:border-[#dc2626]'
-        }`}
+          }`}
         title={isSaved ? 'Upravit zařazení do seznamů' : 'Přidat do seznamu'}
       >
         <Bookmark size={16} className={isSaved ? 'fill-[#dc2626]' : ''} />
@@ -46,5 +45,3 @@ export function AddToPlaylistButton({ titleId }: Props) {
     </>
   );
 }
-
-

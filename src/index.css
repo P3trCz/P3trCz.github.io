@@ -20,12 +20,10 @@
     margin: 0;
   }
 
-  /* Zajištění, aby se žádné lucide ikonky nikdy nedeformovaly (nezmenšovaly) ve flex kontejnerech */
   svg.lucide {
     flex-shrink: 0;
   }
 
-  /* Prevent Recharts outline on click */
   .recharts-wrapper,
   .recharts-surface,
   .recharts-sector,
@@ -62,7 +60,6 @@
     @apply flex items-center justify-center gap-2 bg-[#27272a] hover:bg-[#3f3f46] text-white py-3 px-4 rounded-xl font-medium transition-colors;
   }
 
-  /* Malá varianta pro tlačítka v modálech a kartách */
   .btn-sm-primary {
     @apply flex items-center justify-center gap-2 bg-[#dc2626] hover:bg-[#b91c1c] text-white py-2 px-3 rounded-lg text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed;
   }
@@ -79,11 +76,8 @@
     @apply bg-[#111116] border border-[#27272a] rounded-xl p-6 shadow-sm;
   }
 
-  /* Klikatelný řádek s volitelným stavem (použití: seznamy, přátelé, modaly) */
   .selectable-item {
-    @apply w-full flex items-center justify-between gap-3 p-3 rounded-xl border transition-all
-           bg-[#1c1c24] border-[#27272a] text-gray-400
-           hover:border-[#3f3f46] hover:text-white cursor-pointer;
+    @apply w-full flex items-center justify-between gap-3 p-3 rounded-xl border transition-all bg-[#1c1c24] border-[#27272a] text-gray-400 hover:border-[#3f3f46] hover:text-white cursor-pointer;
   }
 
   .selectable-item--active {

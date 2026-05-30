@@ -1,4 +1,3 @@
-import React from 'react';
 import { ArrowDown, ArrowUp, ArrowUpDown } from 'lucide-react';
 import { SortField, SortOrder } from '../../utils/sortUtils';
 

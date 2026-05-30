@@ -1,3 +1,4 @@
+// Modál pro sdílení titulu nebo playlistu příteli.
 import React, { useState } from 'react';
 import { Share2, Check } from 'lucide-react';
 import { Modal } from '../Modal';
@@ -56,13 +57,13 @@ export function ShareModal({
         <div className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-400 mb-2">{selectionLabel}</label>
-            
+
             <div className="mb-3">
               <SearchInput
-                  value={searchQuery}
-                  onChange={setSearchQuery}
-                  placeholder={searchPlaceholder}
-                />
+                value={searchQuery}
+                onChange={setSearchQuery}
+                placeholder={searchPlaceholder}
+              />
             </div>
 
             <div className="flex flex-col gap-2 max-h-[250px] overflow-y-auto pr-2 custom-scrollbar">
@@ -71,30 +72,28 @@ export function ShareModal({
               ) : (
                 filteredItems.map(item => {
                   const isSelected = selectedId === item.id;
-                  
+
                   return (
                     <div
                       key={item.id}
                       onClick={() => !item.disabled && setSelectedId(selectedId === item.id ? '' : item.id)}
-                      className={`selectable-item ${
-                        item.disabled
-                          ? 'opacity-50 cursor-not-allowed hover:border-[#27272a] hover:text-gray-400'
-                          : isSelected
-                            ? 'selectable-item--active'
-                            : ''
-                      }`}
+                      className={`selectable-item ${item.disabled
+                        ? 'opacity-50 cursor-not-allowed hover:border-[#27272a] hover:text-gray-400'
+                        : isSelected
+                          ? 'selectable-item--active'
+                          : ''
+                        }`}
                       title={item.disabled ? item.disabledReason : ""}
                     >
-                      <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs shrink-0 ${
-                        item.disabled
-                          ? 'bg-[#0a0a0f] text-gray-500'
-                          : isSelected
-                            ? 'bg-[#dc2626] text-white'
-                            : 'bg-[#0a0a0f] text-gray-400'
-                      }`}>
+                      <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs shrink-0 ${item.disabled
+                        ? 'bg-[#0a0a0f] text-gray-500'
+                        : isSelected
+                          ? 'bg-[#dc2626] text-white'
+                          : 'bg-[#0a0a0f] text-gray-400'
+                        }`}>
                         {item.icon ? item.icon : item.title.charAt(0).toUpperCase()}
                       </div>
-                      
+
                       <div className="flex-1 min-w-0 flex items-center gap-2">
                         <div className="flex-1 min-w-0 pr-2">
                           <div className="font-bold text-sm text-white truncate">{item.title}</div>
@@ -106,9 +105,9 @@ export function ShareModal({
 
                       <div className="flex items-center gap-2 shrink-0">
                         {item.tag && (
-                           <span className="text-[10px] bg-[#dc2626]/20 text-[#dc2626] px-1.5 py-0.5 rounded uppercase tracking-wider font-normal truncate max-w-[100px]" title={item.tag}>
-                             {item.tag}
-                           </span>
+                          <span className="text-[10px] bg-[#dc2626]/20 text-[#dc2626] px-1.5 py-0.5 rounded uppercase tracking-wider font-normal truncate max-w-[100px]" title={item.tag}>
+                            {item.tag}
+                          </span>
                         )}
                         {isSelected && <Check size={16} className="text-[#dc2626]" />}
                       </div>

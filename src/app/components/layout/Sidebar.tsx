@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { Home, ListVideo, BarChart2, Settings, Play, Info, X, Users } from 'lucide-react';
 import tmdbLogo from '../../../assets/logos/tmdb-logo.svg';

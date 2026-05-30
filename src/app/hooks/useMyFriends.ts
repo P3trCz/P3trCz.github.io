@@ -3,7 +3,6 @@ import { usersDb } from '../data/usersDb';
 
 /**
  * Hook vracející seznam přátel aktuálně přihlášeného uživatele.
- * Nahrazuje opakující se pattern v Friends.tsx, Playlists.tsx a TitleDetail.tsx.
  */
 export function useMyFriends() {
   const currentUser = useAppStore(state => state.currentUser);

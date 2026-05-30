@@ -1,7 +1,15 @@
+/**
+ * playlists.ts – Zustand modul pro správu seznamů
+ *
+ * Každý uživatel má vlastní kolekci playlistů uloženou v Record<userId, Playlist[]>.
+ */
 import { StateCreator } from 'zustand';
 import { AppState, PlaylistsState, Playlist } from '../types';
 import { INITIAL_PLAYLISTS } from '../../data/initialData';
 
+/**
+ * Porovná sady titleIds dvou playlistů (bez ohledu na pořadí) a zkontroluje shodu fromUserId.
+ */
 const isDuplicatePlaylist = (userPlaylists: Playlist[], playlistToCheck: Playlist, fromUserIdToCheck?: string) => {
   const sortedNewIds = JSON.stringify([...playlistToCheck.titleIds].sort());
   const hasIdenticalContent = userPlaylists.some(p =>
@@ -24,6 +32,7 @@ export const createPlaylistsModule: StateCreator<AppState, [], [], PlaylistsStat
       return {
         playlists: {
           ...state.playlists,
+          // Nové ID je generováno jako náhodný base-36 řetězec
           [userId]: [
             ...userPlaylists,
             { id: Math.random().toString(36).substr(2, 9), name, titleIds: [] }
@@ -70,6 +79,7 @@ export const createPlaylistsModule: StateCreator<AppState, [], [], PlaylistsStat
     set((state) => {
       const userPlaylists = state.playlists[userId] || [];
       const updatedPlaylists = userPlaylists.map(pl => {
+        // Přidá titleId pouze pokud ještě v playlistu není
         if (pl.id === playlistId && !pl.titleIds.includes(titleId)) {
           return { ...pl, titleIds: [...pl.titleIds, titleId] };
         }
@@ -112,6 +122,7 @@ export const createPlaylistsModule: StateCreator<AppState, [], [], PlaylistsStat
     if (!currentUser) return false;
 
     const userPlaylists = get().playlists[currentUser.id] || [];
+    // Pokud je autor playlistu sám uživatel, fromUserId se nezaznamenává
     const finalFromUserId = fromUserId === currentUser.id ? undefined : fromUserId;
     if (isDuplicatePlaylist(userPlaylists, playlist, finalFromUserId)) return false;
 

@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+// Modál pro náhled obsahu seznamu s možností ho uložit.
+import { useState } from 'react';
 import { Download } from 'lucide-react';
 import { Playlist } from '../../../store/useAppStore';
 import { catalog, Title } from '../../../data/catalog';
@@ -75,4 +76,3 @@ export function PreviewPlaylistModal({ playlist, fromUserId, onClose, onViewMovi
     </Modal>
   );
 }
-

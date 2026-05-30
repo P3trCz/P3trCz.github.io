@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Title, ServiceType, serviceColors } from '../../data/catalog';
-import { X, Star, Play, Share2, Check, Eye } from 'lucide-react';
+import { X, Star, Play, Share2, Eye } from 'lucide-react';
 import { useAppStore } from '../../store/useAppStore';
 import { Snackbar } from './Snackbar';
 import { useTitleName } from '../../hooks/useTitleName';
@@ -33,7 +33,7 @@ export function TitleDetail({ title, onClose }: Props) {
 
   const handlePlay = (service: ServiceType) => {
     // Simulace zhlédnutí pro statistiky
-    const duration = title.type === 'Film' ? title.runtime : 45;
+    const duration = title.runtime || 45;
     let eps: number | undefined = undefined;
 
     if (title.type === 'Seriál') {
@@ -44,12 +44,11 @@ export function TitleDetail({ title, onClose }: Props) {
     // eslint-disable-next-line react-hooks/purity
     markAsWatched(title.id.toString(), service, duration, Date.now(), eps);
 
-    // Zde by normálně bylo spuštění přehrávače
+    // Přesměrování na TMDB
     if (title.watch_link) {
       window.open(title.watch_link, '_blank');
     }
   };
-
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm" onClick={(e) => { e.stopPropagation(); onClose(); }}>
@@ -57,7 +56,7 @@ export function TitleDetail({ title, onClose }: Props) {
         className="w-full max-w-4xl bg-[#111116] rounded-2xl border border-[#27272a] shadow-2xl flex flex-col lg:flex-row overflow-hidden max-h-[90vh] relative"
         onClick={e => e.stopPropagation()}
       >
-        {/* Fixed Buttons in corner of the whole modal */}
+        {/* Tlačítka v horním rohu */}
         <div className="absolute top-4 right-4 flex items-center gap-2 z-50">
           <button
             onClick={() => {
@@ -87,15 +86,15 @@ export function TitleDetail({ title, onClose }: Props) {
           </button>
         </div>
 
-        {/* Media (Poster/Backdrop) */}
+        {/* Media */}
         <div className="w-full lg:w-2/5 shrink-0 relative h-64 lg:h-auto">
-          {/* Backdrop for mobile (wide) */}
+          {/* Backdrop pro mobil */}
           <img
             src={title.backdrop_url}
             alt={getTitleName(title)}
             className="w-full h-full object-cover lg:hidden"
           />
-          {/* Poster for desktop (vertical) */}
+          {/* Plakát pro desktop */}
           <img
             src={title.poster_url}
             alt={getTitleName(title)}
@@ -104,7 +103,7 @@ export function TitleDetail({ title, onClose }: Props) {
           <div className="absolute inset-0 bg-gradient-to-t from-[#111116] via-transparent to-transparent opacity-80 lg:hidden"></div>
         </div>
 
-        {/* Content */}
+        {/* Obsah */}
         <div className="w-full lg:w-3/5 p-6 lg:p-8 flex flex-col overflow-y-auto">
           <h2 className="text-2xl lg:text-3xl font-bold text-white leading-tight mb-2 pr-40">{getTitleName(title)}</h2>
 
@@ -213,6 +212,7 @@ export function TitleDetail({ title, onClose }: Props) {
         </div>
       </div>
 
+      {/* Sdílení */}
       {shareModalOpen && (
         <ShareModal
           modalTitle="Sdílet titul"
@@ -241,4 +241,3 @@ export function TitleDetail({ title, onClose }: Props) {
     </div>
   );
 }
-

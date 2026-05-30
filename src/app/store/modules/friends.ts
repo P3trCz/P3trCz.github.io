@@ -1,10 +1,26 @@
+/**
+ * friends.ts – Zustand modul pro správu přátel, oznámení a zpráv
+ *
+ * Přátelství jsou obousměrná: při přijetí žádosti se přidá každý do seznamu přátel toho druhého.
+ * Oznámení slouží jako inbox – žádosti o přátelství, sdílené playlisty, doporučení titulů.
+ * Zprávy jsou kopírovány do historie obou účastníků – každý tak vidí celou konverzaci.
+ *
+ * Klíčová logika sendFriendRequest:
+ * - Pokud nám druhý uživatel už poslal žádost, automaticky ji přijmeme.
+ * - Pokud jsme žádost už odeslali my, vrátíme ALREADY_SENT.
+ * - Jinak vytvoříme notifikaci v inboxu cílového uživatele.
+ */
 import { StateCreator } from 'zustand';
 import { AppState, FriendsState, Notification, ChatMessage, Playlist } from '../types';
 import { INITIAL_FRIENDS, INITIAL_NOTIFICATIONS, INITIAL_MESSAGE_HISTORY } from '../../data/initialData';
 
+/**
+ * Porovná titleIds dvou playlistů a fromUserId.
+ * Zabraňuje ukládání duplicitních sdílených seznamů.
+ */
 const isDuplicatePlaylist = (userPlaylists: Playlist[], playlistToCheck: Playlist, fromUserIdToCheck?: string) => {
   const sortedNewIds = JSON.stringify([...playlistToCheck.titleIds].sort());
-  return userPlaylists.some(p => 
+  return userPlaylists.some(p =>
     JSON.stringify([...p.titleIds].sort()) === sortedNewIds &&
     p.fromUserId === fromUserIdToCheck
   );
@@ -69,13 +85,16 @@ export const createFriendsModule: StateCreator<AppState, [], [], FriendsState> =
       return {
         notifications: {
           ...state.notifications,
+          // Odeber notifikaci z inboxu přijímatele
           [currentUser.id]: currentNotifs.filter(n => n.id !== notificationId),
+          // Odeber také případnou žádost od nás
           [friendId]: (state.notifications[friendId] || []).filter(n =>
             !(n.type === 'FRIEND_REQUEST' && n.fromUserId === currentUser.id)
           )
         },
         friends: {
           ...state.friends,
+          // Set zabrání duplicitním záznamům při opakovaném přijetí
           [currentUser.id]: [...new Set([...currentUserFriends, friendId])],
           [friendId]: [...new Set([...friendFriends, currentUser.id])]
         }
@@ -145,6 +164,7 @@ export const createFriendsModule: StateCreator<AppState, [], [], FriendsState> =
         playlist
       };
 
+      // Zpráva je identická s notifikací, ale ukládá se zvlášť do messageHistory
       const newMessage: ChatMessage = {
         id: newNotif.id,
         fromUserId: currentUser.id,
@@ -165,6 +185,7 @@ export const createFriendsModule: StateCreator<AppState, [], [], FriendsState> =
         },
         messageHistory: {
           ...state.messageHistory,
+          // Zpráva se uloží do historie obou uživatelů
           [currentUser.id]: [newMessage, ...currentUserHistory],
           [friendId]: [newMessage, ...friendHistory]
         }
@@ -187,6 +208,7 @@ export const createFriendsModule: StateCreator<AppState, [], [], FriendsState> =
         titleId
       };
 
+      // Stejný princip jako sharePlaylist
       const newMessage: ChatMessage = {
         id: newNotif.id,
         fromUserId: currentUser.id,
@@ -239,9 +261,11 @@ export const createFriendsModule: StateCreator<AppState, [], [], FriendsState> =
       if (!notif || notif.type !== 'SHARED_PLAYLIST' || !notif.playlist) return state;
 
       const userPlaylists = state.playlists[currentUser.id] || [];
+      // Pokud je odesilatel sám uživatel, neukládáme fromUserId
       const finalFromUserId = notif.fromUserId === currentUser.id ? undefined : notif.fromUserId;
 
       if (isDuplicatePlaylist(userPlaylists, notif.playlist, finalFromUserId)) {
+        // Odstraníme notifikaci z inboxu
         return {
           notifications: {
             ...state.notifications,
@@ -262,6 +286,7 @@ export const createFriendsModule: StateCreator<AppState, [], [], FriendsState> =
           ...state.playlists,
           [currentUser.id]: [...userPlaylists, newPlaylist]
         },
+        // Po uložení playlist odstraníme notifikaci z inboxu
         notifications: {
           ...state.notifications,
           [currentUser.id]: currentNotifs.filter(n => n.id !== notificationId)

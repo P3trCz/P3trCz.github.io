@@ -1,3 +1,4 @@
+// Formulář přihlášení – ověřuje email a heslo oproti lokální databázi uživatelů.
 import React, { useState } from 'react';
 import { useAppStore } from '../../../store/useAppStore';
 import { usersDb } from '../../../data/usersDb';

@@ -1,4 +1,4 @@
-import React from 'react';
+// Potvrzovací modál pro odebrání přítele ze seznamu přátel.
 import { Modal } from '../Modal';
 
 type RemoveFriendModalProps = {

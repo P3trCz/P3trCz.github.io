@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+// Stránka nastavení – správa streamovacích služeb a změna údajů účtu.
+import { useState } from 'react';
 import { useAppStore } from '../../store/useAppStore';
 import { serviceLogos } from '../../data/catalog';
-import { usersDb } from '../../data/usersDb';
 import { User, LogOut, Key, Edit2 } from 'lucide-react';
-import { Modal } from '../shared/Modal';
 import { Snackbar } from '../shared/Snackbar';
+import { ChangeUsernameModal } from '../shared/modals/ChangeUsernameModal';
+import { ChangePasswordModal } from '../shared/modals/ChangePasswordModal';
 
 import { AVAILABLE_SERVICES } from '../../constants';
 
@@ -14,85 +15,15 @@ export function Settings() {
   const subscriptionsState = useAppStore(state => state.subscriptions);
   const subscriptions = currentUser ? (subscriptionsState[currentUser.id] || []) : [];
   const toggleSubscription = useAppStore(state => state.toggleSubscription);
-  const updateUsername = useAppStore(state => state.updateUsername);
 
   const [showUsernameModal, setShowUsernameModal] = useState(false);
-  const [newUsername, setNewUsername] = useState('');
-  const [usernameError, setUsernameError] = useState('');
 
   const [showPasswordModal, setShowPasswordModal] = useState(false);
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [passwordError, setPasswordError] = useState('');
 
   const [snackbarMsg, setSnackbarMsg] = useState('');
-  const [snackbarType, setSnackbarType] = useState<'success'|'error'>('success');
+  const [snackbarType, setSnackbarType] = useState<'success' | 'error'>('success');
 
   if (!currentUser) return null;
-
-  const handleUsernameChange = () => {
-    setUsernameError('');
-
-    if (newUsername.length < 1) {
-      setUsernameError('Uživatelské jméno musí mít alespoň 1 znak!');
-      return;
-    }
-
-    const existingUser = usersDb.findUserByUsername(newUsername);
-    if (existingUser && existingUser.id !== currentUser?.id) {
-      setUsernameError('Toto uživatelské jméno je již obsazené!');
-      return;
-    }
-
-    const updated = usersDb.updateUsername(currentUser!.email, newUsername);
-    if (updated) {
-      updateUsername(newUsername);
-      setSnackbarMsg('Uživatelské jméno bylo úspěšně změněno!');
-      setSnackbarType('success');
-      setShowUsernameModal(false);
-      setNewUsername('');
-    } else {
-      setUsernameError('Nepodařilo se změnit uživatelské jméno!');
-    }
-  };
-
-  const closeUsernameModal = () => {
-    setShowUsernameModal(false);
-    setNewUsername('');
-    setUsernameError('');
-  };
-
-  const handlePasswordChange = () => {
-    setPasswordError('');
-
-    if (newPassword.length < 6) {
-      setPasswordError('Heslo musí mít alespoň 6 znaků!');
-      return;
-    }
-
-    if (newPassword !== confirmPassword) {
-      setPasswordError('Hesla se neshodují!');
-      return;
-    }
-
-    const updated = usersDb.updatePassword(currentUser.email, newPassword);
-    if (updated) {
-      setSnackbarMsg('Heslo bylo úspěšně změněno!');
-      setSnackbarType('success');
-      setShowPasswordModal(false);
-      setNewPassword('');
-      setConfirmPassword('');
-    } else {
-      setPasswordError('Nepodařilo se změnit heslo!');
-    }
-  };
-
-  const closePasswordModal = () => {
-    setShowPasswordModal(false);
-    setNewPassword('');
-    setConfirmPassword('');
-    setPasswordError('');
-  };
 
   return (
     <>
@@ -113,10 +44,7 @@ export function Settings() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <button
-                onClick={() => {
-                  setNewUsername(currentUser.username);
-                  setShowUsernameModal(true);
-                }}
+                onClick={() => setShowUsernameModal(true)}
                 className="flex items-center justify-between p-4 bg-[#0a0a0f] border border-[#27272a] rounded-lg hover:border-[#dc2626] transition-colors"
               >
                 <div className="flex items-center gap-3 text-white">
@@ -139,7 +67,7 @@ export function Settings() {
 
           <section className="panel-container-dark">
             <h2 className="text-xl font-semibold text-white mb-2">Moje předplatná</h2>
-            <p className="text-sm text-gray-400 mb-6">Vyberte služby, které si aktuálně předplácíte. Obsah z těchto služeb bude primárně doporučován a označen jako dostupný.</p>
+            <p className="text-sm text-gray-400 mb-6">Vyberte služby, které si aktuálně předplácíte. Obsah z těchto služeb bude zobrazený v katalogu.</p>
 
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {AVAILABLE_SERVICES.map(service => {
@@ -149,8 +77,8 @@ export function Settings() {
                     key={service.id}
                     onClick={() => toggleSubscription(service.id)}
                     className={`relative p-4 rounded-xl border transition-all ${isSubscribed
-                        ? 'bg-[#1c1c24] border-[#dc2626] shadow-[0_0_15px_rgba(220,38,38,0.1)]'
-                        : 'bg-[#0a0a0f] border-[#27272a] hover:border-[#3f3f46]'
+                      ? 'bg-[#1c1c24] border-[#dc2626] shadow-[0_0_15px_rgba(220,38,38,0.1)]'
+                      : 'bg-[#0a0a0f] border-[#27272a] hover:border-[#3f3f46]'
                       }`}
                   >
                     {isSubscribed && (
@@ -187,80 +115,27 @@ export function Settings() {
         </div>
       </div>
 
-      <Modal
+      {/* Změna hesla */}
+      <ChangePasswordModal
         isOpen={showPasswordModal}
-        onClose={closePasswordModal}
-        title="Změnit heslo"
-      >
-        <div className="space-y-4">
-            <div>
-              <label className="block text-sm text-gray-400 mb-2">Nové heslo</label>
-              <input
-                type="password"
-                value={newPassword}
-                onChange={e => setNewPassword(e.target.value)}
-                placeholder="Zadejte nové heslo"
-                className="w-full bg-[#0a0a0f] border border-[#27272a] text-white rounded-lg py-2.5 px-4 focus:outline-none focus:border-[#dc2626] transition-colors"
-              />
-            </div>
+        onClose={() => setShowPasswordModal(false)}
+        onSuccess={() => {
+          setSnackbarMsg('Heslo bylo úspěšně změněno!');
+          setSnackbarType('success');
+          setShowPasswordModal(false);
+        }}
+      />
 
-            <div>
-              <label className="block text-sm text-gray-400 mb-2">Potvrďte nové heslo</label>
-              <input
-                type="password"
-                value={confirmPassword}
-                onChange={e => setConfirmPassword(e.target.value)}
-                placeholder="Zadejte heslo znovu"
-                className="w-full bg-[#0a0a0f] border border-[#27272a] text-white rounded-lg py-2.5 px-4 focus:outline-none focus:border-[#dc2626] transition-colors"
-              />
-            </div>
-
-            {passwordError && (
-              <p className="text-sm text-red-400">{passwordError}</p>
-            )}
-
-            <button
-              onClick={handlePasswordChange}
-              className="btn-action-primary w-full mt-2"
-            >
-              Uložit nové heslo
-            </button>
-          </div>
-      </Modal>
-
-      <Modal
+      {/* Změna uživatelského jména */}
+      <ChangeUsernameModal
         isOpen={showUsernameModal}
-        onClose={closeUsernameModal}
-        title="Změnit uživatelské jméno"
-      >
-        <div className="space-y-4">
-            <div>
-              <label className="block text-sm text-gray-400 mb-2">Nové uživatelské jméno</label>
-              <input
-                type="text"
-                value={newUsername}
-                onChange={e => setNewUsername(e.target.value)}
-                placeholder="Zadejte nové uživatelské jméno"
-                maxLength={24}
-                className="w-full bg-[#0a0a0f] border border-[#27272a] text-white rounded-lg py-2.5 px-4 focus:outline-none focus:border-[#dc2626] transition-colors"
-              />
-              <div className={`text-xs mt-1 text-right ${newUsername.length >= 24 ? 'text-[#dc2626]' : 'text-gray-500'}`}>
-                {newUsername.length} / 24 {newUsername.length >= 24 ? '(Dosažen limit)' : ''}
-              </div>
-            </div>
-
-            {usernameError && (
-              <p className="text-sm text-red-400">{usernameError}</p>
-            )}
-
-            <button
-              onClick={handleUsernameChange}
-              className="btn-action-primary w-full mt-2"
-            >
-              Uložit jméno
-            </button>
-          </div>
-      </Modal>
+        onClose={() => setShowUsernameModal(false)}
+        onSuccess={() => {
+          setSnackbarMsg('Uživatelské jméno bylo úspěšně změněno!');
+          setSnackbarType('success');
+          setShowUsernameModal(false);
+        }}
+      />
 
       <Snackbar message={snackbarMsg} type={snackbarType} onClose={() => setSnackbarMsg('')} />
     </>

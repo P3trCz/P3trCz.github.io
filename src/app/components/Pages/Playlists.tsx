@@ -1,4 +1,5 @@
-import React, { useState, useRef } from 'react';
+// Stránka playlistů – vytváření, úprava a prohlížení vlastních i sdílených seznamů.
+import { useState, useRef } from 'react';
 import { useAppStore } from '../../store/useAppStore';
 import { catalog, Title } from '../../data/catalog';
 import { MoreHorizontal, ArrowLeft, Edit2, Trash2, Share2, Plus } from 'lucide-react';
@@ -95,8 +96,6 @@ export function Playlists() {
     setDeleteModalPlaylistId(id);
     setOpenMenuId(null);
   };
-
-
 
   const renderDetail = () => {
     const isWatchlist = activePlaylistId === '__watchlist__';
@@ -423,7 +422,7 @@ export function Playlists() {
     <>
       {activePlaylistId ? renderDetail() : renderOverview()}
 
-      {/* SDÍLET MODAL */}
+      {/* Sdílet */}
       {shareModalPlaylistId && (
         <ShareModal
           modalTitle="Sdílet seznam"
@@ -447,7 +446,7 @@ export function Playlists() {
         />
       )}
 
-      {/* PŘEJMENOVAT MODAL */}
+      {/* Přejmenovat */}
       {renameModalPlaylistId && (
         <RenamePlaylistModal
           playlistId={renameModalPlaylistId}
@@ -457,7 +456,7 @@ export function Playlists() {
         />
       )}
 
-      {/* SMAZAT MODAL */}
+      {/* Smazat */}
       {deleteModalPlaylistId && (
         <DeletePlaylistModal
           playlistName={playlists.find(p => p.id === deleteModalPlaylistId)?.name}
@@ -472,7 +471,7 @@ export function Playlists() {
         />
       )}
 
-      {/* PŘIDAT TITUL MODAL */}
+      {/* Přidat titul do seznamu */}
       {addTitleModalPlaylistId && (
         <SearchTitleForPlaylistModal
           playlistName={addTitleModalPlaylistId === '__watchlist__' ? 'Přehrát později' : playlists.find(p => p.id === addTitleModalPlaylistId)?.name || 'Seznam'}

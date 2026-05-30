@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+// Modál pro přidání titulu do existujícího nebo nového seznamu.
+import { useState } from 'react';
 import { Clock, Check, ListVideo, Plus } from 'lucide-react';
 import { useAppStore } from '../../../store/useAppStore';
 import { catalog } from '../../../data/catalog';
 import { Modal } from '../Modal';
 import { getUsername } from '../../../utils/userUtils';
-import { useTitleName } from '../../../hooks/useTitleName';
 import { TitleTile } from '../TitleTile';
 import { SearchInput } from '../SearchInput';
 
@@ -14,8 +14,6 @@ type AddTitleToPlaylistModalProps = {
 };
 
 export function AddTitleToPlaylistModal({ titleId, onClose }: AddTitleToPlaylistModalProps) {
-  const getTitleName = useTitleName();
-
   const currentUser = useAppStore(state => state.currentUser);
   const playlists = useAppStore(state => state.playlists);
   const addToPlaylist = useAppStore(state => state.addToPlaylist);
@@ -26,13 +24,13 @@ export function AddTitleToPlaylistModal({ titleId, onClose }: AddTitleToPlaylist
 
   const [newPlaylistName, setNewPlaylistName] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
-  
+
   const userPlaylists = currentUser ? (playlists[currentUser.id] || []) : [];
   const userWatchlist = currentUser ? (watchlists[currentUser.id] || []) : [];
   const title = catalog.find(m => m.id.toString() === titleId);
 
   const normalizedQuery = searchQuery.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
-  
+
   const filteredPlaylists = userPlaylists.filter(pl => {
     const normalizedName = pl.name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
     return normalizedName.includes(normalizedQuery);
@@ -140,5 +138,3 @@ export function AddTitleToPlaylistModal({ titleId, onClose }: AddTitleToPlaylist
     </Modal>
   );
 }
-
-

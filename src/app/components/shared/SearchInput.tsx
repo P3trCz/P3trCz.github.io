@@ -1,4 +1,3 @@
-import React from 'react';
 import { Search } from 'lucide-react';
 
 type SearchInputProps = {
@@ -11,9 +10,7 @@ type SearchInputProps = {
 };
 
 /**
- * Vyhledávací input s ikonou lupy vlevo.
- * Nahrazuje opakující se inline pattern v Friends, TitleDetail,
- * RecommendMovieModal, SharePlaylistWithFriendModal a SearchTitleForPlaylistModal.
+ * Vyhledávací input pro modální okna, vyhledávání přátel, titulů, playlistů atd.
  */
 export function SearchInput({
   value,

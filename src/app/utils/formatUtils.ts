@@ -1,6 +1,5 @@
 /**
  * Formátování minut na "X h Y min".
- * Používáno v Stats.tsx (celkový čas), TitleDetail.tsx (délka filmu).
  */
 export function formatMinutes(minutes: number): string {
   const h = Math.floor(minutes / 60);
@@ -9,7 +8,7 @@ export function formatMinutes(minutes: number): string {
 }
 
 /**
- * Česká pluralizace pro počet položek v seznamu.
+ * Pluralizace pro počet položek v seznamu.
  * 1 → "položka", 2-4 → "položky", 5+ → "položek"
  */
 export function pluralizeItems(count: number): string {

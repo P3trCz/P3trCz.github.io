@@ -1,4 +1,4 @@
-import React from 'react';
+// Karta titulu v katalogu – zobrazuje plakát, název, hodnocení, žánry a dostupné streamovací služby.
 import { Title, serviceColors } from '../../../data/catalog';
 import { Star, Eye } from 'lucide-react';
 import { AddToPlaylistButton } from '../../shared/AddToPlaylistButton';
@@ -16,7 +16,7 @@ export function TitleCard({ title, onClick, className = '' }: Props) {
   const currentUser = useAppStore(state => state.currentUser);
   const watchHistory = useAppStore(state => state.watchHistory);
   const setPromptWatchedTitleId = useAppStore(state => state.setPromptWatchedTitleId);
-  
+
   const isWatched = currentUser && (watchHistory[currentUser.id] || []).some(h => h.titleId === title.id.toString());
 
   const renderStars = (rating: number) => {
@@ -63,11 +63,10 @@ export function TitleCard({ title, onClick, className = '' }: Props) {
             onClick={() => {
               if (currentUser) setPromptWatchedTitleId(title.id.toString());
             }}
-            className={`w-8 h-8 rounded-full border flex items-center justify-center transition-colors ${
-              isWatched
+            className={`w-8 h-8 rounded-full border flex items-center justify-center transition-colors ${isWatched
                 ? 'bg-red-500/10 border-[#dc2626] text-[#dc2626]'
                 : 'bg-[#111116] border-[#27272a] text-gray-500 hover:text-white hover:border-[#dc2626]'
-            }`}
+              }`}
             title={isWatched ? 'Označeno jako zhlédnuté' : 'Označit jako zhlédnuté'}
           >
             <Eye size={16} />
@@ -108,5 +107,3 @@ export function TitleCard({ title, onClick, className = '' }: Props) {
     </div>
   );
 }
-
-

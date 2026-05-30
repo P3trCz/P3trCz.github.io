@@ -1,3 +1,10 @@
+/**
+ * types.ts
+ * 
+ * Datové typy (Playlist, WatchHistoryItem, Notification, ChatMessage) popisují strukturu dat.
+ * State typy popisují jak data, tak akce (metody) pro každý modul.
+ * AppState je průnik všech modulů – výsledný typ celého storu.
+ */
 import type { User } from '../data/usersDb';
 import type { ServiceType } from '../data/catalog';
 
@@ -5,17 +12,18 @@ export type Playlist = {
   id: string;
   name: string;
   titleIds: string[];
-  fromUserId?: string;
+  fromUserId?: string; // Pokud je seznam sdílený od přítele
 };
 
 export type WatchHistoryItem = {
   titleId: string;
-  watchedAt: number;
+  watchedAt: number; // Timestamp v milisekundách
   service: string;
   durationMinutes: number;
-  episodesWatched?: number;
+  episodesWatched?: number; // Pouze pro seriály – počet zhlédnutých epizod
 };
 
+/** Typy oznámení, která může uživatel dostat */
 export type NotificationType =
   | 'FRIEND_REQUEST'
   | 'FRIEND_REQUEST_REJECTED'
@@ -32,6 +40,7 @@ export type Notification = {
   titleId?: string;
 };
 
+/** Zpráva v historii konverzace mezi dvěma uživateli */
 export type ChatMessage = {
   id: string;
   fromUserId: string;
@@ -42,6 +51,8 @@ export type ChatMessage = {
   playlist?: Playlist;
   titleId?: string;
 };
+
+// Store state typy
 
 export type AuthState = {
   currentUser: User | null;
@@ -64,11 +75,11 @@ export type PlaylistsState = {
   renamePlaylist: (playlistId: string, newName: string) => void;
   addToPlaylist: (playlistId: string, titleId: string) => void;
   removeFromPlaylist: (playlistId: string, titleId: string) => void;
-  importPlaylist: (playlist: Playlist, fromUserId?: string) => boolean;
+  importPlaylist: (playlist: Playlist, fromUserId?: string) => boolean; // Uloží cizí playlist do vlastních; vrátí false při detekci duplikátu
 };
 
 export type WatchlistState = {
-  watchlists: Record<string, string[]>;
+  watchlists: Record<string, string[]>; // Tituly označené "Přehrát později"
   toggleWatchlist: (titleId: string) => void;
 };
 
@@ -81,7 +92,7 @@ export type HistoryState = {
 };
 
 export type SubscriptionsState = {
-  subscriptions: Record<string, ServiceType[]>;
+  subscriptions: Record<string, ServiceType[]>; // Aktivní streamovací služby
   toggleSubscription: (service: ServiceType) => void;
 };
 
@@ -99,6 +110,7 @@ export type FriendsState = {
   saveSharedPlaylist: (notificationId: string) => void;
 };
 
+/** Výsledný typ celého storu */
 export type AppState = AuthState &
   SearchState &
   PlaylistsState &

@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+// Koláčový graf podílu streamovacích služeb na celkovém čase sledování.
+import { useState } from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Sector } from 'recharts';
-import { serviceColors, serviceLogos, ServiceType } from '../../../data/catalog';
+import { serviceColors, ServiceType } from '../../../data/catalog';
 import { formatMinutes } from '../../../utils/formatUtils';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

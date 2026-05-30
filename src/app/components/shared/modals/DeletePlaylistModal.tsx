@@ -1,4 +1,4 @@
-import React from 'react';
+// Potvrzovací modál pro smazání seznamu.
 import { Modal } from '../Modal';
 
 type DeletePlaylistModalProps = {

@@ -1,14 +1,25 @@
+/**
+ * sortUtils.ts
+ * 
+ * Řazení titulů v katalogu.
+ * Používá localeCompare s lokálním 'cs' pro správné řazení s diakritikou.
+ */
 import { Title } from '../data/catalog';
 
 export type SortField = 'title' | 'rating' | 'genres' | 'services' | null;
 export type SortOrder = 'asc' | 'desc';
 
+/**
+ * Seřadí pole titulů podle zvoleného sloupce a směru.
+ * Vrací nové pole.
+ * @param language  Aktivní jazyk – pro 'en' se použije title_en (pokud existuje)
+ */
 export function sortTitles(titles: Title[], sortField: SortField, sortOrder: SortOrder, language: 'cs' | 'en' = 'cs'): Title[] {
   if (!sortField) return titles;
 
   return [...titles].sort((a, b) => {
     let comparison = 0;
-    
+
     if (sortField === 'title') {
       const aTitle = language === 'en' && a.title_en ? a.title_en : a.title;
       const bTitle = language === 'en' && b.title_en ? b.title_en : b.title;

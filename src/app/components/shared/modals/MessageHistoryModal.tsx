@@ -1,4 +1,4 @@
-import React from 'react';
+// Modál zobrazující historii zpráv mezi dvěma uživateli s možností otevřít seznam přímo z chatu.
 import { History, ListVideo, Plus } from 'lucide-react';
 import { ChatMessage, Playlist } from '../../../store/useAppStore';
 import { catalog, Title } from '../../../data/catalog';
@@ -45,7 +45,7 @@ export function MessageHistoryModal({
         {filteredHistory.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-64 text-gray-500">
             <History size={48} className="mb-4 opacity-10" />
-            <p>Zatím zde nejsou žádné společné zprávy.</p>
+            <p>Zatím zde nejsou žádné společné zprávy</p>
           </div>
         ) : (
           filteredHistory.map(msg => {
@@ -115,4 +115,3 @@ export function MessageHistoryModal({
     </Modal>
   );
 }
-

@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+// Modál pro přejmenování existujícího seznamu s limitem 32 znaků.
+import { useState } from 'react';
 import { Modal } from '../Modal';
 
 type RenamePlaylistModalProps = {

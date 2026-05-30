@@ -1,3 +1,4 @@
+// Stránka přátel – správa seznamu přátel, doporučení titulů a sdílení playlistů.
 import React, { useState } from 'react';
 import { useAppStore, Playlist } from '../../store/useAppStore';
 import { usersDb } from '../../data/usersDb';
@@ -143,15 +144,13 @@ export function Friends() {
 
   const getMovieById = (id: string) => catalog.find(m => m.id.toString() === id.toString());
 
-
-
   return (
     <div className="p-8 pt-2 pb-24">
       <h1 className="text-3xl font-bold text-white mb-8">Přátelé</h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-        {/* Levý sloupec: Přidat přítele & Notifikace */}
+        {/* Levý sloupec: Přidat přítele & Oznámení */}
         <div className="lg:col-span-1 space-y-8">
 
           {/* Přidat přítele */}
@@ -370,7 +369,7 @@ export function Friends() {
 
       </div>
 
-      {/* MODAL: Sdílet Seznam */}
+      {/* Sdílet Seznam */}
       {sharePlaylistFriendId && (
         <ShareModal
           modalTitle={`Sdílet seznam s ${myFriends.find(f => f?.id === sharePlaylistFriendId)?.username || ''}`}
@@ -400,7 +399,7 @@ export function Friends() {
         />
       )}
 
-      {/* MODAL: Doporučit Film */}
+      {/* Doporučit Film */}
       {recommendTitleFriendId && (
         <RecommendMovieModal
           friendName={myFriends.find(f => f?.id === recommendTitleFriendId)?.username || ''}
@@ -413,7 +412,7 @@ export function Friends() {
         />
       )}
 
-      {/* MODAL: Historie doporučení */}
+      {/* Historie doporučení */}
       {historyFriendId && (
         <MessageHistoryModal
           friend={myFriends.find(f => f?.id === historyFriendId)!}
@@ -450,7 +449,7 @@ export function Friends() {
         />
       )}
 
-      {/* MODAL: Přidat film do seznamu */}
+      {/* Přidat film do seznamu */}
       {addingtitleId && (
         <AddTitleToPlaylistModal
           titleId={addingtitleId}
@@ -458,12 +457,12 @@ export function Friends() {
         />
       )}
 
-      {/* MODAL: Zobrazit detail filmu (pokud na něj kliknu z notifikace) */}
+      {/* Zobrazit detail filmu */}
       {selectedTitleForDetail && (
         <TitleDetail title={selectedTitleForDetail} onClose={() => setSelectedTitleForDetail(null)} />
       )}
 
-      {/* SNACKBARS */}
+      {/* Statusové hlášky */}
       <RemoveFriendModal
         friendToRemove={friendToRemove}
         onClose={() => setFriendToRemove(null)}

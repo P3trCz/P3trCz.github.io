@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+// Modál pro doporučení titulu příteli – umožňuje vyhledat titul a odeslat doporučení vybranému příteli.
+import { useState } from 'react';
 import { Film, ArrowLeft } from 'lucide-react';
 import { catalog } from '../../../data/catalog';
 import { Modal } from '../Modal';
-import { useTitleName } from '../../../hooks/useTitleName';
 import { useSearch } from '../../../hooks/useSearch';
 import { SearchInput } from '../SearchInput';
 import { TitleTile } from '../TitleTile';
@@ -14,7 +14,6 @@ type RecommendMovieModalProps = {
 };
 
 export function RecommendMovieModal({ friendName, onClose, onRecommend }: RecommendMovieModalProps) {
-  const getTitleName = useTitleName();
   const [search, setSearch] = useState('');
   const [selectedTitleId, setSelectedTitleId] = useState<string | null>(null);
   const [message, setMessage] = useState('');

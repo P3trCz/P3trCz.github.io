@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+// Modál zobrazující detailní seznam zhlédnutých titulů ve statistikách s možností filtrovat jen tituly viděné na streamovacích službách.
+import { useState } from 'react';
 import { Title } from '../../../data/catalog';
 import { WatchHistoryItem } from '../../../store/useAppStore';
 import { Modal } from '../Modal';
@@ -69,7 +70,7 @@ export function StatsWatchedTitlesModal({ titles, history, rangeText, onClose, o
                 {onlyWithService && <div className="w-3 h-3 bg-[#dc2626] rounded-sm" />}
               </div>
               <span className="text-sm font-medium text-gray-400 group-hover:text-white transition-colors">
-                Pouze se službami
+                Viděné na streamovacích službách
               </span>
             </label>
           </div>

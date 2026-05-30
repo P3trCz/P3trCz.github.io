@@ -1,3 +1,4 @@
+// Registrační formulář – vytváří nový účet po ověření unikátnosti jména a emailu.
 import React, { useState } from 'react';
 import { useAppStore } from '../../../store/useAppStore';
 import { usersDb } from '../../../data/usersDb';
@@ -21,7 +22,7 @@ export function RegisterForm({ onNavigate }: Props) {
       setError('Hesla se neshodují.');
       return;
     }
-    
+
     setTimeout(() => {
       if (usersDb.findUserByEmail(email)) {
         setError('Uživatel s tímto emailem již existuje.');

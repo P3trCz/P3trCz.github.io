@@ -48,7 +48,7 @@ export function Pagination({
           value={itemsPerPage}
           onChange={(e) => {
             onItemsPerPageChange(Number(e.target.value));
-            onPageChange(1); // Reset to page 1 on size change
+            onPageChange(1); // Reset na první stránku při změně velikosti
           }}
           className="bg-[#1c1c24] border border-[#27272a] text-white px-2 py-1 rounded focus:outline-none focus:border-[#dc2626] transition-colors"
         >

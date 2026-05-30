@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+// Modál pro vyhledání a přidání titulu do seznamu.
+import { useState } from 'react';
 import { Check } from 'lucide-react';
 import { catalog } from '../../../data/catalog';
 import { Modal } from '../Modal';
-import { useTitleName } from '../../../hooks/useTitleName';
 import { useSearch } from '../../../hooks/useSearch';
 import { SearchInput } from '../SearchInput';
 import { TitleTile } from '../TitleTile';
@@ -15,7 +15,6 @@ type SearchTitleForPlaylistModalProps = {
 };
 
 export function SearchTitleForPlaylistModal({ playlistName, currentTitleIds, onClose, onToggleTitle }: SearchTitleForPlaylistModalProps) {
-  const getTitleName = useTitleName();
   const [search, setSearch] = useState('');
 
   const searchedMovies = useSearch(catalog, search, title => [title.title, title.title_en], { minQueryLength: 3, returnEmptyIfBelowMinLength: true });

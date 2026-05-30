@@ -1,4 +1,5 @@
-import React, { useState, useRef } from 'react';
+// Rozbalovací dropdown pro filtrování katalogu – podporuje simple (zahrnutí) i advanced (zahrnutí/vyloučení) režim.
+import { useState, useRef } from 'react';
 import { ChevronDown, Check, X } from 'lucide-react';
 import { useOnClickOutside } from '../../../hooks/useOnClickOutside';
 
@@ -10,10 +11,10 @@ export type AdvancedFilterState = {
 type Props = {
   label: string;
   options: string[];
-  // Simple mode
+  // Basic filtr
   selected?: string[];
   onChange?: (selected: string[]) => void;
-  // Advanced mode
+  // Advanced filtr pro žánry
   advancedState?: AdvancedFilterState;
   onAdvancedChange?: (state: AdvancedFilterState) => void;
 };
@@ -51,7 +52,7 @@ export function FilterDropdown({ label, options, selected, onChange, advancedSta
 
   const toggleOption = isAdvanced ? toggleOptionAdvanced : toggleOptionSimple;
 
-  const hasSelection = isAdvanced 
+  const hasSelection = isAdvanced
     ? (advancedState!.included.length > 0 || advancedState!.excluded.length > 0)
     : (selected && selected.length > 0);
 

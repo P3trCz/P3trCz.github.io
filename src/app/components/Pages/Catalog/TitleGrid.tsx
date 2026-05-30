@@ -1,4 +1,14 @@
-import React, { useState, useMemo } from 'react';
+/**
+ * TitleGrid.tsx – hlavní stránka katalogu titulů
+ *
+ * Zobrazuje katalog všech titulů s filtrováním, vyhledáváním a stránkováním.
+ * Stránkování se automaticky resetuje při změně filtrů/vyhledávání. 
+ * Logika řazení:
+ * - První kliknutí nastaví sloupec a výchozí směr (název=asc, ostatní=desc)
+ * - Druhé kliknutí přepne směr
+ * - Třetí kliknutí vrátí na žádné řazení (null)
+ */
+import { useState, useMemo } from 'react';
 import { catalog, Title, ServiceType } from '../../../data/catalog';
 import { TITLE_TYPES } from '../../../constants';
 import { TitleCard } from './TitleCard';
@@ -23,6 +33,10 @@ export function TitleGrid() {
   const [sortField, setSortField] = useState<SortField>(null);
   const [sortOrder, setSortOrder] = useState<SortOrder>('desc');
 
+  /**
+   * Řazení sloupců: žádné → výchozí směr → opačný směr → žádné.
+   * Pro 'title' je výchozí směr A→Z, pro ostatní hodnota.
+   */
   const handleSort = (field: SortField) => {
     setCurrentPage(1);
     if (sortField === field) {
@@ -42,6 +56,7 @@ export function TitleGrid() {
 
   const currentUser = useAppStore(state => state.currentUser);
   const subscriptionsState = useAppStore(state => state.subscriptions);
+  // EMPTY_ARRAY je konstantní reference – zabrání zbytečným re-renderům komponent
   const EMPTY_ARRAY: string[] = [];
   const userSubscriptions = currentUser ? (subscriptionsState[currentUser.id] || EMPTY_ARRAY) : EMPTY_ARRAY;
   const watchHistory = useAppStore(state => state.watchHistory);
@@ -52,7 +67,7 @@ export function TitleGrid() {
 
   const isSearchActive = searchQuery.length >= 3;
 
-  // Reset pagination when filters or search change
+  // Resetování stránkování při změně filtrů nebo vyhledávání
   const currentFiltersSig = JSON.stringify({ selectedServices, selectedGenres, selectedTypes, selectedWatched, selectedCountries, userSubscriptions, searchQuery });
   const [prevFiltersSig, setPrevFiltersSig] = useState(currentFiltersSig);
 
@@ -79,19 +94,19 @@ export function TitleGrid() {
 
   const filteredCatalog = useMemo(() => {
     return searchedCatalog.filter(title => {
-      // 2. Základní filtr - film musí být dostupný na některé ze služeb, které uživatel vlastní
+      // Základní filtr - titul musí být dostupný na některé ze služeb, které uživatel vlastní
       if (searchQuery.length < 3) {
         const hasSubscribedService = title.streaming_services && title.streaming_services.some(service => userSubscriptions.includes(service));
         if (!hasSubscribedService) return false;
       }
 
-      // 3. Filtr podle služeb (OR logiky)
+      // Filtr podle služeb
       if (selectedServices.length > 0) {
         const matchesService = title.streaming_services && title.streaming_services.some(service => selectedServices.includes(service));
         if (!matchesService) return false;
       }
 
-      // 4. Filtr podle žánrů (AND logika pro zahrnuté, vyloučení)
+      // Filtr podle žánrů
       if (selectedGenres.included.length > 0) {
         const matchesGenres = selectedGenres.included.every(genre => title.genres.includes(genre));
         if (!matchesGenres) return false;
@@ -101,19 +116,19 @@ export function TitleGrid() {
         if (hasExcluded) return false;
       }
 
-      // 5. Filtr podle typu (Film / Seriál)
+      // Filtr podle typu
       if (selectedTypes.length > 0) {
         if (!selectedTypes.includes(title.type)) return false;
       }
 
-      // 6. Filtr podle zhlédnutí
+      // Filtr podle zhlédnutí
       if (selectedWatched.length > 0 && selectedWatched.length < 2) {
         const isWatched = userWatchedTitles.includes(title.id.toString());
         if (selectedWatched.includes('Zhlédnuté') && !isWatched) return false;
         if (selectedWatched.includes('Nezhlédnuté') && isWatched) return false;
       }
 
-      // 7. Filtr podle země původu
+      // Filtr podle země původu
       if (selectedCountries.length > 0) {
         const matchesCountry = title.origin_countries && title.origin_countries.some(c => selectedCountries.includes(c));
         if (!matchesCountry) return false;
@@ -141,7 +156,7 @@ export function TitleGrid() {
 
   return (
     <div className="p-8 pt-2 pb-24">
-      {/* Search results header */}
+      {/* Hlavička pro výsledky vyhledávání */}
       {isSearchActive && (
         <div className="flex items-center justify-between mb-6 bg-[#111116] border border-[#27272a] rounded-xl px-5 py-3">
           <div className="flex items-center gap-3 text-gray-300 break-words">
@@ -211,7 +226,7 @@ export function TitleGrid() {
       </div>
 
       <div className="bg-[#0a0a0f] border border-[#27272a] rounded-xl shadow-sm">
-        {/* Table Header */}
+        {/* Hlavička tabulky */}
         <div className="grid grid-cols-1 lg:grid-cols-[3fr_1fr_2fr_1fr_2fr] gap-4 items-center py-4 px-4 border-b border-[#27272a] text-xs font-semibold text-gray-400 tracking-wider bg-[#0a0a0f] rounded-t-xl group">
           <SortableHeader label="TITULY" field="title" currentSortField={sortField} currentSortOrder={sortOrder} onSort={handleSort} />
           <div className="hidden lg:block">TYP</div>
@@ -220,7 +235,7 @@ export function TitleGrid() {
           <SortableHeader label="DOSTUPNOST" field="services" currentSortField={sortField} currentSortOrder={sortOrder} onSort={handleSort} className="hidden lg:flex" />
         </div>
 
-        {/* Table Body */}
+        {/* Tělo tabulky */}
         <div className="flex flex-col">
           {displayedCatalog.length > 0 ? (
             displayedCatalog.map((title, index) => (

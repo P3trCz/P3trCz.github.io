@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import { Sidebar } from './Sidebar';
 import { TopBar } from './TopBar';
@@ -14,7 +14,7 @@ export function Layout() {
         setIsSidebarOpen(true);
       }
     };
-    
+
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
@@ -22,7 +22,7 @@ export function Layout() {
   return (
     <div className="flex h-screen overflow-hidden bg-[#111116] text-white font-sans">
       <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
-      
+
       <div className="flex-1 flex flex-col h-full overflow-hidden">
         <TopBar onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
         <main className="flex-1 overflow-y-auto bg-[#0a0a0f] relative">
@@ -30,9 +30,9 @@ export function Layout() {
         </main>
       </div>
 
-      {/* Mobile overlay */}
+      {/* Mobilní rozhraní */}
       {isSidebarOpen && (
-        <div 
+        <div
           className="fixed inset-0 bg-black/60 backdrop-blur-sm z-30 lg:hidden"
           onClick={() => setIsSidebarOpen(false)}
         />

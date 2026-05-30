@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+// Modál pro výběr vlastního časového rozsahu ve statistikách.
+import { useState } from 'react';
 import { X, Calendar } from 'lucide-react';
 
 type Props = {

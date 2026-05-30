@@ -1,3 +1,4 @@
+// Formulář obnovy hesla – umožňuje reset hesla přes email bez nutnosti přihlášení.
 import React, { useState } from 'react';
 import { usersDb } from '../../../data/usersDb';
 import { Play, ArrowLeft } from 'lucide-react';
@@ -15,13 +16,13 @@ export function ForgotPasswordForm({ onNavigate }: Props) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (newPassword !== confirmPassword) {
       setStatus('error');
       setMessage('Hesla se neshodují.');
       return;
     }
-    
+
     const user = usersDb.findUserByEmail(email);
     if (!user) {
       setStatus('error');
@@ -41,7 +42,7 @@ export function ForgotPasswordForm({ onNavigate }: Props) {
 
   return (
     <div className="w-full max-w-md bg-[#111116] p-8 rounded-2xl border border-[#27272a] shadow-xl">
-      <button 
+      <button
         onClick={() => onNavigate('login')}
         className="flex items-center text-sm text-gray-400 hover:text-white mb-6 transition-colors"
       >

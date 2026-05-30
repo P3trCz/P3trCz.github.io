@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+// Wrapper autentizační stránky – přepíná mezi přihlášením, registrací a obnovou hesla.
+import { useState } from 'react';
 import { LoginForm } from './LoginForm';
 import { RegisterForm } from './RegisterForm';
 import { ForgotPasswordForm } from './ForgotPasswordForm';
