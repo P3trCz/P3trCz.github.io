@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Download } from 'lucide-react';
 import { Playlist } from '../../../store/useAppStore';
 import { catalog, Title } from '../../../data/catalog';
@@ -17,6 +17,10 @@ type PreviewPlaylistModalProps = {
 export function PreviewPlaylistModal({ playlist, onClose, onViewMovie, onSave }: PreviewPlaylistModalProps) {
   const titleIds = playlist.titleIds;
   const titles = titleIds.map(id => catalog.find(m => m.id.toString() === id.toString())).filter(Boolean) as Title[];
+
+  const [displayedCount, setDisplayedCount] = useState(24);
+  const displayedTitles = titles.slice(0, displayedCount);
+  const hasMore = displayedCount < titles.length;
 
   return (
     <Modal
@@ -38,11 +42,23 @@ export function PreviewPlaylistModal({ playlist, onClose, onViewMovie, onSave }:
           {titles.length === 0 ? (
             <p className="text-center text-gray-500 py-8">Tento seznam je prázdný.</p>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {titles.map(title => (
-                <TitleTile key={title.id} title={title} onClick={onViewMovie} />
-              ))}
-            </div>
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {displayedTitles.map(title => (
+                  <TitleTile key={title.id} title={title} onClick={onViewMovie} />
+                ))}
+              </div>
+              {hasMore && (
+                <div className="mt-8 flex justify-center pb-4">
+                  <button
+                    onClick={() => setDisplayedCount(prev => prev + 24)}
+                    className="px-6 py-2 rounded-full border border-[#27272a] text-gray-400 hover:text-white hover:border-[#3f3f46] transition-colors text-sm"
+                  >
+                    Zobrazit další tituly
+                  </button>
+                </div>
+              )}
+            </>
           )}
         </div>
 

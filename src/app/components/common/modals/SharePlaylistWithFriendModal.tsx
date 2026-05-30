@@ -31,11 +31,13 @@ export function SharePlaylistWithFriendModal({ friends, onClose, onShare }: Shar
           <div>
             <label className="block text-sm font-medium text-gray-400 mb-2">Vyberte přítele</label>
             
-            <SearchInput
-                value={searchQuery}
-                onChange={setSearchQuery}
-                placeholder="Hledat přítele..."
-              />
+            <div className="mb-3">
+              <SearchInput
+                  value={searchQuery}
+                  onChange={setSearchQuery}
+                  placeholder="Hledat přítele..."
+                />
+            </div>
 
             <div className="flex flex-col gap-2 max-h-[250px] overflow-y-auto pr-2 custom-scrollbar">
               {filteredFriends.length === 0 ? (

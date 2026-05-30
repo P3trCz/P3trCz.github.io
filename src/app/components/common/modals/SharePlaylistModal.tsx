@@ -4,6 +4,7 @@ import { Playlist } from '../../../store/useAppStore';
 import { Modal } from '../Modal';
 import { getUsername } from '../../../utils/userUtils';
 import { pluralizeItems } from '../../../utils/formatUtils';
+import { SearchInput } from '../SearchInput';
 
 type SharePlaylistModalProps = {
   friendName: string;
@@ -15,6 +16,11 @@ type SharePlaylistModalProps = {
 export function SharePlaylistModal({ friendName, playlists, onClose, onShare }: SharePlaylistModalProps) {
   const [selectedList, setSelectedList] = useState('');
   const [message, setMessage] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const filteredPlaylists = playlists.filter(pl => 
+    pl.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <Modal
@@ -27,9 +33,19 @@ export function SharePlaylistModal({ friendName, playlists, onClose, onShare }: 
       ) : (
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-400 mb-3">Vyberte seznam</label>
+            <div className="flex justify-between items-end mb-3">
+              <label className="block text-sm font-medium text-gray-400">Vyberte seznam</label>
+            </div>
+            <div className="mb-4">
+              <SearchInput
+                value={searchQuery}
+                onChange={setSearchQuery}
+                placeholder="Hledat seznam..."
+              />
+            </div>
+            
             <div className="flex flex-col gap-2 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
-              {playlists.map(pl => (
+              {filteredPlaylists.map(pl => (
                 <div
                   key={pl.id}
                   onClick={() => pl.titleIds.length > 0 && setSelectedList(selectedList === pl.id ? '' : pl.id)}
@@ -62,6 +78,9 @@ export function SharePlaylistModal({ friendName, playlists, onClose, onShare }: 
                   </div>
                 </div>
               ))}
+              {filteredPlaylists.length === 0 && (
+                <div className="text-center text-gray-500 py-4 text-sm">Žádný seznam neodpovídá hledání.</div>
+              )}
             </div>
           </div>
 
