@@ -7,7 +7,7 @@
  * - processData(): projde historii sledování, agreguje data po službách a žánrech
  * - Koláčový graf (ServicePieChart) zobrazuje podíl streamovacích služeb na celkovém čase
  */
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useAppStore } from '../../../store/useAppStore';
 import { catalog, ServiceType, serviceLogos } from '../../../data/catalog';
 import { CustomTimeRangeModal } from '../../shared/modals/CustomTimeRangeModal';
@@ -25,7 +25,7 @@ export function Stats() {
   const currentUser = useAppStore(state => state.currentUser);
   const watchHistoryState = useAppStore(state => state.watchHistory);
   const history = currentUser ? (watchHistoryState[currentUser.id] || []) : [];
-
+  const seenServicesRef = useRef<string[]>([]);   // Sleduje viděné služby napříč rendery
   const [customRange, setCustomRange] = useState<{ from: number, to: number } | null>(null);
   const [isCustomModalOpen, setIsCustomModalOpen] = useState(false);
   const [isWatchedTitlesModalOpen, setIsWatchedTitlesModalOpen] = useState(false);
@@ -148,10 +148,17 @@ export function Stats() {
       }
     });
 
-    // Připraví data pro koláčový graf – pole { name: serviceNázev, value: minuty }
-    const pieData = Object.entries(serviceTime).map(([name, value]) => ({
+    // Přidá nově viděné služby do registru na konec
+    Object.keys(serviceTime).forEach(svc => {
+      if (!seenServicesRef.current.includes(svc)) {
+        seenServicesRef.current.push(svc);
+      }
+    });
+
+    // Připraví data pro koláčový graf z registru
+    const pieData = seenServicesRef.current.map(name => ({
       name,
-      value
+      value: serviceTime[name] || 0
     }));
 
     // Nejsledovanější žánr – seřadí záznamy sestupně a vezme první

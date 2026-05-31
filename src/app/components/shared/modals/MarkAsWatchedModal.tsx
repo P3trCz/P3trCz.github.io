@@ -80,6 +80,9 @@ export function MarkAsWatchedModal() {
           timestamp = new Date(date).getTime();
         }
       }
+      if (timestamp > Date.now()) {
+        timestamp = Date.now();
+      }
     }
     const duration = (title.type === 'Film' && service !== 'Unknown') ? title.runtime : 0;
     let eps: number | undefined = undefined;
@@ -116,6 +119,7 @@ export function MarkAsWatchedModal() {
           <input
             type="date"
             value={date}
+            max={`${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}-${String(new Date().getDate()).padStart(2, '0')}`}
             onChange={(e) => setDate(e.target.value)}
             className="w-full bg-[#1c1c24] border border-[#27272a] text-white px-4 py-3 rounded-xl focus:outline-none focus:border-[#dc2626] transition-colors"
           />

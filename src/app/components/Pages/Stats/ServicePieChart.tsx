@@ -1,5 +1,5 @@
 // Koláčový graf podílu streamovacích služeb na celkovém čase sledování.
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Sector } from 'recharts';
 import { serviceColors, ServiceType } from '../../../data/catalog';
 import { formatMinutes } from '../../../utils/formatUtils';
@@ -35,6 +35,16 @@ type ServicePieChartProps = {
 
 export function ServicePieChart({ pieData, rangeLabel }: ServicePieChartProps) {
   const [activeIndex, setActiveIndex] = useState<number | undefined>(undefined);
+  const [isAnimating, setIsAnimating] = useState(true);
+
+  useEffect(() => {
+    setIsAnimating(true);
+    setActiveIndex(undefined);
+    const timer = setTimeout(() => {
+      setIsAnimating(false);
+    }, 2000);
+    return () => clearTimeout(timer);
+  }, [pieData]);
 
   return (
     <div className="lg:col-span-2 panel-container-dark">
@@ -43,7 +53,8 @@ export function ServicePieChart({ pieData, rangeLabel }: ServicePieChartProps) {
       </h2>
 
       <div className="h-80 w-full relative">
-        {pieData.length === 0 ? (
+        {isAnimating && <div className="absolute inset-0 z-10" />}
+        {!pieData.some(entry => entry.value > 0) ? (
           <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-6 border-2 border-dashed border-[#27272a] rounded-xl">
             <div className="w-12 h-12 rounded-full bg-[#1c1c24] flex items-center justify-center mb-4">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-gray-500">
@@ -74,8 +85,8 @@ export function ServicePieChart({ pieData, rangeLabel }: ServicePieChartProps) {
                 onMouseLeave={() => setActiveIndex(undefined)}
                 style={{ outline: 'none' }}
               >
-                {pieData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={serviceColors[entry.name as ServiceType] || '#8884d8'} />
+                {pieData.map((entry) => (
+                  <Cell key={entry.name} fill={serviceColors[entry.name as ServiceType] || '#8884d8'} />
                 ))}
               </PieComponent>
               <Tooltip
@@ -90,7 +101,7 @@ export function ServicePieChart({ pieData, rangeLabel }: ServicePieChartProps) {
       </div>
 
       <div className="flex flex-wrap justify-center gap-6 mt-4">
-        {pieData.map(entry => (
+        {pieData.filter(entry => entry.value > 0).map(entry => (
           <div key={entry.name} className="flex items-center gap-2">
             <div className="w-3 h-3 rounded-full" style={{ backgroundColor: serviceColors[entry.name as ServiceType] }}></div>
             <span className="text-sm font-medium text-gray-400">{entry.name}</span>
