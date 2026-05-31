@@ -64,8 +64,8 @@ export function TitleCard({ title, onClick, className = '' }: Props) {
               if (currentUser) setPromptWatchedTitleId(title.id.toString());
             }}
             className={`w-8 h-8 rounded-full border flex items-center justify-center transition-colors ${isWatched
-                ? 'bg-red-500/10 border-[#dc2626] text-[#dc2626]'
-                : 'bg-[#111116] border-[#27272a] text-gray-500 hover:text-white hover:border-[#dc2626]'
+              ? 'bg-red-500/10 border-[#dc2626] text-[#dc2626]'
+              : 'bg-[#111116] border-[#27272a] text-gray-500 hover:text-white hover:border-[#dc2626]'
               }`}
             title={isWatched ? 'Označeno jako zhlédnuté' : 'Označit jako zhlédnuté'}
           >
@@ -89,14 +89,14 @@ export function TitleCard({ title, onClick, className = '' }: Props) {
 
       <div className={`hidden lg:flex flex-wrap gap-1.5 ${isWatched ? 'opacity-50 grayscale' : ''}`}>
         {!title.streaming_services ? (
-          <span className="text-xs shrink-0 whitespace-nowrap font-bold px-2 py-0.5 rounded text-gray-400 bg-[#27272a]">
+          <span className="text-sm shrink-0 whitespace-nowrap font-bold px-2 py-0.5 rounded text-gray-400 bg-[#27272a]">
             Nedostupné
           </span>
         ) : (
           title.streaming_services.map(service => (
             <span
               key={service}
-              className="text-xs shrink-0 whitespace-nowrap font-bold px-2 py-0.5 rounded text-white"
+              className="text-sm shrink-0 whitespace-nowrap font-bold px-2 py-0.5 rounded text-white"
               style={{ backgroundColor: serviceColors[service] }}
             >
               {service}

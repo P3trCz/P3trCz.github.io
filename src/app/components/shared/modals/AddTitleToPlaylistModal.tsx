@@ -47,7 +47,7 @@ export function AddTitleToPlaylistModal({ titleId, onClose }: AddTitleToPlaylist
     <Modal
       isOpen={true}
       onClose={onClose}
-      title="Přidat do seznamu"
+      title="Výběr seznamů"
       maxWidth="max-w-sm"
       zIndex="z-[110]"
     >

@@ -1,6 +1,6 @@
 // Modál zobrazující historii zpráv mezi dvěma uživateli s možností otevřít seznam přímo z chatu.
-import { History, ListVideo, Plus } from 'lucide-react';
-import { ChatMessage, Playlist } from '../../../store/useAppStore';
+import { History, ListVideo, Bookmark } from 'lucide-react';
+import { ChatMessage, Playlist, useAppStore } from '../../../store/useAppStore';
 import { catalog, Title } from '../../../data/catalog';
 import { Modal } from '../Modal';
 import { User } from '../../../data/usersDb';
@@ -24,6 +24,12 @@ export function MessageHistoryModal({
   onViewPlaylist,
   onAddMovieToPlaylist
 }: MessageHistoryModalProps) {
+  const currentUser = useAppStore(state => state.currentUser);
+  const playlistsState = useAppStore(state => state.playlists);
+  const watchlistsState = useAppStore(state => state.watchlists);
+  const userPlaylists = currentUser ? (playlistsState[currentUser.id] || []) : [];
+  const userWatchlist = currentUser ? (watchlistsState[currentUser.id] || []) : [];
+
   const filteredHistory = history.filter(m =>
     (m.fromUserId === friend.id) || (m.toUserId === friend.id)
   ).sort((a, b) => b.timestamp - a.timestamp);
@@ -67,6 +73,11 @@ export function MessageHistoryModal({
                       {(() => {
                         const title = catalog.find(m => m.id.toString() === msg.titleId);
                         if (!title) return <span className="text-xs text-red-500">Titul nenalezen</span>;
+
+                        const isInWatchlist = userWatchlist.includes(title.id.toString());
+                        const isInAnyPlaylist = userPlaylists.some(p => p.titleIds.includes(title.id.toString()));
+                        const isSaved = isInWatchlist || isInAnyPlaylist;
+
                         return (
                           <TitleTile
                             title={title}
@@ -78,10 +89,10 @@ export function MessageHistoryModal({
                                   e.stopPropagation();
                                   onAddMovieToPlaylist(title.id.toString());
                                 }}
-                                className="w-8 h-8 rounded-full border border-[#27272a] text-gray-400 hover:text-white hover:border-[#dc2626] flex items-center justify-center transition-colors"
-                                title="Přidat do seznamu"
+                                className={`w-8 h-8 rounded-full border flex items-center justify-center transition-colors ${isSaved ? 'bg-red-500/10 border-[#dc2626] text-[#dc2626]' : 'bg-[#111116] border-[#27272a] text-gray-400 hover:text-white hover:border-[#dc2626]'}`}
+                                title="Výběr seznamů"
                               >
-                                <Plus size={16} />
+                                <Bookmark size={16} className={isSaved ? 'fill-[#dc2626]' : ''} />
                               </button>
                             }
                           />
