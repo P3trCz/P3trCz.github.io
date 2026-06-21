@@ -20,10 +20,10 @@ export type WatchHistoryItem = {
   watchedAt: number; // Timestamp v milisekundách
   service: string;
   durationMinutes: number;
-  episodesWatched?: number; // Pouze pro seriály – počet zhlédnutých epizod
+  episodesWatched?: number; // Počet zhlédnutých epizod
 };
 
-/** Typy oznámení, která může uživatel dostat */
+/** Typy oznámení */
 export type NotificationType =
   | 'FRIEND_REQUEST'
   | 'FRIEND_REQUEST_REJECTED'

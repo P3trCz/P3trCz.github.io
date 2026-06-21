@@ -68,7 +68,7 @@ rawData.forEach(m => {
     origin_countries: countries
   };
 
-  // Zajistí, že ID budou unikátní (kombinace typu a ID pro jistotu)
+  // Zajistí, že ID budou unikátní
   uniqueDataMap.set(`${title.type}-${title.id}`, title);
 });
 

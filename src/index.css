@@ -5,7 +5,6 @@
   --color-surface: #111116;
   --color-surface-hover: #1c1c24;
   --color-primary: #dc2626;
-  /* červená — barva loga */
   --color-primary-hover: #b91c1c;
   --color-border: #27272a;
 }
@@ -31,7 +30,6 @@
     outline: none !important;
   }
 
-  /* Povolení scrollbaru s tmavým tématem */
   ::-webkit-scrollbar {
     width: 8px;
     height: 8px;

@@ -12,7 +12,7 @@ export type SortOrder = 'asc' | 'desc';
 /**
  * Seřadí pole titulů podle zvoleného sloupce a směru.
  * Vrací nové pole.
- * @param language  Aktivní jazyk – pro 'en' se použije title_en (pokud existuje)
+ * @param language  Aktivní jazyk – pro 'en' se použije title_en pokud existuje
  */
 export function sortTitles(titles: Title[], sortField: SortField, sortOrder: SortOrder, language: 'cs' | 'en' = 'cs'): Title[] {
   if (!sortField) return titles;

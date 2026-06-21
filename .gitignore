@@ -26,3 +26,4 @@ src/app/data/complete_tmdb_data.json
 app-design/*
 Dokumentace
 scratch
+src/app/data/getTitles.py
