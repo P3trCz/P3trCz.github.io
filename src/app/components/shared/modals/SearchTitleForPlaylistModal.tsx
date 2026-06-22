@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Check } from 'lucide-react';
 import { catalog } from '../../../data/catalog';
 import { Modal } from '../Modal';
-import { useSearch } from '../../../hooks/useSearch';
+import { useAdvancedSearch } from '../../../hooks/useAdvancedSearch';
 import { SearchInput } from '../SearchInput';
 import { TitleTile } from '../TitleTile';
 
@@ -16,9 +16,16 @@ type SearchTitleForPlaylistModalProps = {
 
 export function SearchTitleForPlaylistModal({ playlistName, currentTitleIds, onClose, onToggleTitle }: SearchTitleForPlaylistModalProps) {
   const [search, setSearch] = useState('');
+  const [visibleCount, setVisibleCount] = useState(10);
 
-  const searchedMovies = useSearch(catalog, search, title => [title.title, title.title_en], { minQueryLength: 3, returnEmptyIfBelowMinLength: true });
-  const filteredMovies = searchedMovies.slice(0, 10);
+
+  const searchedMovies = useAdvancedSearch(catalog, search, { minQueryLength: 3, returnEmptyIfBelowMinLength: true });
+  const filteredMovies = searchedMovies.slice(0, visibleCount);
+
+  const handleSearchChange = (value: string) => {
+    setSearch(value);
+    setVisibleCount(10);
+  };
 
   return (
     <Modal
@@ -31,7 +38,7 @@ export function SearchTitleForPlaylistModal({ playlistName, currentTitleIds, onC
         <div className="mb-4">
           <SearchInput
             value={search}
-            onChange={setSearch}
+            onChange={handleSearchChange}
             placeholder="Hledat..."
             autoFocus
             iconSize={18}
@@ -40,6 +47,12 @@ export function SearchTitleForPlaylistModal({ playlistName, currentTitleIds, onC
 
         {search.length > 0 && search.length < 3 && (
           <div className="text-sm text-gray-500 text-center py-2">Zadejte alespoň 3 znaky.</div>
+        )}
+
+        {search.length === 0 && (
+          <div className="text-xs text-gray-500 text-center px-4">
+            Hledat můžete nejen podle názvu, ale i podle žánrů. Termíny oddělte čárkou nebo středníkem (např. <span className="text-gray-400">"Matrix, akční"</span> nebo <span className="text-gray-400">"komedie, romantický"</span>).
+          </div>
         )}
 
         {filteredMovies.length > 0 ? (
@@ -57,6 +70,15 @@ export function SearchTitleForPlaylistModal({ playlistName, currentTitleIds, onC
                 />
               );
             })}
+
+            {searchedMovies.length > visibleCount && (
+              <button
+                onClick={() => setVisibleCount(v => v + 10)}
+                className="w-full py-3 mt-2 text-sm font-medium text-gray-400 bg-[#27272a]/50 hover:bg-[#27272a] hover:text-white rounded-xl transition-colors"
+              >
+                Načíst dalších 10 titulů (zbývá {searchedMovies.length - visibleCount})
+              </button>
+            )}
           </div>
         ) : (
           search.trim().length >= 3 && (
