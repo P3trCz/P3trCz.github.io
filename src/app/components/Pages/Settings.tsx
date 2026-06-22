@@ -2,10 +2,12 @@
 import { useState } from 'react';
 import { useAppStore } from '../../store/useAppStore';
 import { serviceLogos } from '../../data/catalog';
-import { User, LogOut, Key, Edit2 } from 'lucide-react';
+import { User, LogOut, Key, Edit2, Link } from 'lucide-react';
 import { Snackbar } from '../shared/Snackbar';
 import { ChangeUsernameModal } from '../shared/modals/ChangeUsernameModal';
 import { ChangePasswordModal } from '../shared/modals/ChangePasswordModal';
+import { ServiceCredentialsModal } from '../shared/modals/ServiceCredentialsModal';
+import { ServiceType } from '../../data/catalog';
 
 import { AVAILABLE_SERVICES } from '../../constants';
 
@@ -22,6 +24,7 @@ export function Settings() {
 
   const [snackbarMsg, setSnackbarMsg] = useState('');
   const [snackbarType, setSnackbarType] = useState<'success' | 'error'>('success');
+  const [syncServiceId, setSyncServiceId] = useState<ServiceType | null>(null);
 
   if (!currentUser) return null;
 
@@ -94,9 +97,19 @@ export function Settings() {
                       />
                     </div>
                     <div className="text-center font-medium text-white">{service.name}</div>
-                    <div className="text-center text-xs text-gray-500 mt-1">
+                    <div className="text-center text-xs text-gray-500 mt-1 mb-3">
                       {isSubscribed ? 'Aktivní' : 'Neaktivní'}
                     </div>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSyncServiceId(service.id);
+                      }}
+                      className="px-3 py-1.5 bg-[#27272a] hover:bg-[#3f3f46] text-xs text-white rounded-lg transition-colors flex items-center justify-center gap-2 mx-auto"
+                    >
+                      <Link size={12} />
+                      Připojit
+                    </button>
                   </button>
                 );
               })}
@@ -138,6 +151,13 @@ export function Settings() {
       />
 
       <Snackbar message={snackbarMsg} type={snackbarType} onClose={() => setSnackbarMsg('')} />
+
+      {syncServiceId && (
+        <ServiceCredentialsModal
+          service={syncServiceId}
+          onClose={() => setSyncServiceId(null)}
+        />
+      )}
     </>
   );
 }

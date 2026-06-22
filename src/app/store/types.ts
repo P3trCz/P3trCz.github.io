@@ -110,6 +110,16 @@ export type FriendsState = {
   saveSharedPlaylist: (notificationId: string) => void;
 };
 
+export type ServiceCredentialsData = {
+  username?: string;
+  password?: string;
+};
+
+export type ServicesCredentialsState = {
+  servicesCredentials: Record<string, Partial<Record<ServiceType, ServiceCredentialsData>>>;
+  setServiceCredentials: (service: ServiceType, credentials: ServiceCredentialsData) => void;
+};
+
 /** Výsledný typ celého storu */
 export type AppState = AuthState &
   SearchState &
@@ -117,4 +127,5 @@ export type AppState = AuthState &
   WatchlistState &
   HistoryState &
   SubscriptionsState &
-  FriendsState;
+  FriendsState &
+  ServicesCredentialsState;

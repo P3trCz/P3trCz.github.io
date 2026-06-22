@@ -19,6 +19,7 @@ import { createWatchlistsModule } from './modules/watchlists';
 import { createHistoryModule } from './modules/history';
 import { createSubscriptionsModule } from './modules/subscriptions';
 import { createFriendsModule } from './modules/friends';
+import { createServicesCredentialsModule } from './modules/services-credentials';
 
 export * from './types';
 
@@ -33,6 +34,7 @@ export const useAppStore = create<AppState>()(
       ...createHistoryModule(...a),
       ...createSubscriptionsModule(...a),
       ...createFriendsModule(...a),
+      ...createServicesCredentialsModule(...a),
     }),
     {
       name: 'streamhub-storage',
