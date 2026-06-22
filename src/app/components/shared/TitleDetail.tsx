@@ -7,6 +7,7 @@ import { useTitleName } from '../../hooks/useTitleName';
 import { useMyFriends } from '../../hooks/useMyFriends';
 import { formatMinutes } from '../../utils/formatUtils';
 import { ShareModal } from './modals/ShareModal';
+import { AddToPlaylistButton } from './AddToPlaylistButton';
 
 type Props = {
   title: Title;
@@ -70,6 +71,8 @@ export function TitleDetail({ title, onClose }: Props) {
           >
             <Eye size={18} />
           </button>
+
+          <AddToPlaylistButton titleId={title.id.toString()} className="w-10 h-10 bg-black/40 backdrop-blur-md border-white/10" iconSize={18} />
 
           <button
             onClick={() => setShareModalOpen(true)}

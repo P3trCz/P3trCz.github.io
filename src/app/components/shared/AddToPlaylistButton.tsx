@@ -5,9 +5,11 @@ import { useAppStore } from '../../store/useAppStore';
 
 type Props = {
   titleId: string;
+  className?: string;
+  iconSize?: number;
 };
 
-export function AddToPlaylistButton({ titleId }: Props) {
+export function AddToPlaylistButton({ titleId, className, iconSize = 16 }: Props) {
   const [isOpen, setIsOpen] = useState(false);
   const currentUser = useAppStore(state => state.currentUser);
   const playlistsState = useAppStore(state => state.playlists);
@@ -27,13 +29,13 @@ export function AddToPlaylistButton({ titleId }: Props) {
           e.stopPropagation();
           setIsOpen(true);
         }}
-        className={`w-8 h-8 rounded-full border flex items-center justify-center transition-colors ${isSaved
-            ? 'bg-red-500/10 border-[#dc2626] text-[#dc2626]'
-            : 'bg-[#111116] border-[#27272a] text-gray-500 hover:text-white hover:border-[#dc2626]'
+        className={`rounded-full border flex items-center justify-center transition-colors ${className ? className : 'w-8 h-8 bg-[#111116] border-[#27272a] hover:border-[#dc2626]'} ${isSaved
+          ? '!bg-red-500/10 !border-[#dc2626] !text-[#dc2626]'
+          : 'text-gray-500 hover:text-white'
           }`}
         title={isSaved ? 'Upravit zařazení do seznamů' : 'Přidat do seznamu'}
       >
-        <Bookmark size={16} className={isSaved ? 'fill-[#dc2626]' : ''} />
+        <Bookmark size={iconSize} className={isSaved ? 'fill-[#dc2626]' : ''} />
       </button>
 
       {isOpen && (
