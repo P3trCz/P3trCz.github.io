@@ -16,6 +16,7 @@ import { TitleDetail } from '../../shared/TitleDetail';
 import { Pagination } from '../../shared/Pagination';
 import { Filter, RefreshCw, Search, X } from 'lucide-react';
 import { FilterDropdown, AdvancedFilterState } from './FilterDropdown';
+import { YearRangeFilterDropdown, YearRangeState } from './YearRangeFilterDropdown';
 import { useAppStore } from '../../../store/useAppStore';
 import { useSearch } from '../../../hooks/useSearch';
 import { SortField, SortOrder, sortTitles } from '../../../utils/sortUtils';
@@ -28,6 +29,7 @@ export function TitleGrid() {
   const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
   const [selectedWatched, setSelectedWatched] = useState<string[]>([]);
   const [selectedCountries, setSelectedCountries] = useState<string[]>([]);
+  const [selectedYears, setSelectedYears] = useState<YearRangeState>({ min: null, max: null });
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(25);
   const [sortField, setSortField] = useState<SortField>(null);
@@ -68,7 +70,7 @@ export function TitleGrid() {
   const isSearchActive = searchQuery.length >= 3;
 
   // Resetování stránkování při změně filtrů nebo vyhledávání
-  const currentFiltersSig = JSON.stringify({ selectedServices, selectedGenres, selectedTypes, selectedWatched, selectedCountries, userSubscriptions, searchQuery });
+  const currentFiltersSig = JSON.stringify({ selectedServices, selectedGenres, selectedTypes, selectedWatched, selectedCountries, selectedYears, userSubscriptions, searchQuery });
   const [prevFiltersSig, setPrevFiltersSig] = useState(currentFiltersSig);
 
   if (currentFiltersSig !== prevFiltersSig) {
@@ -134,9 +136,18 @@ export function TitleGrid() {
         if (!matchesCountry) return false;
       }
 
+      // Filtr podle roku vydání
+      if (selectedYears.min !== null || selectedYears.max !== null) {
+        const releaseYear = Number(title.release_year);
+        if (!isNaN(releaseYear)) {
+          if (selectedYears.min !== null && releaseYear < selectedYears.min) return false;
+          if (selectedYears.max !== null && releaseYear > selectedYears.max) return false;
+        }
+      }
+
       return true;
     });
-  }, [selectedServices, selectedGenres, selectedTypes, selectedWatched, selectedCountries, userSubscriptions, searchQuery, userWatchedTitles, searchedCatalog]);
+  }, [selectedServices, selectedGenres, selectedTypes, selectedWatched, selectedCountries, selectedYears, userSubscriptions, searchQuery, userWatchedTitles, searchedCatalog]);
 
   const sortedCatalog = useMemo(() => {
     return sortTitles(filteredCatalog, sortField, sortOrder, language);
@@ -144,7 +155,7 @@ export function TitleGrid() {
 
   const displayedCatalog = sortedCatalog.slice((currentPage - 1) * pageSize, currentPage * pageSize);
 
-  const hasAnyFilter = selectedServices.length > 0 || selectedGenres.included.length > 0 || selectedGenres.excluded.length > 0 || selectedTypes.length > 0 || selectedWatched.length > 0 || selectedCountries.length > 0;
+  const hasAnyFilter = selectedServices.length > 0 || selectedGenres.included.length > 0 || selectedGenres.excluded.length > 0 || selectedTypes.length > 0 || selectedWatched.length > 0 || selectedCountries.length > 0 || selectedYears.min !== null || selectedYears.max !== null;
 
   const clearFilters = () => {
     setSelectedServices([]);
@@ -152,6 +163,7 @@ export function TitleGrid() {
     setSelectedTypes([]);
     setSelectedWatched([]);
     setSelectedCountries([]);
+    setSelectedYears({ min: null, max: null });
   };
 
   return (
@@ -211,6 +223,11 @@ export function TitleGrid() {
             options={allCountries}
             selected={selectedCountries}
             onChange={setSelectedCountries}
+          />
+          <YearRangeFilterDropdown
+            label="Rok vydání"
+            selected={selectedYears}
+            onChange={setSelectedYears}
           />
         </div>
 
