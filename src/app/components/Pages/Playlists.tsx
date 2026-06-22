@@ -12,6 +12,7 @@ import { RenamePlaylistModal } from '../shared/modals/RenamePlaylistModal';
 import { DeletePlaylistModal } from '../shared/modals/DeletePlaylistModal';
 import { SearchTitleForPlaylistModal } from '../shared/modals/SearchTitleForPlaylistModal';
 import { ShareModal } from '../shared/modals/ShareModal';
+import { RemoveFromPlaylistModal } from '../shared/modals/RemoveFromPlaylistModal';
 import { Snackbar } from '../shared/Snackbar';
 import { SortField, SortOrder, sortTitles } from '../../utils/sortUtils';
 import { SortableHeader } from '../shared/SortableHeader';
@@ -44,6 +45,7 @@ export function Playlists() {
   const [pageSize, setPageSize] = useState(25);
   const [sortField, setSortField] = useState<SortField>(null);
   const [sortOrder, setSortOrder] = useState<SortOrder>('desc');
+  const [titleToRemove, setTitleToRemove] = useState<Title | null>(null);
 
   const handleSort = (field: SortField) => {
     setCurrentPage(1);
@@ -168,6 +170,7 @@ export function Playlists() {
                   key={`${title.type}-${title.id}`}
                   title={title}
                   onClick={(m) => setSelectedTitle(m)}
+                  onRemoveClick={!isHistory ? (m) => setTitleToRemove(m) : undefined}
                   className={index === displayedTitles.length - 1 ? "rounded-b-xl border-b-0" : ""}
                 />
               ))
@@ -193,6 +196,23 @@ export function Playlists() {
           <TitleDetail
             title={selectedTitle}
             onClose={() => setSelectedTitle(null)}
+          />
+        )}
+
+        {titleToRemove && (
+          <RemoveFromPlaylistModal
+            titleName={titleToRemove.title}
+            playlistName={isWatchlist ? 'Přehrát později' : playlist!.name}
+            onClose={() => setTitleToRemove(null)}
+            onConfirm={() => {
+              if (isWatchlist) {
+                toggleWatchlist(titleToRemove.id.toString());
+              } else if (playlist) {
+                removeFromPlaylist(playlist.id, titleToRemove.id.toString());
+              }
+              setTitleToRemove(null);
+              setSnackbarMsg(`Titul byl odstraněn ze seznamu.`);
+            }}
           />
         )}
       </div>

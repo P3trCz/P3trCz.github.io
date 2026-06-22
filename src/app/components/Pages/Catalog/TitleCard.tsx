@@ -1,6 +1,6 @@
 // Karta titulu v katalogu – zobrazuje plakát, název, hodnocení, žánry a dostupné streamovací služby.
 import { Title, serviceColors } from '../../../data/catalog';
-import { Star, Eye } from 'lucide-react';
+import { Star, Eye, Trash2 } from 'lucide-react';
 import { AddToPlaylistButton } from '../../shared/AddToPlaylistButton';
 import { useAppStore } from '../../../store/useAppStore';
 import { useTitleName } from '../../../hooks/useTitleName';
@@ -8,10 +8,11 @@ import { useTitleName } from '../../../hooks/useTitleName';
 type Props = {
   title: Title;
   onClick: (title: Title) => void;
+  onRemoveClick?: (title: Title) => void;
   className?: string;
 };
 
-export function TitleCard({ title, onClick, className = '' }: Props) {
+export function TitleCard({ title, onClick, onRemoveClick, className = '' }: Props) {
   const getTitleName = useTitleName();
   const currentUser = useAppStore(state => state.currentUser);
   const watchHistory = useAppStore(state => state.watchHistory);
@@ -72,6 +73,15 @@ export function TitleCard({ title, onClick, className = '' }: Props) {
             <Eye size={16} />
           </button>
           <AddToPlaylistButton titleId={title.id.toString()} />
+          {onRemoveClick && (
+            <button
+              onClick={() => onRemoveClick(title)}
+              className="w-8 h-8 rounded-full border border-[#27272a] bg-[#111116] flex items-center justify-center text-gray-500 hover:text-[#dc2626] hover:border-[#dc2626] transition-colors"
+              title="Odstranit ze seznamu"
+            >
+              <Trash2 size={16} />
+            </button>
+          )}
         </div>
       </div>
 
