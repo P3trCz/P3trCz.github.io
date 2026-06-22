@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { useOnClickOutside } from '../../../hooks/useOnClickOutside';
 
@@ -13,23 +13,15 @@ type Props = {
   onChange: (state: YearRangeState) => void;
 };
 
-export function YearRangeFilterDropdown({ label, selected, onChange }: Props) {
-  const [isOpen, setIsOpen] = useState(false);
-  const popoverRef = useRef<HTMLDivElement>(null);
+type FormProps = {
+  selected: YearRangeState;
+  onChange: (state: YearRangeState) => void;
+  onClose: () => void;
+};
 
+function YearRangeForm({ selected, onChange, onClose }: FormProps) {
   const [minVal, setMinVal] = useState<string>(selected.min !== null ? selected.min.toString() : '');
   const [maxVal, setMaxVal] = useState<string>(selected.max !== null ? selected.max.toString() : '');
-
-  useEffect(() => {
-    if (isOpen) {
-      setMinVal(selected.min !== null ? selected.min.toString() : '');
-      setMaxVal(selected.max !== null ? selected.max.toString() : '');
-    }
-  }, [isOpen, selected]);
-
-  useOnClickOutside(popoverRef, () => setIsOpen(false), isOpen);
-
-  const hasSelection = selected.min !== null || selected.max !== null;
 
   const minNum = minVal ? parseInt(minVal, 10) : null;
   const maxNum = maxVal ? parseInt(maxVal, 10) : null;
@@ -39,12 +31,12 @@ export function YearRangeFilterDropdown({ label, selected, onChange }: Props) {
   const handleApply = () => {
     if (isInvalid) return;
     onChange({ min: minNum, max: maxNum });
-    setIsOpen(false);
+    onClose();
   };
 
   const handleClear = () => {
     onChange({ min: null, max: null });
-    setIsOpen(false);
+    onClose();
   };
 
   const handleMinChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -64,6 +56,69 @@ export function YearRangeFilterDropdown({ label, selected, onChange }: Props) {
   };
 
   return (
+    <div className="p-4 space-y-4">
+      <div className="flex gap-3">
+        <div className="flex-1">
+          <label className="block text-xs font-medium text-gray-400 mb-1">Od roku</label>
+          <input
+            type="number"
+            min="0"
+            value={minVal}
+            onChange={handleMinChange}
+            placeholder="Např. 1990"
+            className="w-full bg-[#111116] border border-[#27272a] rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-[#dc2626] transition-colors"
+          />
+        </div>
+        <div className="flex-1">
+          <label className="block text-xs font-medium text-gray-400 mb-1">Do roku</label>
+          <input
+            type="number"
+            min="0"
+            value={maxVal}
+            onChange={handleMaxChange}
+            placeholder="Např. 2024"
+            className="w-full bg-[#111116] border border-[#27272a] rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-[#dc2626] transition-colors"
+          />
+        </div>
+      </div>
+
+      {isInvalid && (
+        <div className="text-xs text-[#dc2626]">
+          Počáteční rok nemůže být větší než koncový.
+        </div>
+      )}
+
+      <div className="flex gap-2">
+        <button
+          onClick={handleClear}
+          className="w-1/3 py-2 rounded-lg text-sm font-medium transition-colors bg-[#27272a] hover:bg-[#3f3f46] text-white"
+        >
+          Zrušit
+        </button>
+        <button
+          onClick={handleApply}
+          disabled={isInvalid}
+          className={`w-2/3 py-2 rounded-lg text-sm font-medium transition-colors ${isInvalid
+            ? 'bg-[#27272a] text-gray-500 cursor-not-allowed'
+            : 'bg-[#dc2626] hover:bg-[#b91c1c] text-white'
+            }`}
+        >
+          Aplikovat
+        </button>
+      </div>
+    </div>
+  );
+}
+
+export function YearRangeFilterDropdown({ label, selected, onChange }: Props) {
+  const [isOpen, setIsOpen] = useState(false);
+  const popoverRef = useRef<HTMLDivElement>(null);
+
+  useOnClickOutside(popoverRef, () => setIsOpen(false), isOpen);
+
+  const hasSelection = selected.min !== null || selected.max !== null;
+
+  return (
     <div className="relative" ref={popoverRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
@@ -77,58 +132,12 @@ export function YearRangeFilterDropdown({ label, selected, onChange }: Props) {
       </button>
 
       {isOpen && (
-        <div className="absolute top-full mt-2 w-64 bg-[#18181b] border border-[#27272a] rounded-xl shadow-xl z-50 overflow-hidden">
-          <div className="p-4 space-y-4">
-            <div className="flex gap-3">
-              <div className="flex-1">
-                <label className="block text-xs font-medium text-gray-400 mb-1">Od roku</label>
-                <input
-                  type="number"
-                  min="0"
-                  value={minVal}
-                  onChange={handleMinChange}
-                  placeholder="Např. 1990"
-                  className="w-full bg-[#111116] border border-[#27272a] rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-[#dc2626] transition-colors"
-                />
-              </div>
-              <div className="flex-1">
-                <label className="block text-xs font-medium text-gray-400 mb-1">Do roku</label>
-                <input
-                  type="number"
-                  min="0"
-                  value={maxVal}
-                  onChange={handleMaxChange}
-                  placeholder="Např. 2024"
-                  className="w-full bg-[#111116] border border-[#27272a] rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-[#dc2626] transition-colors"
-                />
-              </div>
-            </div>
-
-            {isInvalid && (
-              <div className="text-xs text-[#dc2626]">
-                Počáteční rok nemůže být větší než koncový.
-              </div>
-            )}
-
-            <div className="flex gap-2">
-              <button
-                onClick={handleClear}
-                className="w-1/3 py-2 rounded-lg text-sm font-medium transition-colors bg-[#27272a] hover:bg-[#3f3f46] text-white"
-              >
-                Zrušit
-              </button>
-              <button
-                onClick={handleApply}
-                disabled={isInvalid}
-                className={`w-2/3 py-2 rounded-lg text-sm font-medium transition-colors ${isInvalid
-                    ? 'bg-[#27272a] text-gray-500 cursor-not-allowed'
-                    : 'bg-[#dc2626] hover:bg-[#b91c1c] text-white'
-                  }`}
-              >
-                Aplikovat
-              </button>
-            </div>
-          </div>
+        <div className="absolute top-full mt-2 w-64 bg-[#1c1c24] border border-[#27272a] rounded-xl shadow-xl z-50 overflow-hidden">
+          <YearRangeForm
+            selected={selected}
+            onChange={onChange}
+            onClose={() => setIsOpen(false)}
+          />
         </div>
       )}
     </div>
