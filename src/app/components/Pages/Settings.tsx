@@ -1,14 +1,12 @@
 // Stránka nastavení – správa streamovacích služeb a změna údajů účtu.
 import { useState } from 'react';
 import { useAppStore } from '../../store/useAppStore';
-import { serviceLogos } from '../../data/catalog';
+import { serviceLogos, ServiceType } from '../../data/catalog';
 import { User, LogOut, Key, Edit2, Link } from 'lucide-react';
 import { Snackbar } from '../shared/Snackbar';
 import { ChangeUsernameModal } from '../shared/modals/ChangeUsernameModal';
 import { ChangePasswordModal } from '../shared/modals/ChangePasswordModal';
 import { ServiceCredentialsModal } from '../shared/modals/ServiceCredentialsModal';
-import { ServiceType } from '../../data/catalog';
-
 import { AVAILABLE_SERVICES } from '../../constants';
 
 export function Settings() {
