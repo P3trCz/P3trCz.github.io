@@ -1,14 +1,22 @@
 import type { ServiceType } from './data/catalog';
+import netflixLogo from '../assets/logos/netflix_logo.svg';
+import hboMaxLogo from '../assets/logos/hbo_max_logo.png';
+import disneyPlusLogo from '../assets/logos/Disney_plus_logo.png';
+import primeVideoLogo from '../assets/logos/prime_video_logo.png';
+import appleTvLogo from '../assets/logos/apple_tv_logo.png';
+import skyshowtimeLogo from '../assets/logos/skyshowtime_logo.png';
+import oneplayLogo from '../assets/logos/oneplay_logo.png';
+import primaPlusLogo from '../assets/logos/prima_plus.png';
 
 export const AVAILABLE_SERVICES: { id: ServiceType; name: string; logoUrl: string; color: string }[] = [
-  { id: 'Netflix', name: 'Netflix', logoUrl: '/src/assets/logos/netflix_logo.svg', color: '#e50914' },
-  { id: 'HBO Max', name: 'HBO Max', logoUrl: '/src/assets/logos/hbo_max_logo.png', color: '#7c3aed' },
-  { id: 'Disney Plus', name: 'Disney Plus', logoUrl: '/src/assets/logos/Disney_plus_logo.png', color: '#0063e5' },
-  { id: 'Prime Video', name: 'Prime Video', logoUrl: '/src/assets/logos/prime_video_logo.png', color: '#00a8e1' },
-  { id: 'Apple TV', name: 'Apple TV', logoUrl: '/src/assets/logos/apple_tv_logo.png', color: '#444444' },
-  { id: 'SkyShowtime', name: 'SkyShowtime', logoUrl: '/src/assets/logos/skyshowtime_logo.png', color: '#4f46e5' },
-  { id: 'Oneplay', name: 'Oneplay', logoUrl: '/src/assets/logos/oneplay_logo.png', color: '#F2B705' },
-  { id: 'Prima+', name: 'Prima+', logoUrl: '/src/assets/logos/prima_plus.png', color: '#04BFAD' }
+  { id: 'Netflix', name: 'Netflix', logoUrl: netflixLogo, color: '#e50914' },
+  { id: 'HBO Max', name: 'HBO Max', logoUrl: hboMaxLogo, color: '#7c3aed' },
+  { id: 'Disney Plus', name: 'Disney Plus', logoUrl: disneyPlusLogo, color: '#0063e5' },
+  { id: 'Prime Video', name: 'Prime Video', logoUrl: primeVideoLogo, color: '#00a8e1' },
+  { id: 'Apple TV', name: 'Apple TV', logoUrl: appleTvLogo, color: '#444444' },
+  { id: 'SkyShowtime', name: 'SkyShowtime', logoUrl: skyshowtimeLogo, color: '#4f46e5' },
+  { id: 'Oneplay', name: 'Oneplay', logoUrl: oneplayLogo, color: '#F2B705' },
+  { id: 'Prima+', name: 'Prima+', logoUrl: primaPlusLogo, color: '#04BFAD' }
 ];
 
 export const TITLE_TYPES = ['Film', 'Seriál'] as const;
