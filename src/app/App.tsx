@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { useAppStore } from './store/useAppStore';
 import { Auth } from './components/Pages/Auth/Auth';
-import { Layout } from './components/Layout/Layout';
+import { Layout } from './components/layout/Layout';
 import { TitleGrid } from './components/Pages/Catalog/TitleGrid';
 import { Playlists } from './components/Pages/Playlists';
 import { Stats } from './components/Pages/Stats/Stats';
