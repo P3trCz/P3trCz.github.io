@@ -22,7 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-src/app/data/complete_tmdb_data.json
 app-design/*
 Dokumentace
 scratch
