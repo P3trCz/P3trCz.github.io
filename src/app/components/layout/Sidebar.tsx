@@ -39,7 +39,6 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
             </div>
             <div className="flex flex-col">
               <span className="text-xl font-bold tracking-tight leading-tight">StreamHub</span>
-              <span className="text-[10px] text-gray-400 uppercase tracking-wider font-semibold mt-0.5">Petr Toman: A25B0288P</span>
             </div>
           </div>
 
@@ -112,10 +111,6 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
               <p className="leading-relaxed">
                 StreamHub je aplikace, která dává streamovací služby, které jsou dostupné v ČR, pod jednu střechu. Aplikace umožňuje uživatelům procházet katalog titulů dostupných na jejich předplacených platformách, spravovat vlastní seznamy a sledovat statistiky. Dále uživatel může sdílet seznamy a doporučovat tituly přátelům.
               </p>
-              <div className="border-t border-[#27272a] pt-4 space-y-2">
-                <p className="text-white font-semibold">Petr Toman</p>
-                <p className="text-gray-400">A25B0288P</p>
-              </div>
 
               <div className="border-t border-[#27272a] pt-4 mt-2 flex flex-col sm:flex-row items-center gap-4 text-xs text-gray-400 text-center sm:text-left">
                 <img src={tmdbLogo} alt="TMDB" className="w-16 h-auto shrink-0 opacity-80" />
