@@ -285,7 +285,7 @@ export function TitleGrid() {
       )}
 
       <div className="text-center text-sm text-gray-500 mt-4 mb-8">
-        Naposledy aktualizováno: 21.07.2026 v 12:16
+        Naposledy aktualizováno: 21.07.2026 v 13:20
       </div>
 
       {selectedTitle && (
